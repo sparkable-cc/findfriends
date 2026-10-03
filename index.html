@@ -4,10 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="referrer" content="no-referrer">
-<!-- Lock: only this page's own script may run, identified by its fingerprint. After
-     editing the script, the browser console shows the new fingerprint to paste here.
-     Connections stay open to any https server so every AT Protocol server works. -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-GOy9lXKR8l616Z9LtcRBJ/fJoj9aSuRfmiKrNd0T2vs='; style-src 'unsafe-inline'; img-src https: data:; connect-src https:; base-uri 'none'; form-action 'none'">
+<!-- Lock: only this script may run, identified by its fingerprint. After editing it,
+     paste the new fingerprint from the browser console here. Any https server may be
+     contacted, so every AT Protocol server works. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-hHLA0TH/9MoMyE1ceKK2xkVHb7GfKX2uBESocjLlELg='; style-src 'unsafe-inline'; img-src https: data:; font-src 'self'; connect-src https:; base-uri 'none'; form-action 'none'">
 <title>Find your friends on Sparkable</title>
 <meta name="description" content="Find your LinkedIn and Facebook friends on Sparkable and Bluesky. Free, private and open source.">
 <meta property="og:title" content="Find your friends on Sparkable">
@@ -17,28 +17,15 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#4153f5">
+<link rel="preload" href="inter.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath fill='%234153f5' d='M63 1C44 24 44 40 63 63C40 44 24 44 1 63C20 40 20 24 1 1C24 20 40 20 63 1Z'/%3E%3C/svg%3E">
 <!--
   Version 1.0.17, October 3, 2026
-  1.0.1 first prototype. 1.0.2 strict matching, evidence rule, trust copy.
-  1.0.3 fast search, sections, works with every AT Protocol server.
-  1.0.4 Sparkable wording, match badges, jump bar, bulk select per section.
-  1.0.5 "how it finds people" up top, icons, blog styling, round buttons, "Multiple matches".
-  1.0.6 profile links, translated job words, "you are here" jump bar, inactive = 2 years.
-  1.0.7 question-style intro, page stays put while results load, inactive = never active.
-  1.0.8 twice the searches at once, Spanish and Portuguese job words, lighter intro.
-  1.0.9 compact intro, network footnote, LinkedIn line on top of each card.
-  1.0.10 followed people move to "Following" with undo, back-to-top button, footnote numbers.
-  1.0.11 LinkedIn line back under the bio, friendlier wording, phone rail fix.
-  1.0.12 the bottom bar follows the section you're in: "Select all", then "Follow".
-  1.0.13 no more bouncing at the page bottom, icons in the bottom bar, smarter "inactive".
-  1.0.14 security: only this script may run, app passwords only, confirm unknown servers, paced follows.
-  1.0.15 OAuth sign-in with the narrowest permissions: no passwords at all.
-  1.0.16 Facebook friends lists too; both files can be combined.
-  1.0.17 Sparkable logo, favicon, link previews with image, GitHub links, "How can I check?" removed.
+  Version history: README.md
 
   RULES (do not break these)
-  1. No backend, no outside code, no fonts, no analytics. This file is the app.
+  1. No backend, no outside code or fonts, no analytics. This file is the app;
+     its only companion is the Inter font (inter.woff2) from the same site.
   2. Contact files are read in memory only. Emails are never read. Employers
      and job titles never leave the tab. Bluesky only receives names, as searches.
   3. Name gate: an account is only considered if its display name contains the
@@ -55,7 +42,7 @@
     color-scheme: light dark;
     --bg: #fff; --panel: #f5f5f6; --line: #e6e6e8; --ink: #15171a; --muted: #5f646c;
     --accent: #4153f5; --accent-soft: #eceefe; --on-accent: #fff;
-    --ok: #11744f; --ok-soft: #e4f4ec; --caution: #855700; --danger: #b3261e;
+    --ok: #11744f; --ok-soft: #e4f4ec; --brand: #4153f5; --lime: #cdf971; --pink: #fa7ac4; --caution: #855700; --danger: #b3261e;
     box-sizing: border-box;
     padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px);
   }
@@ -64,8 +51,10 @@
     --accent: #8794ff; --accent-soft: #21254a; --on-accent: #111214;
     --ok: #52d49d; --ok-soft: #12291f; --caution: #f0c25a; --danger: #ff8a80;
   } }
+  /* Inter, the Sparkable app's font, served from this site: Latin letters incl. accents, weights 400-800 */
+  @font-face { font-family: Inter; font-weight: 400 800; font-display: swap; src: url(inter.woff2) format('woff2'); }
   *, *::before, *::after { box-sizing: border-box; }   /* explicit: <details> breaks inheritance */
-  body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.55 Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; }
   main { max-width: 700px; margin: 0 auto; padding: 48px 20px 40px; }
   a { color: var(--accent); }
   p { margin: 0 0 10px; }
@@ -77,6 +66,14 @@
   /* Header: what this is, then what it promises */
   .brand { display: inline-flex; align-items: center; gap: 7px; margin-bottom: 22px; font-size: 18px; font-weight: 800; letter-spacing: -0.02em; color: var(--ink); text-decoration: none; }
   .brand svg { width: 22px; height: 22px; color: var(--accent); }
+  .hero { position: relative; overflow: hidden; margin: -8px 0 6px; padding: 28px 110px 30px 32px; border-radius: 24px; background: var(--brand); color: #fff; }
+  .hero-spark { position: absolute; right: -110px; top: 50%; width: 220px; height: 220px; margin-top: -110px; color: var(--pink); }
+  .hero .brand, .hero .lede, .hero .brand svg { color: #fff; }
+  .lede svg { width: 18px; height: 18px; margin-right: 6px; vertical-align: -3px; fill: currentColor; }
+  .hero > :not(svg) { position: relative; }   /* text above the spark */
+  .badges { display: flex; flex-wrap: wrap; gap: 8px; margin: 22px 0 0; }
+  .badges span { display: inline-flex; align-items: center; gap: 6px; padding: 4px 14px 4px 11px; border-radius: 999px; background: var(--lime); color: var(--brand); font-size: 15px; font-weight: 650; }
+  .badges .ic { width: 17px; height: 17px; }
   h1 { font-size: 38px; font-weight: 800; line-height: 1.1; letter-spacing: -0.03em; margin: 0 0 8px; max-width: 14em; }
   .lede { font-size: 17px; color: var(--muted); margin: 0; }
   html { overflow-anchor: none; }   /* we keep your place ourselves, see keepPlace() */
@@ -89,6 +86,7 @@
           padding: 10px 8px; text-align: center; font-size: 13px; line-height: 1.35; color: var(--muted); }
   .group .card { padding-inline: 5px; }
   .card b { display: block; font-size: 15px; color: var(--ink); }
+  .card sup { margin-left: 3px; line-height: 0; }   /* no extra line height, so all three titles line up */
   .fn { flex: 0 0 100%; margin: -4px 0 0; }
   .op { align-self: center; font-size: 26px; font-weight: 700; line-height: 1; color: var(--accent); }
   .group .op { font-size: 17px; }
@@ -109,8 +107,8 @@
        font-size: 14px; font-weight: 700; background: var(--bg); color: var(--muted); border: 2px solid var(--line); }
   .step h2 { font-size: 19px; line-height: 1.3; margin: 3px 0 10px; letter-spacing: -0.01em; }
   .step[data-state="todo"] h2 { color: var(--muted); font-weight: 500; }
-  .step[data-state="active"] .n { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
-  .step[data-state="done"] .n { background: var(--ok); border-color: var(--ok); color: var(--bg); }
+  .step[data-state="active"] .n { background: var(--pink); border-color: var(--pink); color: #15171a; }
+  .step[data-state="done"] .n { background: var(--lime); border-color: var(--lime); color: #15171a; }
   .step[data-state="todo"] .body, .step[data-state="done"] .body, .summary { display: none; }
   .step[data-state="done"] .summary { display: block; font-size: 15px; color: var(--muted); }
   .howto { margin: 0 0 14px; padding-left: 20px; }
@@ -169,14 +167,14 @@
   .people { border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
   .person { position: relative; display: grid; grid-template-columns: 22px 44px 1fr; gap: 12px; align-items: start; padding: 14px 16px; border-top: 1px solid var(--line); cursor: pointer; }
   .tier { position: absolute; top: 15px; right: 14px; font-size: 11px; font-weight: 600; padding: 0 8px; border-radius: 999px; color: var(--muted); border: 1px solid var(--line); }
-  .tier.strong { color: var(--accent); border-color: color-mix(in srgb, var(--accent) 40%, transparent); }
+  .tier.strong { color: #15171a; background: var(--lime); border-color: var(--lime); }
   label.person .line1 { padding-right: 122px; }   /* room for the badge */
   .people > :first-child, .choice > p + .person { border-top: 0; }
   .person:hover { background: var(--panel); }
   .person.picked { background: var(--accent-soft); }
   .person.done { grid-template-columns: 22px 28px 1fr; align-items: center; padding: 9px 16px; cursor: default; background: none; }
-  .person.new, .count.new { background: var(--ok-soft); }
-  .count.new { color: var(--ok); }
+  .person.new, .count.new { background: color-mix(in srgb, var(--lime) 35%, var(--bg)); }
+  .count.new { color: inherit; }
   .fab { position: fixed; right: 16px; bottom: calc(16px + env(safe-area-inset-bottom, 0px)); z-index: 4; width: 48px; height: 48px; padding: 0;
          display: grid; place-items: center; background: var(--accent-soft); color: var(--accent); border: 2px solid var(--bg); box-shadow: 0 2px 12px rgb(0 0 0 / .22); transition: transform .2s; }
   .person input { width: 20px; height: 20px; margin: 12px 0 0; accent-color: var(--accent); }
@@ -231,6 +229,11 @@
   @media (max-width: 560px) {
     main { padding: 30px 16px 32px; }
     h1 { font-size: 29px; }
+    .hero { padding: 22px 56px 24px 20px; margin-inline: -4px; }
+    .badges { gap: 6px; margin-right: -40px; }   /* the row may run over the spark */
+    .badges span { font-size: 13px; padding: 3px 10px 3px 8px; gap: 4px; }
+    .badges .ic { width: 14px; height: 14px; }
+    .hero-spark { right: -70px; width: 140px; height: 140px; margin-top: -70px; }
     header h2 { margin: 18px 0 8px; }
     .checks { grid-template-columns: 1fr; }
     .flow, .group { flex-direction: column; gap: 4px; }
@@ -239,8 +242,8 @@
     .card .dot { grid-row: span 2; width: 34px; height: 34px; margin: 0; }
     .op { font-size: 20px; }
     .arrow { transform: rotate(90deg); }
-    .fn { order: 1; margin: 2px 0 -5px; }                       /* on phones the footnote sits right under "Found on Sparkable" */
-    .jump [data-jump="top"] { display: none; }                 /* the round button does this on phones */
+    .fn { order: 1; margin: 2px 0 -5px; }   /* on phones the footnote sits right under "Found on Sparkable" */
+    .jump [data-jump="top"] { display: none; }   /* the round button does this on phones */
     .flow > :nth-child(n+4):not(.fn) { order: 2; }
     .step { padding-left: 38px; }
     .step::before { left: 12px; top: 30px; }
@@ -280,21 +283,26 @@
   <symbol id="i-up" viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></symbol>
   <symbol id="i-ext" viewBox="5 5 14 14"><path d="M7 17 17 7M8 7h9v9"/></symbol>
   <symbol id="i-spark" viewBox="0 0 64 64"><path fill="currentColor" stroke="none" d="M63 1C44 24 44 40 63 63C40 44 24 44 1 63C20 40 20 24 1 1C24 20 40 20 63 1Z"/></symbol>
+  <symbol id="i-fb" viewBox="0 0 24 24"><path fill="currentColor" stroke="none" d="M9.101 23.691v-7.98H6.627v-3.667h2.474v-1.58c0-4.085 1.848-5.978 5.858-5.978.401 0 .955.042 1.468.103a8.68 8.68 0 0 1 1.141.195v3.325a8.623 8.623 0 0 0-.653-.036 26.805 26.805 0 0 0-.733-.009c-.707 0-1.259.096-1.675.309a1.686 1.686 0 0 0-.679.622c-.258.42-.374.995-.374 1.752v1.297h3.919l-.386 2.103-.287 1.564h-3.246v8.245C19.396 23.238 24 18.179 24 12.044c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.628 3.874 10.35 9.101 11.647Z"/></symbol>
+  <symbol id="i-gift" viewBox="0 0 24 24"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M5 12v8h14v-8M12 8v12M12 8S10.5 3 7.8 3.6C6 4 6.5 7 8.5 8M12 8s1.5-5 4.2-4.4C18 4 17.5 7 15.5 8"/></symbol>
+  <symbol id="i-code" viewBox="0 0 24 24"><path d="m8 7-5 5 5 5M16 7l5 5-5 5M13.5 4l-3 16"/></symbol>
   <symbol id="i-gh" viewBox="0 0 24 24"><path fill="currentColor" stroke="none" d="M10.226 17.284c-2.965-.36-5.054-2.493-5.054-5.256 0-1.123.404-2.336 1.078-3.144-.292-.741-.247-2.314.09-2.965.898-.112 2.111.36 2.83 1.01.853-.269 1.752-.404 2.853-.404 1.1 0 1.999.135 2.807.382.696-.629 1.932-1.1 2.83-.988.315.606.36 2.179.067 2.942.72.854 1.101 2 1.101 3.167 0 2.763-2.089 4.852-5.098 5.234.763.494 1.28 1.572 1.28 2.807v2.336c0 .674.561 1.056 1.235.786 4.066-1.55 7.255-5.615 7.255-10.646C23.5 6.188 18.334 1 11.978 1 5.62 1 .5 6.188.5 12.545c0 4.986 3.167 9.12 7.435 10.669.606.225 1.19-.18 1.19-.786V20.63a2.9 2.9 0 0 1-1.078.224c-1.483 0-2.359-.808-2.987-2.313-.247-.607-.517-.966-1.034-1.033-.27-.023-.359-.135-.359-.27 0-.27.45-.471.898-.471.652 0 1.213.404 1.797 1.235.45.651.921.943 1.483.943.561 0 .92-.202 1.437-.719.382-.381.674-.718.944-.943"/></symbol>
 </svg>
 
 <header id="top">
+  <div class="hero"><svg class="hero-spark" aria-hidden="true"><use href="#i-spark"/></svg>
   <a class="brand" href="https://sparkable.cc" target="_blank" rel="noopener noreferrer"><svg aria-hidden="true"><use href="#i-spark"/></svg>Sparkable</a>
   <h1>Find your friends on Sparkable</h1>
-  <p class="lede">Bring your LinkedIn and Facebook friends with you. Free, private and open source.</p>
+  <p class="lede">Bring your <svg><use href="#i-li"/></svg>LinkedIn and <svg><use href="#i-fb"/></svg>Facebook friends with you.</p>
+  <p class="badges"><span><svg class="ic"><use href="#i-gift"/></svg>Free</span><span><svg class="ic"><use href="#i-lock"/></svg>Private</span><span><svg class="ic"><use href="#i-code"/></svg>Open source</span></p></div>
   <h2>What is this?</h2>
     <div class="flow">
-      <div class="card"><span class="dot"><svg class="ic"><use href="#i-file"/></svg></span><b>Your contacts</b>Downloaded from LinkedIn or Facebook as a file</div>
+      <div class="card"><span class="dot"><svg class="ic"><use href="#i-file"/></svg></span><b>Your contacts</b>Downloaded from other platforms as a file</div>
       <span class="op arrow" aria-hidden="true">→</span>
       <div class="card"><span class="dot"><svg class="ic"><use href="#i-search"/></svg></span><b>Found on Sparkable<sup>1</sup></b>Looked up by name, right in your browser</div>
       <span class="op arrow" aria-hidden="true">→</span>
       <div class="card"><span class="dot"><svg class="ic"><use href="#i-add"/></svg></span><b>Followed by you</b>In a few clicks, only the people you pick</div>
-      <p class="hint fn"><sup>1</sup> Sparkable shares its open network with Bluesky and other <a href="https://en.wikipedia.org/wiki/AT_Protocol" target="_blank" rel="noopener noreferrer">AT Protocol<svg class="ext" aria-hidden="true"><use href="#i-ext"/></svg></a> apps, so you'll find your contacts on any of them.</p>
+      <p class="hint fn"><sup>1</sup> Sparkable shares an <a href="https://en.wikipedia.org/wiki/AT_Protocol" target="_blank" rel="noopener noreferrer">open network<svg class="ext" aria-hidden="true"><use href="#i-ext"/></svg></a> with Bluesky and others, so you'll find people there too.</p>
     </div>
 
     <h2>How do we find the right people?</h2>
@@ -392,7 +400,7 @@
 </ol>
 </main>
 <button type="button" class="fab" id="toTop" data-jump="top" aria-label="Back to top" hidden><svg class="ic"><use href="#i-up"/></svg></button>
-<footer><a href="https://sparkable.cc" target="_blank" rel="noopener noreferrer"><svg aria-hidden="true"><use href="#i-spark"/></svg>Made by Sparkable</a> · <a href="https://github.com/sparkable-cc/findfriends" target="_blank" rel="noopener noreferrer"><svg aria-hidden="true"><use href="#i-gh"/></svg>Source code on GitHub</a> · <span>Version 1.0.17</span> · <span>Free and open source (AGPL-3.0)</span></footer>
+<footer><a href="https://sparkable.cc" target="_blank" rel="noopener noreferrer"><svg aria-hidden="true"><use href="#i-spark"/></svg>Made by Sparkable</a> · <a href="https://github.com/sparkable-cc/findfriends" target="_blank" rel="noopener noreferrer"><svg aria-hidden="true"><use href="#i-gh"/></svg>Source code on GitHub</a> · <a href="https://blog.sparkable.cc/legal/" target="_blank" rel="noopener noreferrer">Terms &amp; privacy</a> · <span>Version 1.0.17</span> · <span>Free and open source (AGPL-3.0)</span></footer>
 
 <script>
 'use strict';
@@ -401,19 +409,13 @@
 
 const FOLD = { 'ß': 'ss', 'æ': 'ae', 'ø': 'o', 'œ': 'oe', 'ł': 'l', 'đ': 'd', 'ð': 'd', 'þ': 'th', 'ı': 'i' };
 const norm = s => String(s || '').toLowerCase().replace(/[ßæøœłđðþı]/g, c => FOLD[c])
-  .normalize('NFD').replace(/\p{M}/gu, '')        // strip accents
-  .replace(/['’`´]/g, '')                         // o'brien -> obrien
-  .replace(/[^\p{L}\p{N}]+/gu, ' ').trim();       // jean-luc -> jean luc
+  .normalize('NFD').replace(/\p{M}/gu, '')   // strip accents
+  .replace(/['’`´]/g, '')   // o'brien -> obrien
+  .replace(/[^\p{L}\p{N}]+/gu, ' ').trim();   // jean-luc -> jean luc
 const toks = s => { const n = norm(s); return n ? n.split(' ') : []; };
 const listJoin = a => a.length < 2 ? a.join('') : a.slice(0, -1).join(', ') + ' and ' + a[a.length - 1];
 const plural = (n, one, many) => n + ' ' + (n === 1 ? one : many);
-function hasSeq(hay, needle) {
-  outer: for (let i = 0; i + needle.length <= hay.length; i++) {
-    for (let j = 0; j < needle.length; j++) if (hay[i + j] !== needle[j]) continue outer;
-    return true;
-  }
-  return false;
-}
+const hasSeq = (hay, needle) => hay.some((_, i) => needle.every((t, j) => hay[i + j] === t));   // needle's words appear in a row in hay
 
 /* "Doe, PhD" -> "Doe", "Doe (she/her)" -> "Doe". Two-letter titles are kept
    on purpose: "Ma" and "Md" are also real names. */
@@ -523,35 +525,40 @@ function passesNameGate(conn, displayName) {
 }
 
 const CO_SUFFIX = new Set('ag gmbh ggmbh inc ltd llc llp sa sarl sas sagl plc corp corporation co kg ev bv nv oy ab spa srl limited company the group holding'.split(' '));
-const NOT_EMPLOYER = new Set(['self employed', 'freelance', 'freelancer', 'independent', 'selbststandig', 'selbstandig', 'freiberuflich',
-  'retired', 'student', 'confidential', 'stealth', 'stealth mode', 'stealth startup', 'various', 'none', 'n a', 'na']);
+const NOT_EMPLOYER = new Set(('self employed,freelance,freelancer,independent,selbststandig,selbstandig,freiberuflich,' +
+  'retired,student,confidential,stealth,stealth mode,stealth startup,various,none,n a,na').split(','));
 function companyMatch(company, hay) {
   if (NOT_EMPLOYER.has(norm(company))) return 0;
   const ct = toks(company).filter(t => !CO_SUFFIX.has(t));
   if (ct.join('').length < 3) return 0;
   if (hasSeq(hay, ct)) return 4;
-  const acronym = ct.length >= 3 ? ct.map(t => t[0]).join('') : '';      // "Swiss Federal Railways" -> "sfr"
+  const acronym = ct.length >= 3 ? ct.map(t => t[0]).join('') : '';   // "Swiss Federal Railways" -> "sfr"
   return acronym && hay.includes(acronym) ? 3 : 0;
 }
 
 /* Job-title words found in the bio, allowing for word endings
    ("research" matches "researcher"). Returns phrases as they appear in the title. */
 const TITLE_SKIP = new Set('senior junior lead head chief principal associate assistant deputy intern trainee member team staff officer manager director vice president founder leiter and the for und der die das fur les des del with'.split(' '));
-/* Job words in German, French and Italian mapped to their direct English
-   equivalent, so "Forscherin" in a bio matches "Researcher" on LinkedIn.
-   One word to one word, so it's about as precise as a same-language match. */
-const TRANSLATE = Object.fromEntries(('entwickler:developer sviluppatore:developer developpeur:developer ingenieur:engineer ingegnere:engineer ' +
-  'informatiker:engineer forscher:researcher chercheur:researcher chercheuse:researcher ricercatore:researcher ricercatrice:researcher ' +
-  'wissenschaftler:scientist scientifique:scientist scienziato:scientist journaliste:journalist giornalista:journalist ' +
-  'redakteur:editor redacteur:editor redactrice:editor redattore:editor lehrer:teacher enseignant:teacher enseignante:teacher ' +
-  'insegnante:teacher arzt:doctor medecin:doctor medico:doctor anwalt:lawyer rechtsanwalt:lawyer avocat:lawyer avocate:lawyer ' +
-  'avvocato:lawyer berater:consultant consulente:consultant conseiller:advisor conseillere:advisor gestalter:designer grafiker:designer ' +
-  'projektleiter:project desarrollador:developer desenvolvedor:developer ingeniero:engineer ingeniera:engineer engenheiro:engineer ' +
-  'engenheira:engineer investigador:researcher investigadora:researcher pesquisador:researcher pesquisadora:researcher cientifico:scientist ' +
-  'cientifica:scientist cientista:scientist periodista:journalist jornalista:journalist maestro:teacher maestra:teacher docente:teacher ' +
-  'medica:doctor abogado:lawyer abogada:lawyer advogado:lawyer advogada:lawyer consultor:consultant consultora:consultant asesor:advisor ' +
-  'asesora:advisor disenador:designer disenadora:designer analista:analyst').split(' ').map(pair => pair.split(':')));
-const canon = t => TRANSLATE[t] || (t.endsWith('in') && TRANSLATE[t.slice(0, -2)]) || t;   // German feminine: Forscherin -> Forscher
+/* Job words in German, French, Italian, Spanish and Portuguese under their English
+   equivalent, so "Forscherin" in a bio matches "Researcher" on LinkedIn. One word to
+   one word: as precise as a same-language match. A Map, so "constructor" finds nothing. */
+const TRANSLATE = new Map(`
+  developer: entwickler sviluppatore developpeur desarrollador desenvolvedor
+  engineer: ingenieur ingegnere informatiker ingeniero ingeniera engenheiro engenheira
+  researcher: forscher chercheur chercheuse ricercatore ricercatrice investigador investigadora pesquisador pesquisadora
+  scientist: wissenschaftler scientifique scienziato cientifico cientifica cientista
+  journalist: journaliste giornalista periodista jornalista
+  editor: redakteur redacteur redactrice redattore
+  teacher: lehrer enseignant enseignante insegnante maestro maestra docente
+  doctor: arzt medecin medico medica
+  lawyer: anwalt rechtsanwalt avocat avocate avvocato abogado abogada advogado advogada
+  consultant: berater consulente consultor consultora
+  advisor: conseiller conseillere asesor asesora
+  designer: gestalter grafiker disenador disenadora
+  project: projektleiter
+  analyst: analista`.trim().split(/\n */).map(line => line.split(': '))
+  .flatMap(([english, words]) => words.split(' ').map(word => [word, english])));
+const canon = t => TRANSLATE.get(t) || (t.endsWith('in') && TRANSLATE.get(t.slice(0, -2))) || t;   // German feminine: Forscherin -> Forscher
 const stem = t => t.slice(0, 5);
 function titlePhrases(position, hay) {
   const stems = new Set(hay.filter(t => t.length >= 3).map(t => stem(canon(t)))), out = [];
@@ -573,7 +580,7 @@ function assess(conn, p) {
   let score = 0, why = '';
   const slugs = slugsIn(text);
   if (slugs.length && conn.slug) {
-    if (!slugs.includes(conn.slug)) return { excluded: true };             // links a different LinkedIn: someone else
+    if (!slugs.includes(conn.slug)) return { excluded: true };   // links a different LinkedIn: someone else
     score += 10; why = 'Links to this LinkedIn profile';
   }
   if (v.followedBy) score += 5;
@@ -591,7 +598,7 @@ function assess(conn, p) {
 
 /* ===== 4. Network: public reads, and OAuth for everything signed in ===== */
 
-const APP_URL = 'https://sparkable.cc';             // where profile links and the post point
+const APP_URL = 'https://sparkable.cc';   // where profile links and the post point
 const PUBLIC_API = 'https://public.api.bsky.app';   // the network's public, cached search service
 /* Everything this tool may do with your account: create and delete follows, and
    read profiles through your server. Must match client-metadata.json. */
@@ -632,9 +639,10 @@ async function authPost(endpoint, params) {
   }
 }
 
-let refreshing = null;          // a refresh token works once, so only one refresh at a time
+const tokensOf = t => ({ access: t.access_token, refresh: t.refresh_token, exp: Date.now() + ((t.expires_in || 300) - 60) * 1000 });
+let refreshing = null;   // a refresh token works once, so only one refresh at a time
 const refresh = () => refreshing ||= authPost(S.session.as.token_endpoint, { client_id: S.session.client, grant_type: 'refresh_token', refresh_token: S.session.refresh })
-  .then(t => { Object.assign(S.session, { access: t.access_token, refresh: t.refresh_token, exp: Date.now() + ((t.expires_in || 300) - 60) * 1000 }); },
+  .then(t => { Object.assign(S.session, tokensOf(t)); },
     () => { throw Object.assign(new Error('Your sign-in expired.'), { code: 'SessionExpired' }); })
   .finally(() => { refreshing = null; });
 
@@ -658,7 +666,7 @@ async function xrpc(method, { params, body, authed = true } = {}) {
     try { res = await fetch(url, { method: body ? 'POST' : 'GET', headers, body: body && JSON.stringify(body) }); }
     catch { await sleep(1000 * attempt); continue; }
     keepNonce(res, url);
-    const remaining = res.headers.get('ratelimit-remaining');               // slow down before Bluesky has to ask
+    const remaining = res.headers.get('ratelimit-remaining');   // slow down before Bluesky has to ask
     if (remaining !== null && +remaining < 40) {
       cooldownUntil = Math.max(cooldownUntil, +res.headers.get('ratelimit-reset') * 1000);
       notice('Pausing briefly so we stay inside the server\'s limits. We\'ll carry on automatically.');
@@ -672,7 +680,7 @@ async function xrpc(method, { params, body, authed = true } = {}) {
     if (res.status >= 500) { await sleep(1000 * attempt); continue; }
     const data = await res.json().catch(() => ({}));
     if (res.ok) return data;
-    if (authed && data.error === 'use_dpop_nonce') continue;                // retry with the server's fresh nonce
+    if (authed && data.error === 'use_dpop_nonce') continue;   // retry with the server's fresh nonce
     if (authed && res.status === 401) throw Object.assign(new Error('Your sign-in stopped working.'), { code: 'SessionExpired' });
     throw Object.assign(new Error(data.message || method + ' failed (' + res.status + ')'), { code: data.error });
   }
@@ -705,7 +713,7 @@ function cleanHandle(h) {
 
 /* ===== 5. State ===== */
 
-let generation = 0;                         // bumps on sign-out or a new file, so old runs stop
+let generation = 0;   // bumps on sign-out or a new file, so old runs stop
 const S = {};
 function resetResults() {
   Object.assign(S, { running: false, done: 0, groups: [], seen: new Set(), already: [], weak: 0, none: 0, errors: 0 });
@@ -718,19 +726,18 @@ resetAll();
 
 /* ===== 6. Search ===== */
 
-const SEARCHERS = 16;                        // searches in flight at once
+const SEARCHERS = 16;   // searches in flight at once
 
-/* Inactive means never posted, replied or reposted anything. Posts and replies
-   are counted on the profile; reposts only show up in their feed, so we look
-   there only for people with zero posts. A profile with a photo, a bio and 100+
-   followers is someone who reads along, so it never counts as inactive. */
+/* Inactive = never posted, replied or reposted. Posts and replies are counted on
+   the profile; reposts only show in the feed, checked only for people with zero
+   posts. A photo, a bio and 100+ followers means someone reads along: never inactive. */
 async function activityOf(p) {
   if (p.postsCount !== 0 || (p.followersCount >= 100 && p.avatar && p.description)) return { inactive: false };
   try {
     const f = await xrpc('app.bsky.feed.getAuthorFeed', { authed: false, params: { actor: p.did, limit: 1 } });
-    if ((f.feed || []).length) return { inactive: false };
-  } catch { return { inactive: false }; }    // unknown counts as active
-  return { inactive: true, note: 'Has never posted, replied or reposted' };
+    if (!(f.feed || []).length) return { inactive: true, note: 'Has never posted, replied or reposted' };
+  } catch {}   // unknown counts as active
+  return { inactive: false };
 }
 
 async function judge(conn, profiles, gen) {
@@ -820,7 +827,7 @@ async function followSelected() {
   const order = displayOrder().filter(d => S.selected.has(d)), out = $('followOut');
   let ok = 0, failed = 0;
   S.following = true; renderBar();
-  for (const did of order) {          // one at a time with a pause, so bulk follows don't look like spam
+  for (const did of order) {   // one at a time with a pause, so bulk follows don't look like spam
     if (!S.session) break;
     try {
       const r = await xrpc('com.atproto.repo.createRecord', { body: { repo: S.session.did, collection: 'app.bsky.graph.follow',
@@ -880,7 +887,7 @@ const followedIn = g => g.cands.find(c => S.followed.has(c.p.did));
 const grouped = () => {
   const by = { strong: [], likely: [], choose: [], inactive: [] }, fresh = [], order = [...S.followed.keys()];
   S.groups.forEach(g => (followedIn(g) ? fresh : by[sectionOf(g)]).push(g));
-  ['strong', 'likely', 'choose', 'inactive'].forEach(k => by[k].sort(byStrength));
+  Object.values(by).forEach(list => list.sort(byStrength));
   fresh.sort((a, b) => order.indexOf(followedIn(b).p.did) - order.indexOf(followedIn(a).p.did));   // newest first
   by.already = [...fresh.map(g => ({ p: followedIn(g).p, fresh: true })), ...S.already.map(p => ({ p }))];
   return by;
@@ -893,7 +900,7 @@ const picksFor = key => grouped()[key].filter(g => !g.ambiguous).map(g => g.cand
    preferring people who also follow you back: your closest shared links. */
 function socialHTML(kf) {
   if (!kf || !kf.count) return '';
-  const top = [...(kf.followers || [])].sort((a, b) => !!(b.viewer && b.viewer.followedBy) - !!(a.viewer && a.viewer.followedBy)).slice(0, 2);
+  const top = [...(kf.followers || [])].sort((a, b) => !!b.viewer?.followedBy - !!a.viewer?.followedBy).slice(0, 2);
   const names = top.map(f => esc(f.displayName || '@' + f.handle)), rest = kf.count - names.length;
   const who = !names.length ? '<b>' + plural(kf.count, 'person', 'people') + '</b> you follow'
     : rest > 0 ? names.join(', ') + ' and <b>' + plural(rest, 'other', 'others') + '</b> you follow' : names.join(' and ') + ', who you follow';
@@ -973,8 +980,8 @@ function draw() {
   const by = grouped();
   const shown = SECTIONS.filter(([key]) => by[key].length);
   $('results').innerHTML = shown.map(([key, title, , note, openByDefault]) => {
-    const items = by[key], fresh = key === 'already' ? items.filter(i => i.fresh).length : 0;
-    const open = S.openState.has(key) ? S.openState.get(key) : openByDefault;
+    const items = by[key], fresh = items.filter(i => i.fresh).length;
+    const open = S.openState.get(key) ?? openByDefault;
     return '<details class="sec" id="sec-' + key + '" data-sec="' + key + '" data-k="sec-' + key + '"' + (open ? ' open' : '') + '><summary>' + title +
       '<span class="count">' + items.length + '</span>' + (fresh ? '<span class="count new">' + fresh + ' just followed</span>' : '') + '</summary>' +
       '<p class="sec-note">' + note + '</p>' +
@@ -1002,9 +1009,9 @@ function renderBar() {
     cb.checked = S.selected.has(cb.dataset.did);
     cb.closest('.person').classList.toggle('picked', cb.checked);
   });
-  sel.hidden = !todo || S.following;            // everything picked: "Clear all" is the only undo needed
+  sel.hidden = !todo || S.following;   // everything picked: "Clear all" is the only undo needed
   sel.innerHTML = '<svg class="ic" aria-hidden="true"><use href="#i-all"/></svg>' + (todo > 1 ? 'Select all ' : 'Select ') + plural(todo, key + ' match', key + ' matches');
-  sel.className = n ? 'link' : '';              // a button while it's the main action, a link once "Follow" takes over
+  sel.className = n ? 'link' : '';   // a button while it's the main action, a link once "Follow" takes over
   fol.hidden = !n && !S.following;
   fol.disabled = S.following;
   fol.textContent = S.following ? 'Following…' : 'Follow ' + plural(n, 'person', 'people');
@@ -1026,13 +1033,13 @@ async function loadFiles(files) {
   $('fileErr').textContent = '';
   if (!files.length) return;
   try {
-    const byName = new Map(S.connections.map(c => [norm(c.query), c]));      // someone in both files becomes one contact
+    const byName = new Map(S.connections.map(c => [norm(c.query), c]));   // someone in both files becomes one contact
     for (const file of files) for (const c of await readContacts(file)) {
       const m = byName.get(norm(c.query));
       if (!m) byName.set(norm(c.query), c);
-      else for (const k of ['li', 'fb', 'company', 'position', 'slug', 'url', 'since']) m[k] = m[k] || c[k];
+      else for (const k of ['li', 'fb', 'company', 'position', 'slug', 'url', 'since']) m[k] ||= c[k];
     }
-    generation++; S.running = false;                     // stop any search on the old list
+    generation++; S.running = false;   // stop any search on the old list
     S.connections = [...byName.values()];
     setStep(1, 'done', plural(S.connections.length, 'contact', 'contacts') + ' ready. Your files stay on this device.');
     if (S.session) runSearch(); else { setStep(2, 'active'); $('handle').focus(); }
@@ -1045,7 +1052,7 @@ async function signIn() {
   const errEl = $('signinErr'), handle = cleanHandle($('handle').value);
   errEl.textContent = '';
   if (!handle) { errEl.textContent = 'Enter your handle, for example yourname.bsky.social.'; return $('handle').focus(); }
-  const popup = open('', 'signin', 'width=520,height=720');      // opened during the click, or browsers block it
+  const popup = open('', 'signin', 'width=520,height=720');   // opened during the click, or browsers block it
   if (!popup) { errEl.textContent = 'Please allow pop-ups for this page, then try again.'; return; }
   $('handle').value = handle; $('signin').textContent = 'Waiting for your sign-in…';
   try {
@@ -1064,7 +1071,7 @@ async function signIn() {
     if (r.iss !== as.issuer) throw new Error('The sign-in came back from the wrong server.');
     const t = await authPost(as.token_endpoint, { client_id: client, grant_type: 'authorization_code', code: r.code, redirect_uri: redirect, code_verifier: verifier });
     if (t.sub !== did || !String(t.scope).split(' ').includes('atproto')) throw new Error('The sign-in returned a different account.');
-    S.session = { did, handle, pds, as, client, access: t.access_token, refresh: t.refresh_token, exp: Date.now() + ((t.expires_in || 300) - 60) * 1000 };
+    S.session = { did, handle, pds, as, client, ...tokensOf(t) };
     setStep(2, 'done', 'Signed in as @' + handle + '.');
     runSearch();
   } catch (err) {
@@ -1110,7 +1117,7 @@ function init() {
     const cb = e.target.closest('input[data-did]');
     if (cb) { S.selected[cb.checked ? 'add' : 'delete'](cb.dataset.did); renderBar(); }
   });
-  document.addEventListener('click', e => {      // jump bar, "Following list" link and the round button
+  document.addEventListener('click', e => {   // jump bar, "Following list" link and the round button
     const a = e.target.closest('[data-jump]');
     if (!a) return;
     e.preventDefault();
