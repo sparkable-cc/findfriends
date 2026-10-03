@@ -20,10 +20,10 @@ Live at **https://findfriends.sparkable.cc**. Source code: https://github.com/sp
 
 ## Check that the live page matches this code
 
-Each release publishes the SHA-256 checksum of `index.html`. Current version 1.0.16:
+Each release publishes the SHA-256 checksum of `index.html`. Current version 1.0.17:
 
 ```
-19b73eecd6dd31539436f274d75bb8d0a42c35ab94c4edf24d4e784d22cd0b06
+7de1e08610079b62609a8f87584b16582ab51985bfb1be156e354278147bd47d
 ```
 
 To check it yourself:
