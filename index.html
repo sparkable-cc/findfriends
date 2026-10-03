@@ -20,8 +20,7 @@
 <link rel="preload" href="inter.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath fill='%234153f5' d='M63 1C44 24 44 40 63 63C40 44 24 44 1 63C20 40 20 24 1 1C24 20 40 20 63 1Z'/%3E%3C/svg%3E">
 <!--
-  Version 1.0.17, October 3, 2026
-  Version history: README.md
+  Version 1.0.18, October 3, 2026
 
   RULES (do not break these)
   1. No backend, no outside code or fonts, no analytics. This file is the app;
@@ -41,22 +40,22 @@
   :root {
     color-scheme: light dark;
     --bg: #fff; --panel: #f5f5f6; --line: #e6e6e8; --ink: #15171a; --muted: #5f646c;
-    --accent: #4153f5; --accent-soft: #eceefe; --on-accent: #fff;
-    --ok: #11744f; --ok-soft: #e4f4ec; --brand: #4153f5; --lime: #cdf971; --pink: #fa7ac4; --caution: #855700; --danger: #b3261e;
+    --accent: #4153f5; --accent-soft: #eceefe; --on-accent: #fff; --link: #4153f5;
+    --ok: #11744f; --lime: #cdf971; --pink: #fa7ac4; --caution: #855700; --danger: #b3261e;
     box-sizing: border-box;
     padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px);
   }
   @media (prefers-color-scheme: dark) { :root {
     --bg: #111214; --panel: #1b1c1f; --line: #2c2d31; --ink: #f2f2f3; --muted: #a2a6ad;
-    --accent: #8794ff; --accent-soft: #21254a; --on-accent: #111214;
-    --ok: #52d49d; --ok-soft: #12291f; --caution: #f0c25a; --danger: #ff8a80;
+    --accent: #4153f5; --accent-soft: #181b34; --on-accent: #fff; --link: #8d98f9;
+    --ok: #52d49d; --caution: #f0c25a; --danger: #ff8a80;
   } }
   /* Inter, the Sparkable app's font, served from this site: Latin letters incl. accents, weights 400-800 */
   @font-face { font-family: Inter; font-weight: 400 800; font-display: swap; src: url(inter.woff2) format('woff2'); }
   *, *::before, *::after { box-sizing: border-box; }   /* explicit: <details> breaks inheritance */
   body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.55 Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; }
   main { max-width: 700px; margin: 0 auto; padding: 48px 20px 40px; }
-  a { color: var(--accent); }
+  a { color: var(--link); }
   p { margin: 0 0 10px; }
   .hint { font-size: 14px; color: var(--muted); }
   .err { color: var(--danger); font-size: 14px; margin-top: 10px; }
@@ -66,13 +65,13 @@
   /* Header: what this is, then what it promises */
   .brand { display: inline-flex; align-items: center; gap: 7px; margin-bottom: 22px; font-size: 18px; font-weight: 800; letter-spacing: -0.02em; color: var(--ink); text-decoration: none; }
   .brand svg { width: 22px; height: 22px; color: var(--accent); }
-  .hero { position: relative; overflow: hidden; margin: -8px 0 6px; padding: 28px 110px 30px 32px; border-radius: 24px; background: var(--brand); color: #fff; }
+  .hero { position: relative; overflow: hidden; margin: -8px 0 6px; padding: 28px 110px 30px 32px; border-radius: 24px; background: var(--accent); color: #fff; }
   .hero-spark { position: absolute; right: -110px; top: 50%; width: 220px; height: 220px; margin-top: -110px; color: var(--pink); }
   .hero .brand, .hero .lede, .hero .brand svg { color: #fff; }
   .lede svg { width: 18px; height: 18px; margin-right: 6px; vertical-align: -3px; fill: currentColor; }
   .hero > :not(svg) { position: relative; }   /* text above the spark */
   .badges { display: flex; flex-wrap: wrap; gap: 8px; margin: 22px 0 0; }
-  .badges span { display: inline-flex; align-items: center; gap: 6px; padding: 4px 14px 4px 11px; border-radius: 999px; background: var(--lime); color: var(--brand); font-size: 15px; font-weight: 650; }
+  .badges span { display: inline-flex; align-items: center; gap: 6px; padding: 4px 14px 4px 11px; border-radius: 999px; background: var(--lime); color: var(--accent); font-size: 15px; font-weight: 650; }
   .badges .ic { width: 17px; height: 17px; }
   h1 { font-size: 38px; font-weight: 800; line-height: 1.1; letter-spacing: -0.03em; margin: 0 0 8px; max-width: 14em; }
   .lede { font-size: 17px; color: var(--muted); margin: 0; }
@@ -91,7 +90,6 @@
   .op { align-self: center; font-size: 26px; font-weight: 700; line-height: 1; color: var(--accent); }
   .group .op { font-size: 17px; }
   .dot { display: grid; place-items: center; width: 36px; height: 36px; margin: 0 auto 6px; border-radius: 50%; background: var(--bg); color: var(--accent); }
-  .must .dot { background: var(--accent); color: var(--on-accent); }
   .checks { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 10px 28px; }
   .checks li { display: flex; gap: 12px; font-size: 14px; line-height: 1.45; color: var(--muted); }
   .checks li b { color: var(--ink); font-weight: 600; }
@@ -107,7 +105,7 @@
        font-size: 14px; font-weight: 700; background: var(--bg); color: var(--muted); border: 2px solid var(--line); }
   .step h2 { font-size: 19px; line-height: 1.3; margin: 3px 0 10px; letter-spacing: -0.01em; }
   .step[data-state="todo"] h2 { color: var(--muted); font-weight: 500; }
-  .step[data-state="active"] .n { background: var(--pink); border-color: var(--pink); color: #15171a; }
+  .step[data-state="active"] .n { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
   .step[data-state="done"] .n { background: var(--lime); border-color: var(--lime); color: #15171a; }
   .step[data-state="todo"] .body, .step[data-state="done"] .body, .summary { display: none; }
   .step[data-state="done"] .summary { display: block; font-size: 15px; color: var(--muted); }
@@ -133,7 +131,7 @@
            background: var(--accent); color: var(--on-accent); cursor: pointer; }
   button.secondary { background: transparent; color: var(--ink); border: 1px solid var(--line); }
   button.small { font-size: 14px; padding: 7px 15px; }
-  button.link { background: none; border: 0; padding: 0; color: var(--accent); font-weight: 500; font-size: inherit;
+  button.link { background: none; border: 0; padding: 0; color: var(--link); font-weight: 500; font-size: inherit;
                 text-decoration: underline; text-underline-offset: 2px; }
   button:disabled { opacity: .45; cursor: default; }
   .actions { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-top: 16px; }
@@ -167,7 +165,7 @@
   .people { border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
   .person { position: relative; display: grid; grid-template-columns: 22px 44px 1fr; gap: 12px; align-items: start; padding: 14px 16px; border-top: 1px solid var(--line); cursor: pointer; }
   .tier { position: absolute; top: 15px; right: 14px; font-size: 11px; font-weight: 600; padding: 0 8px; border-radius: 999px; color: var(--muted); border: 1px solid var(--line); }
-  .tier.strong { color: #15171a; background: var(--lime); border-color: var(--lime); }
+  .tier.strong { color: var(--link); background: var(--accent-soft); border-color: color-mix(in srgb, var(--accent) 35%, transparent); }
   label.person .line1 { padding-right: 122px; }   /* room for the badge */
   .people > :first-child, .choice > p + .person { border-top: 0; }
   .person:hover { background: var(--panel); }
@@ -307,7 +305,7 @@
 
     <h2>How do we find the right people?</h2>
     <div class="flow">
-      <div class="card must"><span class="dot"><svg class="ic"><use href="#i-name"/></svg></span><b>Same full name</b>Required. No name match, no suggestion.</div>
+      <div class="card"><span class="dot"><svg class="ic"><use href="#i-name"/></svg></span><b>Same full name</b>Required. No name match, no suggestion.</div>
       <span class="op" aria-hidden="true">+</span>
       <div class="group">
         <div class="card"><span class="dot"><svg class="ic"><use href="#i-people"/></svg></span><b>People in common</b>People you follow who follow them</div>
@@ -339,8 +337,8 @@
         <li>Drop the ZIP file here. No need to unzip it.</li>
       </ol>
       <ol class="howto fb-how">
-        <li>On Facebook, open Accounts Center → Your information and permissions → Download your information.</li>
-        <li>Pick only your <strong>friends</strong> list, set the format to <strong>JSON</strong> and request it. Facebook lets you know when it's ready.</li>
+        <li>On Facebook, go to Settings → Meta Account → Your information and permissions → Export your information (<a href="https://www.facebook.com/help/212802592074644" target="_blank" rel="noopener noreferrer">help page<svg class="ext" aria-hidden="true"><use href="#i-ext"/></svg></a>).</li>
+        <li>Choose <strong>Export to device</strong>, pick only your <strong>friends</strong> list, set the format to <strong>JSON</strong> and start the export.</li>
         <li>Drop the ZIP file here. No need to unzip it.</li>
       </ol>
       <label class="drop" id="drop">
@@ -400,7 +398,7 @@
 </ol>
 </main>
 <button type="button" class="fab" id="toTop" data-jump="top" aria-label="Back to top" hidden><svg class="ic"><use href="#i-up"/></svg></button>
-<footer><a href="https://sparkable.cc" target="_blank" rel="noopener noreferrer"><svg aria-hidden="true"><use href="#i-spark"/></svg>Made by Sparkable</a> · <a href="https://github.com/sparkable-cc/findfriends" target="_blank" rel="noopener noreferrer"><svg aria-hidden="true"><use href="#i-gh"/></svg>Source code on GitHub</a> · <a href="https://blog.sparkable.cc/legal/" target="_blank" rel="noopener noreferrer">Terms &amp; privacy</a> · <span>Version 1.0.17</span> · <span>Free and open source (AGPL-3.0)</span></footer>
+<footer><a href="https://sparkable.cc" target="_blank" rel="noopener noreferrer"><svg aria-hidden="true"><use href="#i-spark"/></svg>Made by Sparkable</a> · <a href="https://github.com/sparkable-cc/findfriends" target="_blank" rel="noopener noreferrer"><svg aria-hidden="true"><use href="#i-gh"/></svg>Source code on GitHub</a> · <a href="https://blog.sparkable.cc/legal/" target="_blank" rel="noopener noreferrer">Terms &amp; privacy</a> · <span>Version 1.0.18</span> · <span>Free and open source (AGPL-3.0)</span></footer>
 
 <script>
 'use strict';
