@@ -2,7 +2,7 @@
 
 Find your LinkedIn and Facebook friends on Sparkable, and follow them in a few clicks. Sparkable shares its open network with Bluesky, so the tool finds people on either.
 
-Live at **https://findfriends.sparkable.cc**
+Live at **https://findfriends.sparkable.cc**. Source code: https://github.com/sparkable-cc/findfriends
 
 ## How it works
 
