@@ -6,20 +6,25 @@ Live at **https://findfriends.sparkable.cc**. Source code: https://github.com/sp
 
 ## How it works
 
-The page finds your LinkedIn and Facebook friends on Sparkable and follows the ones you choose. It all happens in your browser. There's no Sparkable server behind it.
+Everything happens in your browser. There's no Sparkable server behind this page.
 
-1. **Get your friend list.** Download your connections from LinkedIn or your friends list from Facebook, and drop the file on the page. The page reads it right there, on your device.
-2. **Sign in** with your Sparkable or Bluesky account. Eurosky, Blacksky and other apps on the same network work too. You type your password on your own account's sign-in page, never on this one.
-3. **See who's here.** The page searches for each contact by name. Sparkable and Bluesky share one open network, so it finds people on both.
+1. **Get your friend list** from LinkedIn or Facebook and drop the file on the page. It's read on your device and never uploaded.
+2. **Sign in** with your Sparkable or Bluesky account (Eurosky, Blacksky and others work too), on your own account's sign-in page.
+3. **See who's here.** The page searches for each contact by name, across the open network that Sparkable and Bluesky share.
 4. **Choose who to follow.** Nothing is selected for you, and you can undo every follow.
 
-### How it decides who's a match
+### Who gets suggested, and who never does
 
-A suggestion needs two things.
+Finding people can go wrong. Someone may keep their work and private accounts apart on purpose, use a different name to stay out of someone's sight, or simply share a name with a stranger. So the matching is strict. It would rather miss a friend than suggest the wrong person.
 
-**1. The same full name.** The account's name must contain your contact's full first and last name. Nicknames, initials and other surnames never count, so people who keep work and personal accounts apart stay apart.
+- **Full real name only.** An account is considered only if its name contains your contact's complete first and last name. Nicknames, initials, usernames and other surnames never match. Someone who goes by a different name on Sparkable won't be found, and that's on purpose.
+- **A name is never enough.** There has to be a second sign that it's the same person, and every suggestion says what that sign is.
+- **Blocks are respected.** Nobody who blocked you, or whom you blocked, is ever suggested.
+- **Nothing new is revealed.** The page only finds public accounts, and only uses what you could see yourself by searching each name by hand.
+- **Your contacts' details stay with you.** Their job, employer, LinkedIn link and email never leave your device. The tool never emails or invites anyone, and it keeps nothing about them.
 
-**2. At least one more sign it's them.** A name alone is never enough. Each sign adds points:
+<details>
+<summary>How the signs are scored</summary>
 
 | Sign | Points |
 | --- | --- |
@@ -29,22 +34,20 @@ A suggestion needs two things.
 | Their bio mentions the company from LinkedIn | 3 or 4 |
 | Their bio mentions their job from LinkedIn, also in German, French, Italian, Spanish or Portuguese | 2 or 3 |
 
-If a bio links to a *different* LinkedIn profile, that account is ruled out. Facebook files only contain names, so for Facebook friends the signs are people in common and whether they follow you.
-
-The results come in groups:
+A bio that links to a *different* LinkedIn profile rules the account out. Facebook files only contain names, so for Facebook friends the signs are people in common and whether they follow you. If you already follow someone with your contact's name, the page takes that as your contact.
 
 - **Strong matches:** 6 points or more.
-- **Likely matches:** 3 to 5 points. Worth a quick look.
-- **Multiple matches:** several people with that name fit and none clearly stands out. You choose one, or skip.
+- **Likely matches:** 3 to 5 points.
+- **Multiple matches:** several people with that name fit and none clearly stands out.
 - **Probably inactive:** probably them, but the account has never posted, replied or reposted.
 - **Not shown:** under 3 points. "Why isn't someone here?" on the page says how many contacts that was.
 
-If you already follow someone with your contact's name, the page takes that as your contact and leaves the others out.
+</details>
 
 ## Why it's safe and private
 
 - **Your file stays on your device.** The page reads it inside your browser and never uploads it.
-- **Only names go out.** To search, the page sends each contact's name to Bluesky's public search. Job titles, employers and LinkedIn links stay in your browser. Email addresses aren't even read. The accounts it finds are then looked up through your own account server, to see who you have in common.
+- **Only names go out.** To search, the page sends each contact's name to Bluesky's public search. The accounts it finds are then looked up through your own account server, to see who you have in common.
 - **Nothing is saved.** No database, no cookies, nothing kept in your browser. Close the tab and it's gone.
 - **It can do very little with your account.** Sign-in uses atproto OAuth and only allows following, unfollowing and reading profiles. The page can't post, send messages, delete posts or change your account, and it never sees your password.
 - **No tracking.** No analytics and no code from other companies. The only other file the page loads is its font, from the same site.
@@ -54,16 +57,15 @@ If you already follow someone with your contact's name, the page takes that as y
 - **No server, so nothing to leak.** Many "find your friends" features upload your address book to the company's servers. This one can't: the whole tool is one web page, and there is no server to send your list to.
 - **Locked to its own code.** The page tells your browser to run one exact script, identified by its fingerprint, and to refuse everything else. Even if someone slipped extra code into the page, your browser wouldn't run it. The page also refuses to load inside another website.
 - **You can check it.** The code is public, and the checksums below let anyone confirm that the live page is exactly this code.
-- **It would rather miss someone than suggest a stranger.** That's why it needs the full name plus another sign, and why every suggestion says what the sign is.
 - **One search covers the open network.** Sparkable, Bluesky and other apps share the same open network (the [AT Protocol](https://en.wikipedia.org/wiki/AT_Protocol)), so one search finds people on all of them, and an account from any of them can sign in.
 - **Small and quick.** Under 100 KB in total, font included.
 
 ## Check that the live page matches this code
 
-Each release publishes the SHA-256 checksums of the two files the page loads. Current version 1.0.21:
+Each release publishes the SHA-256 checksums of the two files the page loads. Current version 1.0.22:
 
 ```
-fc1c7308ff48f41d391c83a5eff1c7766a982540f17c182c758c927c4d3cceb5  index.html
+bed3ea39672b9dee3820c2b795f2f79aa033ecfd7ed3db30b399613510bbcb49  index.html
 fc7b8c858bf1106a57a9c5c66d457e9dc4bb047cc93105ce61cc3ccb714d2564  inter.woff2
 ```
 
