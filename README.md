@@ -6,24 +6,64 @@ Live at **https://findfriends.sparkable.cc**. Source code: https://github.com/sp
 
 ## How it works
 
-1. You download your contact list from LinkedIn or Facebook and drop it on the page.
-2. You sign in with your Sparkable or Bluesky account. Sign-in happens on your own account server's page, and the tool never sees your password.
-3. The tool looks up each contact by name and suggests people only when their full name matches **and** something else confirms it's them: people you both follow, or a bio that fits their LinkedIn job. Every suggestion says why.
-4. You choose who to follow. Every follow can be undone.
+The page finds your LinkedIn and Facebook friends on Sparkable and follows the ones you choose. It all happens in your browser. There's no Sparkable server behind it.
 
-## Privacy and security
+1. **Get your friend list.** Download your connections from LinkedIn or your friends list from Facebook, and drop the file on the page. The page reads it right there, on your device.
+2. **Sign in** with your Sparkable or Bluesky account. Eurosky, Blacksky and other apps on the same network work too. You type your password on your own account's sign-in page, never on this one.
+3. **See who's here.** The page searches for each contact by name. Sparkable and Bluesky share one open network, so it finds people on both.
+4. **Choose who to follow.** Nothing is selected for you, and you can undo every follow.
 
-- **Your files never leave your device.** They're read inside the browser tab. Only names are sent, as searches to Bluesky's public search.
-- **Nothing is stored.** Not by Sparkable, not in the browser. Close the tab and it's gone.
-- **Narrow permissions.** Sign-in uses atproto OAuth and asks only to create and delete follows and to read profiles. It can't post, delete posts or change your account.
-- **No outside code.** One HTML file with no libraries or analytics, plus the Inter font served from the same site. Its Content-Security-Policy only lets this exact script run, and the page refuses to run inside another website's frame.
+### How it decides who's a match
+
+A suggestion needs two things.
+
+**1. The same full name.** The account's name must contain your contact's full first and last name. Nicknames, initials and other surnames never count, so people who keep work and personal accounts apart stay apart.
+
+**2. At least one more sign it's them.** A name alone is never enough. Each sign adds points:
+
+| Sign | Points |
+| --- | --- |
+| Their bio links to the same LinkedIn profile | 10 |
+| They follow you | 5 |
+| People you follow who follow them ("people in common") | 2 for one, 4 for three, 6 for six, up to 8. At most 3 for accounts with over 5,000 followers, since big accounts collect shared followers anyway |
+| Their bio mentions the company from LinkedIn | 3 or 4 |
+| Their bio mentions their job from LinkedIn, also in German, French, Italian, Spanish or Portuguese | 2 or 3 |
+
+If a bio links to a *different* LinkedIn profile, that account is ruled out. Facebook files only contain names, so for Facebook friends the signs are people in common and whether they follow you.
+
+The results come in groups:
+
+- **Strong matches:** 6 points or more.
+- **Likely matches:** 3 to 5 points. Worth a quick look.
+- **Multiple matches:** several people with that name fit and none clearly stands out. You choose one, or skip.
+- **Probably inactive:** probably them, but the account has never posted, replied or reposted.
+- **Not shown:** under 3 points. "Why isn't someone here?" on the page says how many contacts that was.
+
+If you already follow someone with your contact's name, the page takes that as your contact and leaves the others out.
+
+## Why it's safe and private
+
+- **Your file stays on your device.** The page reads it inside your browser and never uploads it.
+- **Only names go out.** To search, the page sends each contact's name to Bluesky's public search. Job titles, employers and LinkedIn links stay in your browser. Email addresses aren't even read. The accounts it finds are then looked up through your own account server, to see who you have in common.
+- **Nothing is saved.** No database, no cookies, nothing kept in your browser. Close the tab and it's gone.
+- **It can do very little with your account.** Sign-in uses atproto OAuth and only allows following, unfollowing and reading profiles. The page can't post, send messages, delete posts or change your account, and it never sees your password.
+- **No tracking.** No analytics and no code from other companies. The only other file the page loads is its font, from the same site.
+
+## Why it's built this way
+
+- **No server, so nothing to leak.** Many "find your friends" features upload your address book to the company's servers. This one can't: the whole tool is one web page, and there is no server to send your list to.
+- **Locked to its own code.** The page tells your browser to run one exact script, identified by its fingerprint, and to refuse everything else. Even if someone slipped extra code into the page, your browser wouldn't run it. The page also refuses to load inside another website.
+- **You can check it.** The code is public, and the checksums below let anyone confirm that the live page is exactly this code.
+- **It would rather miss someone than suggest a stranger.** That's why it needs the full name plus another sign, and why every suggestion says what the sign is.
+- **One search covers the open network.** Sparkable, Bluesky and other apps share the same open network (the [AT Protocol](https://en.wikipedia.org/wiki/AT_Protocol)), so one search finds people on all of them, and an account from any of them can sign in.
+- **Small and quick.** Under 100 KB in total, font included.
 
 ## Check that the live page matches this code
 
-Each release publishes the SHA-256 checksums of the two files the page loads. Current version 1.0.20:
+Each release publishes the SHA-256 checksums of the two files the page loads. Current version 1.0.21:
 
 ```
-16ada4e56b55dc6efb4d6ca3f9305a026e40f01adbe7cd86498223e63a95da02  index.html
+fc1c7308ff48f41d391c83a5eff1c7766a982540f17c182c758c927c4d3cceb5  index.html
 fc7b8c858bf1106a57a9c5c66d457e9dc4bb047cc93105ce61cc3ccb714d2564  inter.woff2
 ```
 
