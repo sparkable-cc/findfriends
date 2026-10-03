@@ -7,7 +7,7 @@
 <!-- Lock: only this script may run, identified by its fingerprint. After editing it,
      paste the new fingerprint from the browser console here. Any https server may be
      contacted, so every AT Protocol server works. -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-hHLA0TH/9MoMyE1ceKK2xkVHb7GfKX2uBESocjLlELg='; style-src 'unsafe-inline'; img-src https: data:; font-src 'self'; connect-src https:; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-XEek7/f6N3CmFwI4oTOncUege51TnWWKtow2n1TWCGA='; style-src 'unsafe-inline'; img-src https: data:; font-src 'self'; connect-src https:; base-uri 'none'; form-action 'none'">
 <title>Find your friends on Sparkable</title>
 <meta name="description" content="Find your LinkedIn and Facebook friends on Sparkable and Bluesky. Free, private and open source.">
 <meta property="og:title" content="Find your friends on Sparkable">
@@ -20,7 +20,7 @@
 <link rel="preload" href="inter.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath fill='%234153f5' d='M63 1C44 24 44 40 63 63C40 44 24 44 1 63C20 40 20 24 1 1C24 20 40 20 63 1Z'/%3E%3C/svg%3E">
 <!--
-  Version 1.0.18, October 3, 2026
+  Version 1.0.19, October 3, 2026
 
   RULES (do not break these)
   1. No backend, no outside code or fonts, no analytics. This file is the app;
@@ -41,14 +41,14 @@
     color-scheme: light dark;
     --bg: #fff; --panel: #f5f5f6; --line: #e6e6e8; --ink: #15171a; --muted: #5f646c;
     --accent: #4153f5; --accent-soft: #eceefe; --on-accent: #fff; --link: #4153f5;
-    --ok: #11744f; --lime: #cdf971; --pink: #fa7ac4; --caution: #855700; --danger: #b3261e;
+    --ok: #4a6b00; --lime: #cdf971; --pink: #fa7ac4; --caution: #855700; --danger: #b3261e;
     box-sizing: border-box;
     padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px);
   }
   @media (prefers-color-scheme: dark) { :root {
     --bg: #111214; --panel: #1b1c1f; --line: #2c2d31; --ink: #f2f2f3; --muted: #a2a6ad;
     --accent: #4153f5; --accent-soft: #181b34; --on-accent: #fff; --link: #8d98f9;
-    --ok: #52d49d; --caution: #f0c25a; --danger: #ff8a80;
+    --ok: #cdf971; --caution: #f0c25a; --danger: #ff8a80;
   } }
   /* Inter, the Sparkable app's font, served from this site: Latin letters incl. accents, weights 400-800 */
   @font-face { font-family: Inter; font-weight: 400 800; font-display: swap; src: url(inter.woff2) format('woff2'); }
@@ -71,24 +71,27 @@
   .lede svg { width: 18px; height: 18px; margin-right: 6px; vertical-align: -3px; fill: currentColor; }
   .hero > :not(svg) { position: relative; }   /* text above the spark */
   .badges { display: flex; flex-wrap: wrap; gap: 8px; margin: 22px 0 0; }
-  .badges span { display: inline-flex; align-items: center; gap: 6px; padding: 4px 14px 4px 11px; border-radius: 999px; background: var(--lime); color: var(--accent); font-size: 15px; font-weight: 650; }
+  .badges span { display: inline-flex; align-items: center; gap: 6px; padding: 4px 14px 4px 11px; border-radius: 999px; background: var(--lime); color: var(--accent); font-size: 14px; font-weight: 650; }
+  .start { display: inline-block; margin-top: 22px; padding: 11px 22px; border-radius: 999px; background: #fff; color: var(--accent); font-weight: 700; text-decoration: none; }
+  #s1 { scroll-margin-top: 16px; }
   .badges .ic { width: 17px; height: 17px; }
   h1 { font-size: 38px; font-weight: 800; line-height: 1.1; letter-spacing: -0.03em; margin: 0 0 8px; max-width: 14em; }
-  .lede { font-size: 17px; color: var(--muted); margin: 0; }
+  .lede { font-size: 18px; color: var(--muted); margin: 0; }
   html { overflow-anchor: none; }   /* we keep your place ourselves, see keepPlace() */
   .ic { width: 20px; height: 20px; flex: none; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
   /* Intro diagrams: soft cards, deliberately not shaped like buttons */
-  header h2 { font-size: 17px; margin: 22px 0 10px; }
+  h2 { font-size: 20px; font-weight: 700; }   /* every heading bold, also on phones */
+  header h2 { margin: 24px 0 10px; }
   .flow, .group { display: flex; flex-wrap: wrap; gap: 12px; }
   .group { flex: 2; flex-wrap: nowrap; gap: 8px; }   /* the two confirmations belong together: they only count after the name */
   .card { flex: 1; background: var(--accent-soft); border-radius: 16px;
-          padding: 10px 8px; text-align: center; font-size: 13px; line-height: 1.35; color: var(--muted); }
+          padding: 10px 8px; text-align: center; font-size: 14px; line-height: 1.4; color: var(--muted); }
   .group .card { padding-inline: 5px; }
-  .card b { display: block; font-size: 15px; color: var(--ink); }
+  .card b { display: block; font-size: 16px; color: var(--ink); }
   .card sup { margin-left: 3px; line-height: 0; }   /* no extra line height, so all three titles line up */
   .fn { flex: 0 0 100%; margin: -4px 0 0; }
-  .op { align-self: center; font-size: 26px; font-weight: 700; line-height: 1; color: var(--accent); }
-  .group .op { font-size: 17px; }
+  .op { align-self: center; font-size: 22px; font-weight: 700; line-height: 1; color: var(--accent); }
+  .group .op { font-size: 16px; }
   .dot { display: grid; place-items: center; width: 36px; height: 36px; margin: 0 auto 6px; border-radius: 50%; background: var(--bg); color: var(--accent); }
   .checks { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 10px 28px; }
   .checks li { display: flex; gap: 12px; font-size: 14px; line-height: 1.45; color: var(--muted); }
@@ -99,16 +102,17 @@
   /* Steps: a real sequence, so they're numbered */
   .steps { list-style: none; margin: 0; padding: 0; }
   .step { position: relative; padding: 0 0 30px 46px; }
+  #s3 { padding-bottom: 12px; }
   .step::before { content: ""; position: absolute; left: 14px; top: 34px; bottom: 4px; width: 2px; background: var(--line); }
   .step:last-child::before { display: none; }
   .n { position: absolute; left: 0; top: 0; width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center;
        font-size: 14px; font-weight: 700; background: var(--bg); color: var(--muted); border: 2px solid var(--line); }
-  .step h2 { font-size: 19px; line-height: 1.3; margin: 3px 0 10px; letter-spacing: -0.01em; }
-  .step[data-state="todo"] h2 { color: var(--muted); font-weight: 500; }
+  .step h2 { line-height: 1.3; margin: 3px 0 10px; letter-spacing: -0.01em; }
+  .step[data-state="todo"] h2 { color: var(--muted); }
   .step[data-state="active"] .n { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
   .step[data-state="done"] .n { background: var(--lime); border-color: var(--lime); color: #15171a; }
   .step[data-state="todo"] .body, .step[data-state="done"] .body, .summary { display: none; }
-  .step[data-state="done"] .summary { display: block; font-size: 15px; color: var(--muted); }
+  .step[data-state="done"] .summary { display: block; font-size: 14px; color: var(--muted); }
   .howto { margin: 0 0 14px; padding-left: 20px; }
   .howto li { margin: 4px 0; }
   .tabs { display: flex; gap: 6px; margin: 0 0 12px; }
@@ -124,13 +128,12 @@
     border-radius: 10px; background: var(--bg); color: var(--ink);
   }
   input::placeholder { color: var(--muted); opacity: .7; }
-  textarea { font-size: 15px; resize: vertical; min-height: 150px; }
+  textarea { resize: vertical; min-height: 150px; }
   details summary { cursor: pointer; }
 
-  button { font: inherit; font-size: 15px; font-weight: 600; border-radius: 999px; padding: 11px 20px; border: 0;
+  button { font: inherit; font-weight: 600; border-radius: 999px; padding: 11px 20px; border: 0;
            background: var(--accent); color: var(--on-accent); cursor: pointer; }
   button.secondary { background: transparent; color: var(--ink); border: 1px solid var(--line); }
-  button.small { font-size: 14px; padding: 7px 15px; }
   button.link { background: none; border: 0; padding: 0; color: var(--link); font-weight: 500; font-size: inherit;
                 text-decoration: underline; text-underline-offset: 2px; }
   button:disabled { opacity: .45; cursor: default; }
@@ -145,7 +148,6 @@
 
   .bar { height: 6px; background: var(--line); border-radius: 3px; overflow: hidden; margin-bottom: 8px; }
   .bar > i { display: block; height: 100%; width: 0; background: var(--accent); transition: width .2s; }
-  #progText { font-size: 15px; }
 
   /* Jump bar: always shows where you are and gets you anywhere in one tap */
   .jump { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 3; display: flex; gap: 6px; overflow-x: auto;
@@ -158,13 +160,13 @@
 
   /* Result sections */
   .sec { margin-top: 18px; scroll-margin-top: 64px; }
-  .sec > summary { font-size: 17px; font-weight: 700; padding: 4px 0; }
-  .sec[data-sec="inactive"] > summary, .sec[data-sec="already"] > summary { font-size: 15px; font-weight: 600; color: var(--muted); }
-  .count { font-size: 13px; font-weight: 600; color: var(--muted); background: var(--panel); border-radius: 999px; padding: 1px 8px; margin-left: 8px; vertical-align: 2px; }
+  .sec > summary { font-size: 18px; font-weight: 700; padding: 4px 0; }
+  .sec[data-sec="inactive"] > summary, .sec[data-sec="already"] > summary { font-size: 16px; font-weight: 600; color: var(--muted); }
+  .count { font-size: 12px; font-weight: 600; color: var(--muted); background: var(--panel); border-radius: 999px; padding: 1px 8px; margin-left: 8px; vertical-align: 2px; }
   .sec-note { font-size: 14px; color: var(--muted); margin: 2px 0 10px; }
   .people { border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
   .person { position: relative; display: grid; grid-template-columns: 22px 44px 1fr; gap: 12px; align-items: start; padding: 14px 16px; border-top: 1px solid var(--line); cursor: pointer; }
-  .tier { position: absolute; top: 15px; right: 14px; font-size: 11px; font-weight: 600; padding: 0 8px; border-radius: 999px; color: var(--muted); border: 1px solid var(--line); }
+  .tier { position: absolute; top: 15px; right: 14px; font-size: 12px; font-weight: 600; padding: 0 8px; border-radius: 999px; color: var(--muted); border: 1px solid var(--line); }
   .tier.strong { color: var(--link); background: var(--accent-soft); border-color: color-mix(in srgb, var(--accent) 35%, transparent); }
   label.person .line1 { padding-right: 122px; }   /* room for the badge */
   .people > :first-child, .choice > p + .person { border-top: 0; }
@@ -190,12 +192,13 @@
   .ok { color: var(--ok); font-weight: 600; font-size: 14px; }
   .bio { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; font-size: 14px; margin-top: 3px; overflow-wrap: anywhere; }
   .li { display: block; font-size: 14px; color: var(--muted); margin-top: 6px; }
-  .src { font-size: 11px; font-weight: 700; letter-spacing: .02em; border: 1px solid var(--line); border-radius: 4px; padding: 0 5px; margin-right: 6px; vertical-align: 1px; color: var(--muted); text-decoration: none; }
+  .src { font-size: 12px; font-weight: 700; letter-spacing: .02em; border: 1px solid var(--line); border-radius: 4px; padding: 0 5px; margin-right: 6px; vertical-align: 1px; color: var(--muted); text-decoration: none; }
+  .handle .ext, .src .ext { margin-left: 4px; }
   a.src:hover { border-color: var(--muted); }
   .ext { width: 8px; height: 8px; margin-left: 1px; vertical-align: 1px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
   button.copied { color: var(--ok); border-color: var(--ok); }
   button.copied svg { vertical-align: -4px; margin-right: 4px; }
-  .why, .social, .warn { display: flex; gap: 6px; align-items: center; font-size: 13px; margin-top: 5px; }
+  .why, .social, .warn { display: flex; gap: 6px; align-items: center; font-size: 14px; margin-top: 5px; }
   .why { color: var(--ok); }
   .social { color: var(--muted); }
   .faces { display: inline-flex; flex: none; }
@@ -205,12 +208,12 @@
   .why svg, .warn svg { flex: none; }
   .choice { border-top: 1px solid var(--line); }
   .people > .choice:first-child { border-top: 0; }
-  .choice > p { padding: 12px 16px 0; margin: 0; font-size: 15px; font-weight: 600; }
+  .choice > p { padding: 12px 16px 0; margin: 0; font-size: 16px; font-weight: 600; }
   .choice > p .li { font-weight: 400; margin-top: 2px; }
   .choice .person { padding-left: 28px; }
   .more { margin-top: 18px; font-size: 14px; color: var(--muted); }
 
-  .actionbar { position: sticky; bottom: 0; z-index: 2; margin-top: 18px; padding: 12px 0 calc(12px + env(safe-area-inset-bottom, 0px));
+  .actionbar { position: sticky; bottom: 0; z-index: 2; margin-top: 6px; padding: 12px 0 calc(12px + env(safe-area-inset-bottom, 0px));
                min-height: calc(70px + env(safe-area-inset-bottom, 0px));
                background: var(--bg); border-top: 1px solid var(--line); display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
   .actionbar.off { visibility: hidden; }   /* hidden but still taking its space: no jumps */
@@ -218,7 +221,8 @@
   #followOut { flex: 1 1 100%; font-size: 14px; color: var(--muted); }
   #followOut:empty { display: none; }
   #followBtn, #selAll:not(.link) { margin-left: auto; }
-  footer { max-width: 700px; margin: 0 auto; padding: 0 20px 40px 66px; font-size: 13px; color: var(--muted); }
+  .signout { margin: 28px 0 0; padding-top: 22px; border-top: 1px solid var(--line); }
+  footer { max-width: 700px; margin: 0 auto; padding: 0 20px 40px 66px; font-size: 14px; color: var(--muted); }
   footer a, footer span { white-space: nowrap; }   /* lines break between items, not inside them */
   footer a { color: inherit; text-underline-offset: 2px; }
   footer svg { width: 14px; height: 14px; margin-right: 5px; vertical-align: -2px; }
@@ -226,10 +230,10 @@
   @media (prefers-reduced-motion: reduce) { .bar > i { transition: none; } }
   @media (max-width: 560px) {
     main { padding: 30px 16px 32px; }
-    h1 { font-size: 29px; }
+    h1 { font-size: 30px; }
     .hero { padding: 22px 56px 24px 20px; margin-inline: -4px; }
     .badges { gap: 6px; margin-right: -40px; }   /* the row may run over the spark */
-    .badges span { font-size: 13px; padding: 3px 10px 3px 8px; gap: 4px; }
+    .badges span { font-size: 12px; padding: 3px 10px 3px 8px; gap: 4px; }
     .badges .ic { width: 14px; height: 14px; }
     .hero-spark { right: -70px; width: 140px; height: 140px; margin-top: -70px; }
     header h2 { margin: 18px 0 8px; }
@@ -238,7 +242,6 @@
     .group { gap: 8px; }
     .card, .group .card { display: grid; grid-template-columns: 34px 1fr; column-gap: 12px; align-items: center; text-align: left; padding: 8px 12px; }
     .card .dot { grid-row: span 2; width: 34px; height: 34px; margin: 0; }
-    .op { font-size: 20px; }
     .arrow { transform: rotate(90deg); }
     .fn { order: 1; margin: 2px 0 -5px; }   /* on phones the footnote sits right under "Found on Sparkable" */
     .jump [data-jump="top"] { display: none; }   /* the round button does this on phones */
@@ -246,7 +249,7 @@
     .step { padding-left: 38px; }
     .step::before { left: 12px; top: 30px; }
     #s3::before { display: none; }
-    .n { width: 26px; height: 26px; font-size: 13px; }
+    .n { width: 26px; height: 26px; }
     .people, .actionbar { margin-left: -38px; }
     .person { grid-template-columns: 20px 38px 1fr; gap: 10px; padding: 12px; }
     .avatar { width: 38px; height: 38px; }
@@ -255,7 +258,7 @@
     .choice > p { padding: 12px 12px 0; }
     #followBtn, #selAll:not(.link) { flex: 1 1 100%; }
     .jump { margin-left: -38px; padding-left: 4px; }
-    .tier { top: 12px; right: 10px; font-size: 11px; }
+    .tier { top: 12px; right: 10px; }
     .tier .long { display: none; }
     label.person .line1 { padding-right: 66px; }
     footer { padding: 0 16px 88px; }   /* room for the round back-to-top button */
@@ -292,7 +295,8 @@
   <a class="brand" href="https://sparkable.cc" target="_blank" rel="noopener noreferrer"><svg aria-hidden="true"><use href="#i-spark"/></svg>Sparkable</a>
   <h1>Find your friends on Sparkable</h1>
   <p class="lede">Bring your <svg><use href="#i-li"/></svg>LinkedIn and <svg><use href="#i-fb"/></svg>Facebook friends with you.</p>
-  <p class="badges"><span><svg class="ic"><use href="#i-gift"/></svg>Free</span><span><svg class="ic"><use href="#i-lock"/></svg>Private</span><span><svg class="ic"><use href="#i-code"/></svg>Open source</span></p></div>
+  <p class="badges"><span><svg class="ic"><use href="#i-gift"/></svg>Free</span><span><svg class="ic"><use href="#i-lock"/></svg>Private</span><span><svg class="ic"><use href="#i-code"/></svg>Open source</span></p>
+  <a class="start" href="#s1">Get started ↓</a></div>
   <h2>What is this?</h2>
     <div class="flow">
       <div class="card"><span class="dot"><svg class="ic"><use href="#i-file"/></svg></span><b>Your contacts</b>Downloaded from other platforms as a file</div>
@@ -313,13 +317,13 @@
         <div class="card"><span class="dot"><svg class="ic"><use href="#i-bio"/></svg></span><b>Matching bio</b>Their bio fits their LinkedIn job</div>
       </div>
     </div>
-    <p class="hint" style="margin-top:8px">The more signals line up, the stronger the match, and every suggestion transparently tells you why.</p>
+    <p class="hint" style="margin-top:8px">More signs, stronger match. Each suggestion tells you why.</p>
 
     <h2>Why is it safe?</h2>
     <ul class="checks">
-      <li><svg class="ic"><use href="#i-lock"/></svg><span><b>Private and local.</b> Your files stay on your computer. Only names are sent, as searches to Bluesky's servers.</span></li>
-      <li><svg class="ic"><use href="#i-gone"/></svg><span><b>Zero data stored.</b> Not by us, not even on your computer. Close the page and it's gone.</span></li>
-      <li><svg class="ic"><use href="#i-undo"/></svg><span><b>You're in control.</b> Nothing happens until you pick, and every follow can be undone.</span></li>
+      <li><svg class="ic"><use href="#i-lock"/></svg><span><b>Private and local.</b> Your files stay on your device. Only names are sent, as searches to Bluesky.</span></li>
+      <li><svg class="ic"><use href="#i-gone"/></svg><span><b>Nothing stored.</b> Not by us, not on your device. Close the page and it's gone.</span></li>
+      <li><svg class="ic"><use href="#i-undo"/></svg><span><b>You're in control.</b> You pick who to follow, and can undo any follow.</span></li>
       <li><svg class="ic"><use href="#i-gh"/></svg><span><b>Open source.</b> Anyone can <a href="https://github.com/sparkable-cc/findfriends" target="_blank" rel="noopener noreferrer">check the code on GitHub<svg class="ext" aria-hidden="true"><use href="#i-ext"/></svg></a>.</span></li>
     </ul>
 </header>
@@ -344,7 +348,7 @@
       <label class="drop" id="drop">
         <input type="file" id="file" accept=".zip,.csv,.json" multiple>
         <strong>Drop the ZIP file here, or click to choose it</strong>
-        <span>Add LinkedIn and Facebook together to find more people</span>
+        <span>Add both files to find more people</span>
       </label>
       <p id="fileErr" class="err" role="alert"></p>
     </div>
@@ -355,10 +359,10 @@
     <h2>Sign in</h2>
     <p class="summary" id="s2sum"></p>
     <div class="body">
-      <p>Use your Sparkable or Bluesky account. It's the same account either way. Eurosky, Blacksky and other accounts on the network work too.</p>
+      <p>Use your Sparkable or Bluesky account; it's the same one. Eurosky, Blacksky and others work too.</p>
       <label class="field" for="handle">Your handle</label>
       <input type="text" id="handle" placeholder="yourname.bsky.social" autocomplete="username" autocapitalize="none" spellcheck="false">
-      <p class="hint" style="margin-top:8px">A window opens where your own account server asks you to approve. This tool only gets permission to follow and unfollow people and to see profiles. It never sees your password.</p>
+      <p class="hint" style="margin-top:8px">You approve in a window from your account's server. This tool can only follow, unfollow and see profiles. It never sees your password.</p>
       <div class="actions"><button type="button" id="signin">Sign in and find my contacts</button></div>
       <p id="signinErr" class="err" role="alert"></p>
     </div>
@@ -370,7 +374,7 @@
     <div class="body">
       <div class="bar" id="progBar"><i id="prog"></i></div>
       <p id="progText" role="status"></p>
-      <p class="hint">Pick the people you'd like to reconnect with. Each one gets a notification, which makes it a nice way to say hello. Follows are public.</p>
+      <p class="hint">Everyone you follow gets a notification: a nice way to say hello. Follows are public.</p>
       <nav class="jump" id="jump" aria-label="Jump to a section" hidden></nav>
       <div id="results"></div>
       <details class="more"><summary>Why isn't someone here?</summary><div id="whyNot"></div></details>
@@ -388,17 +392,17 @@
     <h2><span id="s4t">Done</span> 🎉</h2>
     <p class="summary" id="s4sum"></p>
     <div class="body">
-      <p><strong>Tell your friends where to find you.</strong> Edit this as you like and post it on LinkedIn or Facebook.</p>
+      <p><strong>Tell your friends where to find you.</strong> Edit it and post it on LinkedIn or Facebook.</p>
       <textarea id="invite" aria-label="Post for LinkedIn"></textarea>
       <div class="actions"><button type="button" class="secondary" id="copyInvite">Copy text</button></div>
-      <p style="margin-top:22px"><strong>Sign out.</strong> This clears your contact list and results from this tab and ends the tool's access to your account.</p>
+      <p class="signout"><strong>Sign out.</strong> Clears your contacts and results here and ends the tool's access to your account.</p>
       <div class="actions"><button type="button" class="secondary" id="finishBtn">👋 Sign out and clear everything</button></div>
     </div>
   </li>
 </ol>
 </main>
 <button type="button" class="fab" id="toTop" data-jump="top" aria-label="Back to top" hidden><svg class="ic"><use href="#i-up"/></svg></button>
-<footer><a href="https://sparkable.cc" target="_blank" rel="noopener noreferrer"><svg aria-hidden="true"><use href="#i-spark"/></svg>Made by Sparkable</a> · <a href="https://github.com/sparkable-cc/findfriends" target="_blank" rel="noopener noreferrer"><svg aria-hidden="true"><use href="#i-gh"/></svg>Source code on GitHub</a> · <a href="https://blog.sparkable.cc/legal/" target="_blank" rel="noopener noreferrer">Terms &amp; privacy</a> · <span>Version 1.0.18</span> · <span>Free and open source (AGPL-3.0)</span></footer>
+<footer><a href="https://sparkable.cc" target="_blank" rel="noopener noreferrer"><svg aria-hidden="true"><use href="#i-spark"/></svg>Made by Sparkable</a> · <a href="https://github.com/sparkable-cc/findfriends" target="_blank" rel="noopener noreferrer"><svg aria-hidden="true"><use href="#i-gh"/></svg>Source code on GitHub</a> · <a href="https://blog.sparkable.cc/legal/" target="_blank" rel="noopener noreferrer">Terms &amp; privacy</a> · <span>Version 1.0.19</span> · <span>Free and open source (AGPL-3.0)</span></footer>
 
 <script>
 'use strict';
@@ -778,7 +782,7 @@ async function runSearch() {
   const gen = generation;
   resetResults();
   S.running = true; S.pinTop = true;
-  setStep(3, 'active'); setStep(4, 'active'); $('s4t').textContent = 'Optional: Tell your friends where to find you';
+  setStep(3, 'active'); setStep(4, 'active'); $('s4t').textContent = 'Optional: tell your friends';
   $('invite').value = inviteText();
   progress(); render();
 
@@ -873,11 +877,11 @@ function setStep(n, state, summary) {
 }
 
 const SECTIONS = [   // key, title, short label for the jump bar, explanation, open at first
-  ['strong', 'Strong matches', 'Strong', 'Same full name, plus several signs it\'s them, like people you both follow and a bio that fits their LinkedIn.', true],
-  ['likely', 'Likely matches', 'Likely', 'Same full name, plus one sign it\'s them. Worth a quick look before you follow.', true],
-  ['choose', 'Multiple matches', 'Multiple', 'Several people with this exact name fit. Pick the one you know, or skip them.', true],
-  ['inactive', 'Probably inactive', 'Inactive', 'Same full name and a sign it\'s them, but they\'ve never posted, replied or reposted anything.', false],
-  ['already', 'Following', 'Following', 'People you just followed are at the top, where you can still undo. Below them are contacts you already followed before.', false]
+  ['strong', 'Strong matches', 'Strong', 'Same name, plus several signs it\'s them.', true],
+  ['likely', 'Likely matches', 'Likely', 'Same name, plus one sign it\'s them. Take a quick look.', true],
+  ['choose', 'Multiple matches', 'Multiple', 'Several people fit. Pick the one you know, or skip.', true],
+  ['inactive', 'Probably inactive', 'Inactive', 'Probably them, but they\'ve never posted anything.', false],
+  ['already', 'Following', 'Following', 'Just followed at the top, where you can undo. Then people you already followed.', false]
 ];
 const sectionOf = g => g.cands.every(c => c.inactive) ? 'inactive' : g.ambiguous ? 'choose' : g.cands[0].strong ? 'strong' : 'likely';
 const byStrength = (a, b) => (b.cands[0].score - a.cands[0].score) || (b.cands[0].known - a.cands[0].known);
@@ -990,10 +994,10 @@ function draw() {
     '<a href="#top" data-jump="top" class="minor">↑ Back to top</a>';
 
   $('whyNot').innerHTML =
-    (S.weak ? '<p>For ' + plural(S.weak, 'contact', 'contacts') + ', someone on Sparkable or Bluesky has the same name but nothing else matched, so we left them out.</p>' : '') +
-    (S.none ? '<p>For ' + plural(S.none, 'contact', 'contacts') + ', nobody on Sparkable or Bluesky uses their full name.</p>' : '') +
+    (S.weak ? '<p>For ' + plural(S.weak, 'contact', 'contacts') + ', someone has the same name but nothing else matched, so we left them out.</p>' : '') +
+    (S.none ? '<p>For ' + plural(S.none, 'contact', 'contacts') + ', nobody uses their full name.</p>' : '') +
     (S.errors ? '<p>' + plural(S.errors, 'search', 'searches') + ' failed. Run the tool again later to retry them.</p>' : '') +
-    '<p>People who use a nickname, initials or a different surname on Sparkable or Bluesky are never matched. That\'s deliberate: if someone keeps their work and personal accounts apart, this tool keeps it that way.</p>';
+    '<p>We never match nicknames, initials or other surnames, so people who keep work and personal accounts apart stay apart.</p>';
   renderBar();
 }
 
