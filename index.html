@@ -20,7 +20,7 @@
 <link rel="preload" href="inter.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath fill='%234153f5' d='M63 1C44 24 44 40 63 63C40 44 24 44 1 63C20 40 20 24 1 1C24 20 40 20 63 1Z'/%3E%3C/svg%3E">
 <!--
-  Version 1.0.19, October 3, 2026
+  Version 1.0.20, October 3, 2026
 
   RULES (do not break these)
   1. No backend, no outside code or fonts, no analytics. This file is the app;
@@ -70,11 +70,8 @@
   .hero .brand, .hero .lede, .hero .brand svg { color: #fff; }
   .lede svg { width: 18px; height: 18px; margin-right: 6px; vertical-align: -3px; fill: currentColor; }
   .hero > :not(svg) { position: relative; }   /* text above the spark */
-  .badges { display: flex; flex-wrap: wrap; gap: 8px; margin: 22px 0 0; }
-  .badges span { display: inline-flex; align-items: center; gap: 6px; padding: 4px 14px 4px 11px; border-radius: 999px; background: var(--lime); color: var(--accent); font-size: 14px; font-weight: 650; }
-  .start { display: inline-block; margin-top: 22px; padding: 11px 22px; border-radius: 999px; background: #fff; color: var(--accent); font-weight: 700; text-decoration: none; }
+  .start { display: inline-block; margin-top: 24px; padding: 11px 22px; border-radius: 999px; background: var(--lime); color: var(--accent); font-weight: 700; text-decoration: none; }
   #s1 { scroll-margin-top: 16px; }
-  .badges .ic { width: 17px; height: 17px; }
   h1 { font-size: 38px; font-weight: 800; line-height: 1.1; letter-spacing: -0.03em; margin: 0 0 8px; max-width: 14em; }
   .lede { font-size: 18px; color: var(--muted); margin: 0; }
   html { overflow-anchor: none; }   /* we keep your place ourselves, see keepPlace() */
@@ -102,7 +99,7 @@
   /* Steps: a real sequence, so they're numbered */
   .steps { list-style: none; margin: 0; padding: 0; }
   .step { position: relative; padding: 0 0 30px 46px; }
-  #s3 { padding-bottom: 12px; }
+  #s3 { padding-bottom: 22px; }
   .step::before { content: ""; position: absolute; left: 14px; top: 34px; bottom: 4px; width: 2px; background: var(--line); }
   .step:last-child::before { display: none; }
   .n { position: absolute; left: 0; top: 0; width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center;
@@ -232,10 +229,7 @@
     main { padding: 30px 16px 32px; }
     h1 { font-size: 30px; }
     .hero { padding: 22px 56px 24px 20px; margin-inline: -4px; }
-    .badges { gap: 6px; margin-right: -40px; }   /* the row may run over the spark */
-    .badges span { font-size: 12px; padding: 3px 10px 3px 8px; gap: 4px; }
-    .badges .ic { width: 14px; height: 14px; }
-    .hero-spark { right: -70px; width: 140px; height: 140px; margin-top: -70px; }
+    .hero-spark { right: -70px; top: auto; bottom: 16px; width: 140px; height: 140px; margin-top: 0; }   /* low, beside the button, clear of the headline */
     header h2 { margin: 18px 0 8px; }
     .checks { grid-template-columns: 1fr; }
     .flow, .group { flex-direction: column; gap: 4px; }
@@ -285,8 +279,6 @@
   <symbol id="i-ext" viewBox="5 5 14 14"><path d="M7 17 17 7M8 7h9v9"/></symbol>
   <symbol id="i-spark" viewBox="0 0 64 64"><path fill="currentColor" stroke="none" d="M63 1C44 24 44 40 63 63C40 44 24 44 1 63C20 40 20 24 1 1C24 20 40 20 63 1Z"/></symbol>
   <symbol id="i-fb" viewBox="0 0 24 24"><path fill="currentColor" stroke="none" d="M9.101 23.691v-7.98H6.627v-3.667h2.474v-1.58c0-4.085 1.848-5.978 5.858-5.978.401 0 .955.042 1.468.103a8.68 8.68 0 0 1 1.141.195v3.325a8.623 8.623 0 0 0-.653-.036 26.805 26.805 0 0 0-.733-.009c-.707 0-1.259.096-1.675.309a1.686 1.686 0 0 0-.679.622c-.258.42-.374.995-.374 1.752v1.297h3.919l-.386 2.103-.287 1.564h-3.246v8.245C19.396 23.238 24 18.179 24 12.044c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.628 3.874 10.35 9.101 11.647Z"/></symbol>
-  <symbol id="i-gift" viewBox="0 0 24 24"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M5 12v8h14v-8M12 8v12M12 8S10.5 3 7.8 3.6C6 4 6.5 7 8.5 8M12 8s1.5-5 4.2-4.4C18 4 17.5 7 15.5 8"/></symbol>
-  <symbol id="i-code" viewBox="0 0 24 24"><path d="m8 7-5 5 5 5M16 7l5 5-5 5M13.5 4l-3 16"/></symbol>
   <symbol id="i-gh" viewBox="0 0 24 24"><path fill="currentColor" stroke="none" d="M10.226 17.284c-2.965-.36-5.054-2.493-5.054-5.256 0-1.123.404-2.336 1.078-3.144-.292-.741-.247-2.314.09-2.965.898-.112 2.111.36 2.83 1.01.853-.269 1.752-.404 2.853-.404 1.1 0 1.999.135 2.807.382.696-.629 1.932-1.1 2.83-.988.315.606.36 2.179.067 2.942.72.854 1.101 2 1.101 3.167 0 2.763-2.089 4.852-5.098 5.234.763.494 1.28 1.572 1.28 2.807v2.336c0 .674.561 1.056 1.235.786 4.066-1.55 7.255-5.615 7.255-10.646C23.5 6.188 18.334 1 11.978 1 5.62 1 .5 6.188.5 12.545c0 4.986 3.167 9.12 7.435 10.669.606.225 1.19-.18 1.19-.786V20.63a2.9 2.9 0 0 1-1.078.224c-1.483 0-2.359-.808-2.987-2.313-.247-.607-.517-.966-1.034-1.033-.27-.023-.359-.135-.359-.27 0-.27.45-.471.898-.471.652 0 1.213.404 1.797 1.235.45.651.921.943 1.483.943.561 0 .92-.202 1.437-.719.382-.381.674-.718.944-.943"/></symbol>
 </svg>
 
@@ -295,7 +287,6 @@
   <a class="brand" href="https://sparkable.cc" target="_blank" rel="noopener noreferrer"><svg aria-hidden="true"><use href="#i-spark"/></svg>Sparkable</a>
   <h1>Find your friends on Sparkable</h1>
   <p class="lede">Bring your <svg><use href="#i-li"/></svg>LinkedIn and <svg><use href="#i-fb"/></svg>Facebook friends with you.</p>
-  <p class="badges"><span><svg class="ic"><use href="#i-gift"/></svg>Free</span><span><svg class="ic"><use href="#i-lock"/></svg>Private</span><span><svg class="ic"><use href="#i-code"/></svg>Open source</span></p>
   <a class="start" href="#s1">Get started ↓</a></div>
   <h2>What is this?</h2>
     <div class="flow">
@@ -402,7 +393,7 @@
 </ol>
 </main>
 <button type="button" class="fab" id="toTop" data-jump="top" aria-label="Back to top" hidden><svg class="ic"><use href="#i-up"/></svg></button>
-<footer><a href="https://sparkable.cc" target="_blank" rel="noopener noreferrer"><svg aria-hidden="true"><use href="#i-spark"/></svg>Made by Sparkable</a> · <a href="https://github.com/sparkable-cc/findfriends" target="_blank" rel="noopener noreferrer"><svg aria-hidden="true"><use href="#i-gh"/></svg>Source code on GitHub</a> · <a href="https://blog.sparkable.cc/legal/" target="_blank" rel="noopener noreferrer">Terms &amp; privacy</a> · <span>Version 1.0.19</span> · <span>Free and open source (AGPL-3.0)</span></footer>
+<footer><a href="https://sparkable.cc" target="_blank" rel="noopener noreferrer"><svg aria-hidden="true"><use href="#i-spark"/></svg>Made by Sparkable</a> · <a href="https://github.com/sparkable-cc/findfriends" target="_blank" rel="noopener noreferrer"><svg aria-hidden="true"><use href="#i-gh"/></svg>Source code on GitHub</a> · <a href="https://blog.sparkable.cc/legal/" target="_blank" rel="noopener noreferrer">Terms &amp; privacy</a> · <span>Version 1.0.20</span> · <span>Free and open source (AGPL-3.0)</span></footer>
 
 <script>
 'use strict';
