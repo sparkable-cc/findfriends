@@ -2,7 +2,7 @@
 
 Find your LinkedIn and Facebook friends on Sparkable, and follow them in a few clicks. Sparkable shares its open network with Bluesky, so the tool finds people on either.
 
-Live at **https://findfriends.sparkable.cc**
+Live at **https://findfriends.sparkable.cc**. Source code: https://github.com/sparkable-cc/findfriends
 
 ## How it works
 
@@ -39,11 +39,15 @@ curl -s https://findfriends.sparkable.cc/ | shasum -a 256
 | `index.html` | The whole app |
 | `client-metadata.json` | The OAuth client description. Its web addresses must match the hosting address. |
 | `_headers` | Security headers for Netlify or Cloudflare |
+| `wrangler.jsonc` | Cloudflare settings |
+| `.assetsignore` | Files that stay off the website (README, LICENSE, the `.git` folder) |
 | `LICENSE` | GNU AGPL-3.0 |
 
 ## Hosting
 
-Any static host that serves these files at the root of an HTTPS address works. On Netlify: import this repository, leave the build command empty and set the publish directory to the repository root.
+Live on Cloudflare Workers, which builds from `main` using `wrangler.jsonc`. Only `index.html` and `client-metadata.json` are published.
+
+Any static host that serves these files at the root of an HTTPS address works. Don't publish the `.git` folder. On Netlify: import this repository, leave the build command empty and set the publish directory to the repository root.
 
 ## Local development
 
