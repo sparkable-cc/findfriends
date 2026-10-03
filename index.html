@@ -7,10 +7,19 @@
 <!-- Lock: only this page's own script may run, identified by its fingerprint. After
      editing the script, the browser console shows the new fingerprint to paste here.
      Connections stay open to any https server so every AT Protocol server works. -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-EyBKJBFnpzvRTSVWW/uaL286LXA3YTai7HOBs734UVA='; style-src 'unsafe-inline'; img-src https: data:; connect-src https:; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-GOy9lXKR8l616Z9LtcRBJ/fJoj9aSuRfmiKrNd0T2vs='; style-src 'unsafe-inline'; img-src https: data:; connect-src https:; base-uri 'none'; form-action 'none'">
 <title>Find your friends on Sparkable</title>
+<meta name="description" content="Find your LinkedIn and Facebook friends on Sparkable and Bluesky. Free, private and open source.">
+<meta property="og:title" content="Find your friends on Sparkable">
+<meta property="og:description" content="Find your LinkedIn and Facebook friends on Sparkable and Bluesky. Free, private and open source.">
+<meta property="og:image" content="https://findfriends.sparkable.cc/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#4153f5">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath fill='%234153f5' d='M63 1C44 24 44 40 63 63C40 44 24 44 1 63C20 40 20 24 1 1C24 20 40 20 63 1Z'/%3E%3C/svg%3E">
 <!--
-  Version 1.0.16, October 3, 2026
+  Version 1.0.17, October 3, 2026
   1.0.1 first prototype. 1.0.2 strict matching, evidence rule, trust copy.
   1.0.3 fast search, sections, works with every AT Protocol server.
   1.0.4 Sparkable wording, match badges, jump bar, bulk select per section.
@@ -26,6 +35,7 @@
   1.0.14 security: only this script may run, app passwords only, confirm unknown servers, paced follows.
   1.0.15 OAuth sign-in with the narrowest permissions: no passwords at all.
   1.0.16 Facebook friends lists too; both files can be combined.
+  1.0.17 Sparkable logo, favicon, link previews with image, GitHub links, "How can I check?" removed.
 
   RULES (do not break these)
   1. No backend, no outside code, no fonts, no analytics. This file is the app.
@@ -65,6 +75,8 @@
   :focus-visible { outline: 3px solid color-mix(in srgb, var(--accent) 60%, transparent); outline-offset: 2px; }
 
   /* Header: what this is, then what it promises */
+  .brand { display: inline-flex; align-items: center; gap: 7px; margin-bottom: 22px; font-size: 18px; font-weight: 800; letter-spacing: -0.02em; color: var(--ink); text-decoration: none; }
+  .brand svg { width: 22px; height: 22px; color: var(--accent); }
   h1 { font-size: 38px; font-weight: 800; line-height: 1.1; letter-spacing: -0.03em; margin: 0 0 8px; max-width: 14em; }
   .lede { font-size: 17px; color: var(--muted); margin: 0; }
   html { overflow-anchor: none; }   /* we keep your place ourselves, see keepPlace() */
@@ -86,11 +98,6 @@
   .checks li { display: flex; gap: 12px; font-size: 14px; line-height: 1.45; color: var(--muted); }
   .checks li b { color: var(--ink); font-weight: 600; }
   .checks .ic { width: 34px; height: 34px; padding: 8px; border-radius: 50%; background: var(--accent-soft); color: var(--accent); margin-top: -6px; }
-  #verifyBtn { display: block; margin-top: 2px; }
-  /* Speech bubble: full width, its tip points at "Hide" (50% + half the column gap + icon + gap) */
-  #verify { position: relative; margin-top: 16px; padding: 14px 16px; border-radius: 14px; background: var(--accent-soft); font-size: 14px; }
-  #verify::before { content: ""; position: absolute; top: -8px; left: calc(50% + 67px); border: 8px solid transparent; border-top: 0; border-bottom-color: var(--accent-soft); }
-  #verify p:last-child { margin: 0; }
   header { padding-bottom: 28px; margin-bottom: 32px; border-bottom: 1px solid var(--line); }
 
   /* Steps: a real sequence, so they're numbered */
@@ -189,7 +196,7 @@
   .li { display: block; font-size: 14px; color: var(--muted); margin-top: 6px; }
   .src { font-size: 11px; font-weight: 700; letter-spacing: .02em; border: 1px solid var(--line); border-radius: 4px; padding: 0 5px; margin-right: 6px; vertical-align: 1px; color: var(--muted); text-decoration: none; }
   a.src:hover { border-color: var(--muted); }
-  .ext { width: 11px; height: 11px; margin-left: 3px; vertical-align: -1px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; }
+  .ext { width: 8px; height: 8px; margin-left: 1px; vertical-align: 1px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
   button.copied { color: var(--ok); border-color: var(--ok); }
   button.copied svg { vertical-align: -4px; margin-right: 4px; }
   .why, .social, .warn { display: flex; gap: 6px; align-items: center; font-size: 13px; margin-top: 5px; }
@@ -216,6 +223,9 @@
   #followOut:empty { display: none; }
   #followBtn, #selAll:not(.link) { margin-left: auto; }
   footer { max-width: 700px; margin: 0 auto; padding: 0 20px 40px 66px; font-size: 13px; color: var(--muted); }
+  footer a, footer span { white-space: nowrap; }   /* lines break between items, not inside them */
+  footer a { color: inherit; text-underline-offset: 2px; }
+  footer svg { width: 14px; height: 14px; margin-right: 5px; vertical-align: -2px; }
 
   @media (prefers-reduced-motion: reduce) { .bar > i { transition: none; } }
   @media (max-width: 560px) {
@@ -223,14 +233,13 @@
     h1 { font-size: 29px; }
     header h2 { margin: 18px 0 8px; }
     .checks { grid-template-columns: 1fr; }
-    #verify::before { left: 53px; }
     .flow, .group { flex-direction: column; gap: 4px; }
     .group { gap: 8px; }
     .card, .group .card { display: grid; grid-template-columns: 34px 1fr; column-gap: 12px; align-items: center; text-align: left; padding: 8px 12px; }
     .card .dot { grid-row: span 2; width: 34px; height: 34px; margin: 0; }
     .op { font-size: 20px; }
     .arrow { transform: rotate(90deg); }
-    .fn { order: 1; margin: 2px 0 4px; }                       /* on phones the footnote sits right under "Found on Sparkable" */
+    .fn { order: 1; margin: 2px 0 -5px; }                       /* on phones the footnote sits right under "Found on Sparkable" */
     .jump [data-jump="top"] { display: none; }                 /* the round button does this on phones */
     .flow > :nth-child(n+4):not(.fn) { order: 2; }
     .step { padding-left: 38px; }
@@ -248,7 +257,7 @@
     .tier { top: 12px; right: 10px; font-size: 11px; }
     .tier .long { display: none; }
     label.person .line1 { padding-right: 66px; }
-    footer { padding: 0 16px 32px; }
+    footer { padding: 0 16px 88px; }   /* room for the round back-to-top button */
   }
 </style>
 </head>
@@ -269,11 +278,13 @@
   <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
   <symbol id="i-all" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="m8 12 3 3 5-6"/></symbol>
   <symbol id="i-up" viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></symbol>
-  <symbol id="i-ext" viewBox="0 0 24 24"><path d="M7 17 17 7M8 7h9v9"/></symbol>
-  <symbol id="i-code" viewBox="0 0 24 24"><path d="m8 7-5 5 5 5M16 7l5 5-5 5M13.5 4l-3 16"/></symbol>
+  <symbol id="i-ext" viewBox="5 5 14 14"><path d="M7 17 17 7M8 7h9v9"/></symbol>
+  <symbol id="i-spark" viewBox="0 0 64 64"><path fill="currentColor" stroke="none" d="M63 1C44 24 44 40 63 63C40 44 24 44 1 63C20 40 20 24 1 1C24 20 40 20 63 1Z"/></symbol>
+  <symbol id="i-gh" viewBox="0 0 24 24"><path fill="currentColor" stroke="none" d="M10.226 17.284c-2.965-.36-5.054-2.493-5.054-5.256 0-1.123.404-2.336 1.078-3.144-.292-.741-.247-2.314.09-2.965.898-.112 2.111.36 2.83 1.01.853-.269 1.752-.404 2.853-.404 1.1 0 1.999.135 2.807.382.696-.629 1.932-1.1 2.83-.988.315.606.36 2.179.067 2.942.72.854 1.101 2 1.101 3.167 0 2.763-2.089 4.852-5.098 5.234.763.494 1.28 1.572 1.28 2.807v2.336c0 .674.561 1.056 1.235.786 4.066-1.55 7.255-5.615 7.255-10.646C23.5 6.188 18.334 1 11.978 1 5.62 1 .5 6.188.5 12.545c0 4.986 3.167 9.12 7.435 10.669.606.225 1.19-.18 1.19-.786V20.63a2.9 2.9 0 0 1-1.078.224c-1.483 0-2.359-.808-2.987-2.313-.247-.607-.517-.966-1.034-1.033-.27-.023-.359-.135-.359-.27 0-.27.45-.471.898-.471.652 0 1.213.404 1.797 1.235.45.651.921.943 1.483.943.561 0 .92-.202 1.437-.719.382-.381.674-.718.944-.943"/></symbol>
 </svg>
 
 <header id="top">
+  <a class="brand" href="https://sparkable.cc" target="_blank" rel="noopener noreferrer"><svg aria-hidden="true"><use href="#i-spark"/></svg>Sparkable</a>
   <h1>Find your friends on Sparkable</h1>
   <p class="lede">Bring your LinkedIn and Facebook friends with you. Free, private and open source.</p>
   <h2>What is this?</h2>
@@ -303,13 +314,8 @@
       <li><svg class="ic"><use href="#i-lock"/></svg><span><b>Private and local.</b> Your files stay on your computer. Only names are sent, as searches to Bluesky's servers.</span></li>
       <li><svg class="ic"><use href="#i-gone"/></svg><span><b>Zero data stored.</b> Not by us, not even on your computer. Close the page and it's gone.</span></li>
       <li><svg class="ic"><use href="#i-undo"/></svg><span><b>You're in control.</b> Nothing happens until you pick, and every follow can be undone.</span></li>
-      <li><svg class="ic"><use href="#i-code"/></svg><span><b>Open source.</b> Anyone can read the code and see what it does.
-        <button type="button" class="link" id="verifyBtn" aria-expanded="false" aria-controls="verify">How can I check?</button></span></li>
+      <li><svg class="ic"><use href="#i-gh"/></svg><span><b>Open source.</b> Anyone can <a href="https://github.com/sparkable-cc/findfriends" target="_blank" rel="noopener noreferrer">check the code on GitHub<svg class="ext" aria-hidden="true"><use href="#i-ext"/></svg></a>.</span></li>
     </ul>
-    <div id="verify" hidden>
-      <p>On a computer, right-click this page, choose Inspect, and watch the Network tab while you use the tool. You'll only see requests to your account server and its sign-in service, the public search (public.api.bsky.app), the public account directory (plc.directory) and profile photos. Nothing goes to Sparkable. Like any search, Bluesky's servers see the names searched and which profiles your account looked at.</p>
-      <p>The page also blocks any outside code. That rule is the Content-Security-Policy line at the top of the source.</p>
-    </div>
 </header>
 
 <ol class="steps">
@@ -386,7 +392,7 @@
 </ol>
 </main>
 <button type="button" class="fab" id="toTop" data-jump="top" aria-label="Back to top" hidden><svg class="ic"><use href="#i-up"/></svg></button>
-<footer>Version 1.0.16 (October 3, 2026). Open source under AGPL-3.0. One file with no outside code: open it in any text editor to read all of it.</footer>
+<footer><a href="https://sparkable.cc" target="_blank" rel="noopener noreferrer"><svg aria-hidden="true"><use href="#i-spark"/></svg>Made by Sparkable</a> · <a href="https://github.com/sparkable-cc/findfriends" target="_blank" rel="noopener noreferrer"><svg aria-hidden="true"><use href="#i-gh"/></svg>Source code on GitHub</a> · <span>Version 1.0.17</span> · <span>Free and open source (AGPL-3.0)</span></footer>
 
 <script>
 'use strict';
@@ -1135,10 +1141,6 @@ function init() {
     setTimeout(() => { b.textContent = 'Copy text'; b.classList.remove('copied'); }, 3000);
   });
   ['wheel', 'touchstart', 'keydown', 'pointerdown'].forEach(t => addEventListener(t, () => { S.pinTop = false; }, { passive: true }));
-  $('verifyBtn').addEventListener('click', e => {
-    const v = $('verify'); v.hidden = !v.hidden;
-    e.target.textContent = v.hidden ? 'How can I check?' : 'Hide'; e.target.setAttribute('aria-expanded', !v.hidden);
-  });
   addEventListener('scroll', () => { if (!spyQueued) { spyQueued = true; requestAnimationFrame(() => spy()); } }, { passive: true });
   $('finishBtn').addEventListener('click', finish);
 }

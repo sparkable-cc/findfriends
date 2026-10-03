@@ -20,10 +20,10 @@ Live at **https://findfriends.sparkable.cc**. Source code: https://github.com/sp
 
 ## Check that the live page matches this code
 
-Each release publishes the SHA-256 checksum of `index.html`. Current version 1.0.16:
+Each release publishes the SHA-256 checksum of `index.html`. Current version 1.0.17:
 
 ```
-19b73eecd6dd31539436f274d75bb8d0a42c35ab94c4edf24d4e784d22cd0b06
+064caf0aabbf667f4945f73d877bbe6037ad4397c0ba479a9c6a5de8b7e8b053
 ```
 
 To check it yourself:
@@ -41,6 +41,7 @@ curl -s https://findfriends.sparkable.cc/ | shasum -a 256
 | `_headers` | Security headers for Netlify or Cloudflare |
 | `wrangler.jsonc` | Cloudflare settings |
 | `.assetsignore` | Files that stay off the website (README, LICENSE, the `.git` folder) |
+| `og.png` | The picture shown when someone shares the link |
 | `LICENSE` | GNU AGPL-3.0 |
 
 ## Hosting
