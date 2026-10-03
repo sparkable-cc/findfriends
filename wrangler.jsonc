@@ -1,0 +1,9 @@
+// Cloudflare settings. The site is the files in this folder, minus what
+// .assetsignore lists. Cloudflare's build replaces "name" with the project's own name.
+{
+  "name": "findfriends",
+  "compatibility_date": "2026-10-01",
+  "assets": { "directory": "." },
+  // Lets Cloudflare build previews of branches other than main. Empty on purpose.
+  "previews": {}
+}
