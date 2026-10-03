@@ -1,0 +1,1154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="referrer" content="no-referrer">
+<!-- Lock: only this page's own script may run, identified by its fingerprint. After
+     editing the script, the browser console shows the new fingerprint to paste here.
+     Connections stay open to any https server so every AT Protocol server works. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-EyBKJBFnpzvRTSVWW/uaL286LXA3YTai7HOBs734UVA='; style-src 'unsafe-inline'; img-src https: data:; connect-src https:; base-uri 'none'; form-action 'none'">
+<title>Find your friends on Sparkable</title>
+<!--
+  Version 1.0.16, October 3, 2026
+  1.0.1 first prototype. 1.0.2 strict matching, evidence rule, trust copy.
+  1.0.3 fast search, sections, works with every AT Protocol server.
+  1.0.4 Sparkable wording, match badges, jump bar, bulk select per section.
+  1.0.5 "how it finds people" up top, icons, blog styling, round buttons, "Multiple matches".
+  1.0.6 profile links, translated job words, "you are here" jump bar, inactive = 2 years.
+  1.0.7 question-style intro, page stays put while results load, inactive = never active.
+  1.0.8 twice the searches at once, Spanish and Portuguese job words, lighter intro.
+  1.0.9 compact intro, network footnote, LinkedIn line on top of each card.
+  1.0.10 followed people move to "Following" with undo, back-to-top button, footnote numbers.
+  1.0.11 LinkedIn line back under the bio, friendlier wording, phone rail fix.
+  1.0.12 the bottom bar follows the section you're in: "Select all", then "Follow".
+  1.0.13 no more bouncing at the page bottom, icons in the bottom bar, smarter "inactive".
+  1.0.14 security: only this script may run, app passwords only, confirm unknown servers, paced follows.
+  1.0.15 OAuth sign-in with the narrowest permissions: no passwords at all.
+  1.0.16 Facebook friends lists too; both files can be combined.
+
+  RULES (do not break these)
+  1. No backend, no outside code, no fonts, no analytics. This file is the app.
+  2. Contact files are read in memory only. Emails are never read. Employers
+     and job titles never leave the tab. Bluesky only receives names, as searches.
+  3. Name gate: an account is only considered if its display name contains the
+     contact's full first and last name. Handles, nicknames, initials never match.
+  4. Evidence: the name alone never shows anyone. A suggestion needs a second
+     sign, and every suggestion says what that sign is.
+  5. Nothing is selected for the user, and every follow can be undone here.
+  6. Sign-in is OAuth with the narrowest permissions (follows and profile reads).
+     The tool never sees a password. Hosting needs client-metadata.json beside it.
+  License: AGPL-3.0
+-->
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #fff; --panel: #f5f5f6; --line: #e6e6e8; --ink: #15171a; --muted: #5f646c;
+    --accent: #4153f5; --accent-soft: #eceefe; --on-accent: #fff;
+    --ok: #11744f; --ok-soft: #e4f4ec; --caution: #855700; --danger: #b3261e;
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  @media (prefers-color-scheme: dark) { :root {
+    --bg: #111214; --panel: #1b1c1f; --line: #2c2d31; --ink: #f2f2f3; --muted: #a2a6ad;
+    --accent: #8794ff; --accent-soft: #21254a; --on-accent: #111214;
+    --ok: #52d49d; --ok-soft: #12291f; --caution: #f0c25a; --danger: #ff8a80;
+  } }
+  *, *::before, *::after { box-sizing: border-box; }   /* explicit: <details> breaks inheritance */
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; }
+  main { max-width: 700px; margin: 0 auto; padding: 48px 20px 40px; }
+  a { color: var(--accent); }
+  p { margin: 0 0 10px; }
+  .hint { font-size: 14px; color: var(--muted); }
+  .err { color: var(--danger); font-size: 14px; margin-top: 10px; }
+  .err:empty, [hidden] { display: none !important; }
+  :focus-visible { outline: 3px solid color-mix(in srgb, var(--accent) 60%, transparent); outline-offset: 2px; }
+
+  /* Header: what this is, then what it promises */
+  h1 { font-size: 38px; font-weight: 800; line-height: 1.1; letter-spacing: -0.03em; margin: 0 0 8px; max-width: 14em; }
+  .lede { font-size: 17px; color: var(--muted); margin: 0; }
+  html { overflow-anchor: none; }   /* we keep your place ourselves, see keepPlace() */
+  .ic { width: 20px; height: 20px; flex: none; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+  /* Intro diagrams: soft cards, deliberately not shaped like buttons */
+  header h2 { font-size: 17px; margin: 22px 0 10px; }
+  .flow, .group { display: flex; flex-wrap: wrap; gap: 12px; }
+  .group { flex: 2; flex-wrap: nowrap; gap: 8px; }   /* the two confirmations belong together: they only count after the name */
+  .card { flex: 1; background: var(--accent-soft); border-radius: 16px;
+          padding: 10px 8px; text-align: center; font-size: 13px; line-height: 1.35; color: var(--muted); }
+  .group .card { padding-inline: 5px; }
+  .card b { display: block; font-size: 15px; color: var(--ink); }
+  .fn { flex: 0 0 100%; margin: -4px 0 0; }
+  .op { align-self: center; font-size: 26px; font-weight: 700; line-height: 1; color: var(--accent); }
+  .group .op { font-size: 17px; }
+  .dot { display: grid; place-items: center; width: 36px; height: 36px; margin: 0 auto 6px; border-radius: 50%; background: var(--bg); color: var(--accent); }
+  .must .dot { background: var(--accent); color: var(--on-accent); }
+  .checks { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 10px 28px; }
+  .checks li { display: flex; gap: 12px; font-size: 14px; line-height: 1.45; color: var(--muted); }
+  .checks li b { color: var(--ink); font-weight: 600; }
+  .checks .ic { width: 34px; height: 34px; padding: 8px; border-radius: 50%; background: var(--accent-soft); color: var(--accent); margin-top: -6px; }
+  #verifyBtn { display: block; margin-top: 2px; }
+  /* Speech bubble: full width, its tip points at "Hide" (50% + half the column gap + icon + gap) */
+  #verify { position: relative; margin-top: 16px; padding: 14px 16px; border-radius: 14px; background: var(--accent-soft); font-size: 14px; }
+  #verify::before { content: ""; position: absolute; top: -8px; left: calc(50% + 67px); border: 8px solid transparent; border-top: 0; border-bottom-color: var(--accent-soft); }
+  #verify p:last-child { margin: 0; }
+  header { padding-bottom: 28px; margin-bottom: 32px; border-bottom: 1px solid var(--line); }
+
+  /* Steps: a real sequence, so they're numbered */
+  .steps { list-style: none; margin: 0; padding: 0; }
+  .step { position: relative; padding: 0 0 30px 46px; }
+  .step::before { content: ""; position: absolute; left: 14px; top: 34px; bottom: 4px; width: 2px; background: var(--line); }
+  .step:last-child::before { display: none; }
+  .n { position: absolute; left: 0; top: 0; width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center;
+       font-size: 14px; font-weight: 700; background: var(--bg); color: var(--muted); border: 2px solid var(--line); }
+  .step h2 { font-size: 19px; line-height: 1.3; margin: 3px 0 10px; letter-spacing: -0.01em; }
+  .step[data-state="todo"] h2 { color: var(--muted); font-weight: 500; }
+  .step[data-state="active"] .n { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+  .step[data-state="done"] .n { background: var(--ok); border-color: var(--ok); color: var(--bg); }
+  .step[data-state="todo"] .body, .step[data-state="done"] .body, .summary { display: none; }
+  .step[data-state="done"] .summary { display: block; font-size: 15px; color: var(--muted); }
+  .howto { margin: 0 0 14px; padding-left: 20px; }
+  .howto li { margin: 4px 0; }
+  .tabs { display: flex; gap: 6px; margin: 0 0 12px; }
+  .tabs input { position: absolute; opacity: 0; }
+  .tabs label { padding: 5px 14px; border: 1px solid var(--line); border-radius: 999px; font-size: 14px; font-weight: 600; cursor: pointer; }
+  .tabs input:checked + label { background: var(--ink); border-color: var(--ink); color: var(--bg); }
+  .tabs input:focus-visible + label { outline: 3px solid color-mix(in srgb, var(--accent) 60%, transparent); outline-offset: 2px; }
+  #s1:has(#srcFb:checked) .li-how, #s1:has(#srcLi:checked) .fb-how { display: none; }
+
+  label.field { display: block; font-size: 14px; font-weight: 600; margin: 14px 0 5px; }
+  input[type=text], textarea {
+    width: 100%; font: inherit; font-size: 16px; padding: 11px 12px; border: 1px solid var(--line);
+    border-radius: 10px; background: var(--bg); color: var(--ink);
+  }
+  input::placeholder { color: var(--muted); opacity: .7; }
+  textarea { font-size: 15px; resize: vertical; min-height: 150px; }
+  details summary { cursor: pointer; }
+
+  button { font: inherit; font-size: 15px; font-weight: 600; border-radius: 999px; padding: 11px 20px; border: 0;
+           background: var(--accent); color: var(--on-accent); cursor: pointer; }
+  button.secondary { background: transparent; color: var(--ink); border: 1px solid var(--line); }
+  button.small { font-size: 14px; padding: 7px 15px; }
+  button.link { background: none; border: 0; padding: 0; color: var(--accent); font-weight: 500; font-size: inherit;
+                text-decoration: underline; text-underline-offset: 2px; }
+  button:disabled { opacity: .45; cursor: default; }
+  .actions { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-top: 16px; }
+
+  .drop { position: relative; display: block; border: 2px dashed color-mix(in srgb, var(--accent) 45%, transparent); border-radius: 14px; padding: 24px 18px;
+          text-align: center; cursor: pointer; background: var(--panel); }
+  .drop:focus-within { outline: 3px solid color-mix(in srgb, var(--accent) 60%, transparent); outline-offset: 2px; }
+  .drop.over { border-color: var(--accent); background: var(--accent-soft); }
+  .drop input { position: absolute; width: 1px; height: 1px; opacity: 0; }
+  .drop span { display: block; font-size: 14px; color: var(--muted); margin-top: 3px; }
+
+  .bar { height: 6px; background: var(--line); border-radius: 3px; overflow: hidden; margin-bottom: 8px; }
+  .bar > i { display: block; height: 100%; width: 0; background: var(--accent); transition: width .2s; }
+  #progText { font-size: 15px; }
+
+  /* Jump bar: always shows where you are and gets you anywhere in one tap */
+  .jump { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 3; display: flex; gap: 6px; overflow-x: auto;
+          padding: 10px 0; margin-top: 6px; background: var(--bg); border-bottom: 1px solid var(--line); }
+  .jump a { flex: none; font-size: 14px; color: var(--ink); text-decoration: none; border: 1px solid var(--line); border-radius: 999px; padding: 4px 12px; }
+  .jump a:hover { background: var(--panel); }
+  .jump a.minor { color: var(--muted); border-color: transparent; }
+  .jump a[aria-current="true"] { background: var(--ink); border-color: var(--ink); color: var(--bg); }   /* fill means "you are here", nothing else */
+  .jump a:last-child { margin-left: auto; }
+
+  /* Result sections */
+  .sec { margin-top: 18px; scroll-margin-top: 64px; }
+  .sec > summary { font-size: 17px; font-weight: 700; padding: 4px 0; }
+  .sec[data-sec="inactive"] > summary, .sec[data-sec="already"] > summary { font-size: 15px; font-weight: 600; color: var(--muted); }
+  .count { font-size: 13px; font-weight: 600; color: var(--muted); background: var(--panel); border-radius: 999px; padding: 1px 8px; margin-left: 8px; vertical-align: 2px; }
+  .sec-note { font-size: 14px; color: var(--muted); margin: 2px 0 10px; }
+  .people { border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
+  .person { position: relative; display: grid; grid-template-columns: 22px 44px 1fr; gap: 12px; align-items: start; padding: 14px 16px; border-top: 1px solid var(--line); cursor: pointer; }
+  .tier { position: absolute; top: 15px; right: 14px; font-size: 11px; font-weight: 600; padding: 0 8px; border-radius: 999px; color: var(--muted); border: 1px solid var(--line); }
+  .tier.strong { color: var(--accent); border-color: color-mix(in srgb, var(--accent) 40%, transparent); }
+  label.person .line1 { padding-right: 122px; }   /* room for the badge */
+  .people > :first-child, .choice > p + .person { border-top: 0; }
+  .person:hover { background: var(--panel); }
+  .person.picked { background: var(--accent-soft); }
+  .person.done { grid-template-columns: 22px 28px 1fr; align-items: center; padding: 9px 16px; cursor: default; background: none; }
+  .person.new, .count.new { background: var(--ok-soft); }
+  .count.new { color: var(--ok); }
+  .fab { position: fixed; right: 16px; bottom: calc(16px + env(safe-area-inset-bottom, 0px)); z-index: 4; width: 48px; height: 48px; padding: 0;
+         display: grid; place-items: center; background: var(--accent-soft); color: var(--accent); border: 2px solid var(--bg); box-shadow: 0 2px 12px rgb(0 0 0 / .22); transition: transform .2s; }
+  .person input { width: 20px; height: 20px; margin: 12px 0 0; accent-color: var(--accent); }
+  .tick { color: var(--ok); display: grid; }
+  .avatar { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; background: var(--panel); display: block; }
+  .done .avatar { width: 28px; height: 28px; }
+  .pbody { display: block; min-width: 0; }
+  .line1 { display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap; }
+  .pname { font-weight: 650; min-width: 0; }   /* lets long names wrap instead of sliding under the badge */
+  .who { display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap; min-width: 0; color: inherit; text-decoration: none; }
+  .who:hover .pname, .who:hover .handle { text-decoration: underline; }
+  .handle { font-size: 14px; color: var(--muted); overflow-wrap: anywhere; }
+  .li-ic { width: 12px; height: 12px; margin-right: 4px; vertical-align: -2px; fill: #0a66c2; }
+  .badge { font-size: 12px; font-weight: 600; color: var(--muted); background: var(--panel); border-radius: 6px; padding: 1px 6px; }
+  .ok { color: var(--ok); font-weight: 600; font-size: 14px; }
+  .bio { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; font-size: 14px; margin-top: 3px; overflow-wrap: anywhere; }
+  .li { display: block; font-size: 14px; color: var(--muted); margin-top: 6px; }
+  .src { font-size: 11px; font-weight: 700; letter-spacing: .02em; border: 1px solid var(--line); border-radius: 4px; padding: 0 5px; margin-right: 6px; vertical-align: 1px; color: var(--muted); text-decoration: none; }
+  a.src:hover { border-color: var(--muted); }
+  .ext { width: 11px; height: 11px; margin-left: 3px; vertical-align: -1px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; }
+  button.copied { color: var(--ok); border-color: var(--ok); }
+  button.copied svg { vertical-align: -4px; margin-right: 4px; }
+  .why, .social, .warn { display: flex; gap: 6px; align-items: center; font-size: 13px; margin-top: 5px; }
+  .why { color: var(--ok); }
+  .social { color: var(--muted); }
+  .faces { display: inline-flex; flex: none; }
+  .face { width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--bg); background: var(--panel); object-fit: cover; }
+  .face + .face { margin-left: -6px; }
+  .warn { color: var(--caution); }
+  .why svg, .warn svg { flex: none; }
+  .choice { border-top: 1px solid var(--line); }
+  .people > .choice:first-child { border-top: 0; }
+  .choice > p { padding: 12px 16px 0; margin: 0; font-size: 15px; font-weight: 600; }
+  .choice > p .li { font-weight: 400; margin-top: 2px; }
+  .choice .person { padding-left: 28px; }
+  .more { margin-top: 18px; font-size: 14px; color: var(--muted); }
+
+  .actionbar { position: sticky; bottom: 0; z-index: 2; margin-top: 18px; padding: 12px 0 calc(12px + env(safe-area-inset-bottom, 0px));
+               min-height: calc(70px + env(safe-area-inset-bottom, 0px));
+               background: var(--bg); border-top: 1px solid var(--line); display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+  .actionbar.off { visibility: hidden; }   /* hidden but still taking its space: no jumps */
+  .actionbar .ic { width: 16px; height: 16px; margin-right: 5px; vertical-align: -3px; }
+  #followOut { flex: 1 1 100%; font-size: 14px; color: var(--muted); }
+  #followOut:empty { display: none; }
+  #followBtn, #selAll:not(.link) { margin-left: auto; }
+  footer { max-width: 700px; margin: 0 auto; padding: 0 20px 40px 66px; font-size: 13px; color: var(--muted); }
+
+  @media (prefers-reduced-motion: reduce) { .bar > i { transition: none; } }
+  @media (max-width: 560px) {
+    main { padding: 30px 16px 32px; }
+    h1 { font-size: 29px; }
+    header h2 { margin: 18px 0 8px; }
+    .checks { grid-template-columns: 1fr; }
+    #verify::before { left: 53px; }
+    .flow, .group { flex-direction: column; gap: 4px; }
+    .group { gap: 8px; }
+    .card, .group .card { display: grid; grid-template-columns: 34px 1fr; column-gap: 12px; align-items: center; text-align: left; padding: 8px 12px; }
+    .card .dot { grid-row: span 2; width: 34px; height: 34px; margin: 0; }
+    .op { font-size: 20px; }
+    .arrow { transform: rotate(90deg); }
+    .fn { order: 1; margin: 2px 0 4px; }                       /* on phones the footnote sits right under "Found on Sparkable" */
+    .jump [data-jump="top"] { display: none; }                 /* the round button does this on phones */
+    .flow > :nth-child(n+4):not(.fn) { order: 2; }
+    .step { padding-left: 38px; }
+    .step::before { left: 12px; top: 30px; }
+    #s3::before { display: none; }
+    .n { width: 26px; height: 26px; font-size: 13px; }
+    .people, .actionbar { margin-left: -38px; }
+    .person { grid-template-columns: 20px 38px 1fr; gap: 10px; padding: 12px; }
+    .avatar { width: 38px; height: 38px; }
+    .person input { margin-top: 9px; }
+    .choice .person { padding-left: 12px; }
+    .choice > p { padding: 12px 12px 0; }
+    #followBtn, #selAll:not(.link) { flex: 1 1 100%; }
+    .jump { margin-left: -38px; padding-left: 4px; }
+    .tier { top: 12px; right: 10px; font-size: 11px; }
+    .tier .long { display: none; }
+    label.person .line1 { padding-right: 66px; }
+    footer { padding: 0 16px 32px; }
+  }
+</style>
+</head>
+<body>
+<main>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-name" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="11" r="2"/><path d="M6 16c.7-1.3 1.7-2 3-2s2.3.7 3 2M14.5 10h3.5M14.5 14h2.5"/></symbol>
+  <symbol id="i-people" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3 20c0-3.3 2.7-5 6-5s6 1.7 6 5"/><circle cx="17" cy="9" r="2.5"/><path d="M16.5 15c2.8.2 4.5 1.8 4.5 4.5"/></symbol>
+  <symbol id="i-bio" viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h3"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></symbol>
+  <symbol id="i-gone" viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></symbol>
+  <symbol id="i-undo" viewBox="0 0 24 24"><path d="M9 14 4 9l5-5"/><path d="M4 9h10a6 6 0 0 1 0 12h-3"/></symbol>
+  <symbol id="i-file" viewBox="0 0 24 24"><path d="M14 3H6v18h12V7l-4-4Zm0 0v4h4M9 12h6M9 16h6"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"/><path d="m20 20-4.5-4.5"/></symbol>
+  <symbol id="i-add" viewBox="0 0 24 24"><circle cx="10" cy="8" r="3.5"/><path d="M3 20c0-3.6 3-5.5 7-5.5s7 1.9 7 5.5M19 8v6M16 11h6"/></symbol>
+  <symbol id="i-li" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M4 2h16a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2Zm2.5 7.5V18h2.8V9.5H6.5Zm1.4-4.2a1.6 1.6 0 1 0 0 3.2 1.6 1.6 0 0 0 0-3.2ZM11 9.5V18h2.8v-4.4c0-1.2.4-2 1.5-2s1.4.9 1.4 2V18h2.8v-5c0-2.5-1.3-3.7-3.2-3.7-1.4 0-2.2.7-2.5 1.3V9.5H11Z"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+  <symbol id="i-all" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="m8 12 3 3 5-6"/></symbol>
+  <symbol id="i-up" viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></symbol>
+  <symbol id="i-ext" viewBox="0 0 24 24"><path d="M7 17 17 7M8 7h9v9"/></symbol>
+  <symbol id="i-code" viewBox="0 0 24 24"><path d="m8 7-5 5 5 5M16 7l5 5-5 5M13.5 4l-3 16"/></symbol>
+</svg>
+
+<header id="top">
+  <h1>Find your friends on Sparkable</h1>
+  <p class="lede">Bring your LinkedIn and Facebook friends with you. Free, private and open source.</p>
+  <h2>What is this?</h2>
+    <div class="flow">
+      <div class="card"><span class="dot"><svg class="ic"><use href="#i-file"/></svg></span><b>Your contacts</b>Downloaded from LinkedIn or Facebook as a file</div>
+      <span class="op arrow" aria-hidden="true">→</span>
+      <div class="card"><span class="dot"><svg class="ic"><use href="#i-search"/></svg></span><b>Found on Sparkable<sup>1</sup></b>Looked up by name, right in your browser</div>
+      <span class="op arrow" aria-hidden="true">→</span>
+      <div class="card"><span class="dot"><svg class="ic"><use href="#i-add"/></svg></span><b>Followed by you</b>In a few clicks, only the people you pick</div>
+      <p class="hint fn"><sup>1</sup> Sparkable shares its open network with Bluesky and other <a href="https://en.wikipedia.org/wiki/AT_Protocol" target="_blank" rel="noopener noreferrer">AT Protocol<svg class="ext" aria-hidden="true"><use href="#i-ext"/></svg></a> apps, so you'll find your contacts on any of them.</p>
+    </div>
+
+    <h2>How do we find the right people?</h2>
+    <div class="flow">
+      <div class="card must"><span class="dot"><svg class="ic"><use href="#i-name"/></svg></span><b>Same full name</b>Required. No name match, no suggestion.</div>
+      <span class="op" aria-hidden="true">+</span>
+      <div class="group">
+        <div class="card"><span class="dot"><svg class="ic"><use href="#i-people"/></svg></span><b>People in common</b>People you follow who follow them</div>
+        <span class="op" aria-hidden="true">or</span>
+        <div class="card"><span class="dot"><svg class="ic"><use href="#i-bio"/></svg></span><b>Matching bio</b>Their bio fits their LinkedIn job</div>
+      </div>
+    </div>
+    <p class="hint" style="margin-top:8px">The more signals line up, the stronger the match, and every suggestion transparently tells you why.</p>
+
+    <h2>Why is it safe?</h2>
+    <ul class="checks">
+      <li><svg class="ic"><use href="#i-lock"/></svg><span><b>Private and local.</b> Your files stay on your computer. Only names are sent, as searches to Bluesky's servers.</span></li>
+      <li><svg class="ic"><use href="#i-gone"/></svg><span><b>Zero data stored.</b> Not by us, not even on your computer. Close the page and it's gone.</span></li>
+      <li><svg class="ic"><use href="#i-undo"/></svg><span><b>You're in control.</b> Nothing happens until you pick, and every follow can be undone.</span></li>
+      <li><svg class="ic"><use href="#i-code"/></svg><span><b>Open source.</b> Anyone can read the code and see what it does.
+        <button type="button" class="link" id="verifyBtn" aria-expanded="false" aria-controls="verify">How can I check?</button></span></li>
+    </ul>
+    <div id="verify" hidden>
+      <p>On a computer, right-click this page, choose Inspect, and watch the Network tab while you use the tool. You'll only see requests to your account server and its sign-in service, the public search (public.api.bsky.app), the public account directory (plc.directory) and profile photos. Nothing goes to Sparkable. Like any search, Bluesky's servers see the names searched and which profiles your account looked at.</p>
+      <p>The page also blocks any outside code. That rule is the Content-Security-Policy line at the top of the source.</p>
+    </div>
+</header>
+
+<ol class="steps">
+  <li class="step" id="s1" data-state="active">
+    <span class="n">1</span>
+    <h2>Get your contact list</h2>
+    <p class="summary"><span id="s1sum"></span> <button type="button" class="link" id="changeFile">Add another file</button></p>
+    <div class="body">
+      <p class="tabs"><input type="radio" name="src" id="srcLi" checked><label for="srcLi">LinkedIn</label><input type="radio" name="src" id="srcFb"><label for="srcFb">Facebook</label></p>
+      <ol class="howto li-how">
+        <li>On LinkedIn, go to Settings → Data privacy → Get a copy of your data (<a href="https://www.linkedin.com/help/linkedin/answer/50191" target="_blank" rel="noopener noreferrer">help page<svg class="ext" aria-hidden="true"><use href="#i-ext"/></svg></a>).</li>
+        <li>Pick only <strong>Connections</strong> and request it. LinkedIn emails you a link, usually within minutes.</li>
+        <li>Drop the ZIP file here. No need to unzip it.</li>
+      </ol>
+      <ol class="howto fb-how">
+        <li>On Facebook, open Accounts Center → Your information and permissions → Download your information.</li>
+        <li>Pick only your <strong>friends</strong> list, set the format to <strong>JSON</strong> and request it. Facebook lets you know when it's ready.</li>
+        <li>Drop the ZIP file here. No need to unzip it.</li>
+      </ol>
+      <label class="drop" id="drop">
+        <input type="file" id="file" accept=".zip,.csv,.json" multiple>
+        <strong>Drop the ZIP file here, or click to choose it</strong>
+        <span>Add LinkedIn and Facebook together to find more people</span>
+      </label>
+      <p id="fileErr" class="err" role="alert"></p>
+    </div>
+  </li>
+
+  <li class="step" id="s2" data-state="todo">
+    <span class="n">2</span>
+    <h2>Sign in</h2>
+    <p class="summary" id="s2sum"></p>
+    <div class="body">
+      <p>Use your Sparkable or Bluesky account. It's the same account either way. Eurosky, Blacksky and other accounts on the network work too.</p>
+      <label class="field" for="handle">Your handle</label>
+      <input type="text" id="handle" placeholder="yourname.bsky.social" autocomplete="username" autocapitalize="none" spellcheck="false">
+      <p class="hint" style="margin-top:8px">A window opens where your own account server asks you to approve. This tool only gets permission to follow and unfollow people and to see profiles. It never sees your password.</p>
+      <div class="actions"><button type="button" id="signin">Sign in and find my contacts</button></div>
+      <p id="signinErr" class="err" role="alert"></p>
+    </div>
+  </li>
+
+  <li class="step" id="s3" data-state="todo">
+    <span class="n">3</span>
+    <h2>Choose who to follow</h2>
+    <div class="body">
+      <div class="bar" id="progBar"><i id="prog"></i></div>
+      <p id="progText" role="status"></p>
+      <p class="hint">Pick the people you'd like to reconnect with. Each one gets a notification, which makes it a nice way to say hello. Follows are public.</p>
+      <nav class="jump" id="jump" aria-label="Jump to a section" hidden></nav>
+      <div id="results"></div>
+      <details class="more"><summary>Why isn't someone here?</summary><div id="whyNot"></div></details>
+      <div class="actionbar off" id="bar">
+        <span id="followOut" role="status"></span>
+        <button type="button" class="link" id="clearSel"><svg class="ic" aria-hidden="true"><use href="#i-x"/></svg>Clear all</button>
+        <button type="button" id="selAll"></button>
+        <button type="button" id="followBtn">Follow</button>
+      </div>
+    </div>
+  </li>
+
+  <li class="step" id="s4" data-state="todo" data-k="s4">
+    <span class="n">4</span>
+    <h2><span id="s4t">Done</span> 🎉</h2>
+    <p class="summary" id="s4sum"></p>
+    <div class="body">
+      <p><strong>Tell your friends where to find you.</strong> Edit this as you like and post it on LinkedIn or Facebook.</p>
+      <textarea id="invite" aria-label="Post for LinkedIn"></textarea>
+      <div class="actions"><button type="button" class="secondary" id="copyInvite">Copy text</button></div>
+      <p style="margin-top:22px"><strong>Sign out.</strong> This clears your contact list and results from this tab and ends the tool's access to your account.</p>
+      <div class="actions"><button type="button" class="secondary" id="finishBtn">👋 Sign out and clear everything</button></div>
+    </div>
+  </li>
+</ol>
+</main>
+<button type="button" class="fab" id="toTop" data-jump="top" aria-label="Back to top" hidden><svg class="ic"><use href="#i-up"/></svg></button>
+<footer>Version 1.0.16 (October 3, 2026). Open source under AGPL-3.0. One file with no outside code: open it in any text editor to read all of it.</footer>
+
+<script>
+'use strict';
+
+/* ===== 1. Text helpers ===== */
+
+const FOLD = { 'ß': 'ss', 'æ': 'ae', 'ø': 'o', 'œ': 'oe', 'ł': 'l', 'đ': 'd', 'ð': 'd', 'þ': 'th', 'ı': 'i' };
+const norm = s => String(s || '').toLowerCase().replace(/[ßæøœłđðþı]/g, c => FOLD[c])
+  .normalize('NFD').replace(/\p{M}/gu, '')        // strip accents
+  .replace(/['’`´]/g, '')                         // o'brien -> obrien
+  .replace(/[^\p{L}\p{N}]+/gu, ' ').trim();       // jean-luc -> jean luc
+const toks = s => { const n = norm(s); return n ? n.split(' ') : []; };
+const listJoin = a => a.length < 2 ? a.join('') : a.slice(0, -1).join(', ') + ' and ' + a[a.length - 1];
+const plural = (n, one, many) => n + ' ' + (n === 1 ? one : many);
+function hasSeq(hay, needle) {
+  outer: for (let i = 0; i + needle.length <= hay.length; i++) {
+    for (let j = 0; j < needle.length; j++) if (hay[i + j] !== needle[j]) continue outer;
+    return true;
+  }
+  return false;
+}
+
+/* "Doe, PhD" -> "Doe", "Doe (she/her)" -> "Doe". Two-letter titles are kept
+   on purpose: "Ma" and "Md" are also real names. */
+const NAME_TITLES = new Set(['dr', 'prof', 'phd', 'mba', 'msc', 'bsc', 'dipl', 'mag']);
+const cleanName = raw => String(raw || '').replace(/\([^)]*\)|\[[^\]]*\]/g, ' ').split(',')[0].replace(/\s+/g, ' ').trim();
+function nameToks(raw) {
+  const t = toks(cleanName(raw)), kept = t.filter(x => !NAME_TITLES.has(x));
+  return kept.length ? kept : t;
+}
+
+/* ===== 2. Reading the LinkedIn file, in memory only ===== */
+
+function parseCSV(text) {
+  const rows = []; let row = [], field = '', quoted = false;
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i];
+    if (quoted) { if (c !== '"') field += c; else if (text[i + 1] === '"') { field += '"'; i++; } else quoted = false; }
+    else if (c === '"') quoted = true;
+    else if (c === ',') { row.push(field); field = ''; }
+    else if (c === '\n') { row.push(field); rows.push(row); row = []; field = ''; }
+    else if (c !== '\r') field += c;
+  }
+  if (field || row.length) { row.push(field); rows.push(row); }
+  return rows;
+}
+
+const slugOf = url => { const m = /linkedin\.com\/in\/([^/?#\s)]+)/i.exec(url || ''); try { return m ? decodeURIComponent(m[1]).toLowerCase().replace(/[/.]+$/, '') : ''; } catch { return ''; } };
+const slugsIn = text => (String(text).match(/linkedin\.com\/in\/[^/?#\s)]+/gi) || []).map(slugOf).filter(Boolean);
+
+const contact = (first, last, extra) => Object.assign({ first, last, query: cleanName(first) + ' ' + cleanName(last),
+  firstTok: nameToks(first), lastTok: nameToks(last), company: '', position: '', slug: '', url: '' }, extra);
+
+/* LinkedIn puts a few "Notes:" lines above the real header, so we look for it. */
+function readConnections(text) {
+  const rows = parseCSV(text), lc = r => r.map(c => c.trim().toLowerCase());
+  const h = rows.findIndex(r => lc(r).includes('first name') && lc(r).includes('last name'));
+  if (h < 0) throw new Error('This file has no "First Name" and "Last Name" columns. Is it the Connections file from LinkedIn?');
+  const head = lc(rows[h]), col = name => head.indexOf(name);
+  const [iF, iL, iC, iP, iU] = ['first name', 'last name', 'company', 'position', 'url'].map(col); // email is never read
+  const get = (row, i) => i > -1 ? (row[i] || '').trim() : '';
+  const out = [];
+  for (const row of rows.slice(h + 1)) {
+    const first = get(row, iF), last = get(row, iL);
+    if (!first || !last) continue;
+    const slug = slugOf(get(row, iU));
+    out.push(contact(first, last, { li: true, company: get(row, iC), position: get(row, iP), slug, url: slug ? 'https://www.linkedin.com/in/' + encodeURIComponent(slug) + '/' : '' }));
+  }
+  if (!out.length) throw new Error('We found the right columns but no contacts in them.');
+  return out;
+}
+
+/* Facebook's friends list holds only names and the date you became friends.
+   Its export garbles accents ("MÃ¼ller"), so those are repaired first. */
+const unmangle = t => /[\u00c2-\u00f4][\u0080-\u00bf]/.test(t) && !/[^\u0000-\u00ff]/.test(t) ? new TextDecoder().decode(Uint8Array.from(t, c => c.charCodeAt(0))) : t;
+function readFacebook(text) {
+  let d; try { d = JSON.parse(text); } catch { throw new Error('This file isn\'t a Facebook friends list.'); }
+  const out = [];
+  for (const f of d.friends_v2 || d.friends || (Array.isArray(d) ? d : [])) {
+    const w = cleanName(unmangle(f.name || '')).split(' ');
+    if (w.length > 1) out.push(contact(w.slice(0, -1).join(' '), w[w.length - 1], { fb: true, since: f.timestamp ? new Date(f.timestamp * 1000).getFullYear() : '' }));
+  }
+  if (!out.length) throw new Error('We found no friends with a first and last name in this file.');
+  return out;
+}
+
+/* Minimal ZIP reader: unpacks the first file whose name matches, with the
+   browser's built-in decompressor. Returns null if there's none. */
+async function unzip(u8, re) {
+  const dv = new DataView(u8.buffer, u8.byteOffset, u8.byteLength), dec = new TextDecoder();
+  let eocd = -1;
+  for (let i = u8.length - 22; i >= Math.max(0, u8.length - 65557); i--) if (dv.getUint32(i, true) === 0x06054b50) { eocd = i; break; }
+  if (eocd < 0) throw new Error('This ZIP file looks damaged. Try downloading it again.');
+  for (let n = dv.getUint16(eocd + 10, true), p = dv.getUint32(eocd + 16, true); n > 0 && dv.getUint32(p, true) === 0x02014b50; n--) {
+    const method = dv.getUint16(p + 10, true), size = dv.getUint32(p + 20, true), nameLen = dv.getUint16(p + 28, true), local = dv.getUint32(p + 42, true);
+    const name = dec.decode(u8.subarray(p + 46, p + 46 + nameLen));
+    p += 46 + nameLen + dv.getUint16(p + 30, true) + dv.getUint16(p + 32, true);
+    if (!re.test(name)) continue;
+    const start = local + 30 + dv.getUint16(local + 26, true) + dv.getUint16(local + 28, true), data = u8.subarray(start, start + size);
+    if (method === 0) return dec.decode(data);
+    if (method === 8) return dec.decode(await new Response(new Blob([data]).stream().pipeThrough(new DecompressionStream('deflate-raw'))).arrayBuffer());
+    throw new Error('This ZIP uses a format we can\'t open. Unzip it and pick the contact file inside instead.');
+  }
+  return null;
+}
+
+/* Works out what was dropped: a LinkedIn or Facebook ZIP, or the file inside one. */
+async function readContacts(file) {
+  const u8 = new Uint8Array(await file.arrayBuffer());
+  if (u8[0] !== 0x50 || u8[1] !== 0x4b) { const t = new TextDecoder().decode(u8); return /^\s*[[{]/.test(t) ? readFacebook(t) : readConnections(t); }
+  const li = await unzip(u8, /(^|\/)connections\.csv$/i);
+  if (li !== null) return readConnections(li);
+  const fb = await unzip(u8, /(^|\/)(your_)?friends\.json$/i);
+  if (fb !== null) return readFacebook(fb);
+  throw new Error(await unzip(u8, /(^|\/)(your_)?friends\.html$/i) !== null
+    ? 'This is Facebook\'s HTML version. Please request your friends list again, in JSON format.'
+    : 'There\'s no contact list in this ZIP. Request only Connections from LinkedIn, or only your friends from Facebook.');
+}
+
+/* ===== 3. Matching =====
+   Step A, the name gate, decides who can be considered at all.
+   Step B, evidence, decides who is shown. */
+
+const searchable = c => c.firstTok.length && !c.firstTok.some(t => t.length < 2) && c.lastTok.join('').length >= 2;   // initials never match
+function passesNameGate(conn, displayName) {
+  const shown = new Set(toks(displayName));
+  return shown.size > 1 && searchable(conn) && [...conn.firstTok, ...conn.lastTok].every(t => shown.has(t));   // the handle is never read
+}
+
+const CO_SUFFIX = new Set('ag gmbh ggmbh inc ltd llc llp sa sarl sas sagl plc corp corporation co kg ev bv nv oy ab spa srl limited company the group holding'.split(' '));
+const NOT_EMPLOYER = new Set(['self employed', 'freelance', 'freelancer', 'independent', 'selbststandig', 'selbstandig', 'freiberuflich',
+  'retired', 'student', 'confidential', 'stealth', 'stealth mode', 'stealth startup', 'various', 'none', 'n a', 'na']);
+function companyMatch(company, hay) {
+  if (NOT_EMPLOYER.has(norm(company))) return 0;
+  const ct = toks(company).filter(t => !CO_SUFFIX.has(t));
+  if (ct.join('').length < 3) return 0;
+  if (hasSeq(hay, ct)) return 4;
+  const acronym = ct.length >= 3 ? ct.map(t => t[0]).join('') : '';      // "Swiss Federal Railways" -> "sfr"
+  return acronym && hay.includes(acronym) ? 3 : 0;
+}
+
+/* Job-title words found in the bio, allowing for word endings
+   ("research" matches "researcher"). Returns phrases as they appear in the title. */
+const TITLE_SKIP = new Set('senior junior lead head chief principal associate assistant deputy intern trainee member team staff officer manager director vice president founder leiter and the for und der die das fur les des del with'.split(' '));
+/* Job words in German, French and Italian mapped to their direct English
+   equivalent, so "Forscherin" in a bio matches "Researcher" on LinkedIn.
+   One word to one word, so it's about as precise as a same-language match. */
+const TRANSLATE = Object.fromEntries(('entwickler:developer sviluppatore:developer developpeur:developer ingenieur:engineer ingegnere:engineer ' +
+  'informatiker:engineer forscher:researcher chercheur:researcher chercheuse:researcher ricercatore:researcher ricercatrice:researcher ' +
+  'wissenschaftler:scientist scientifique:scientist scienziato:scientist journaliste:journalist giornalista:journalist ' +
+  'redakteur:editor redacteur:editor redactrice:editor redattore:editor lehrer:teacher enseignant:teacher enseignante:teacher ' +
+  'insegnante:teacher arzt:doctor medecin:doctor medico:doctor anwalt:lawyer rechtsanwalt:lawyer avocat:lawyer avocate:lawyer ' +
+  'avvocato:lawyer berater:consultant consulente:consultant conseiller:advisor conseillere:advisor gestalter:designer grafiker:designer ' +
+  'projektleiter:project desarrollador:developer desenvolvedor:developer ingeniero:engineer ingeniera:engineer engenheiro:engineer ' +
+  'engenheira:engineer investigador:researcher investigadora:researcher pesquisador:researcher pesquisadora:researcher cientifico:scientist ' +
+  'cientifica:scientist cientista:scientist periodista:journalist jornalista:journalist maestro:teacher maestra:teacher docente:teacher ' +
+  'medica:doctor abogado:lawyer abogada:lawyer advogado:lawyer advogada:lawyer consultor:consultant consultora:consultant asesor:advisor ' +
+  'asesora:advisor disenador:designer disenadora:designer analista:analyst').split(' ').map(pair => pair.split(':')));
+const canon = t => TRANSLATE[t] || (t.endsWith('in') && TRANSLATE[t.slice(0, -2)]) || t;   // German feminine: Forscherin -> Forscher
+const stem = t => t.slice(0, 5);
+function titlePhrases(position, hay) {
+  const stems = new Set(hay.filter(t => t.length >= 3).map(t => stem(canon(t)))), out = [];
+  let run = [];
+  for (const w of [...String(position).split(/[^\p{L}\p{N}'’]+/u), '']) {   // keep the title's own spelling for display
+    const t = norm(w);
+    if (t.length >= 3 && !TITLE_SKIP.has(t) && stems.has(stem(canon(t)))) run.push(w);
+    else if (run.length) { out.push(run.join(' ')); run = []; }
+  }
+  return [...new Set(out)];
+}
+
+
+/* Points: below 3 is hidden, 6 and up is a strong match. */
+const SHOW_AT = 3, STRONG_AT = 6;
+function assess(conn, p) {
+  const v = p.viewer || {}, text = [p.description, p.website, p.displayName].filter(Boolean).join(' ');
+  const own = new Set([...conn.firstTok, ...conn.lastTok]), hay = toks(text).filter(t => !own.has(t));
+  let score = 0, why = '';
+  const slugs = slugsIn(text);
+  if (slugs.length && conn.slug) {
+    if (!slugs.includes(conn.slug)) return { excluded: true };             // links a different LinkedIn: someone else
+    score += 10; why = 'Links to this LinkedIn profile';
+  }
+  if (v.followedBy) score += 5;
+  const known = v.knownFollowers ? v.knownFollowers.count : 0;
+  // More people in common counts more, with diminishing returns: 1 -> 2, 3 -> 4, 6 -> 6, 15+ -> 8.
+  // Big accounts collect shared followers anyway, so they're capped.
+  if (known) score += Math.min((p.followersCount || 0) > 5000 ? 3 : 8, Math.round(2 * Math.log2(known + 1)));
+  const bits = [], co = conn.company ? companyMatch(conn.company, hay) : 0;
+  if (co) { score += co; bits.push(conn.company); }
+  const phrases = conn.position ? titlePhrases(conn.position, hay) : [];
+  if (phrases.length) { score += phrases.join(' ').includes(' ') ? 3 : 2; bits.push(...phrases); }
+  why = why || (bits.length ? 'Bio fits their LinkedIn: ' + listJoin(bits) : '');
+  return { score, known, why, strong: score >= STRONG_AT };
+}
+
+/* ===== 4. Network: public reads, and OAuth for everything signed in ===== */
+
+const APP_URL = 'https://sparkable.cc';             // where profile links and the post point
+const PUBLIC_API = 'https://public.api.bsky.app';   // the network's public, cached search service
+/* Everything this tool may do with your account: create and delete follows, and
+   read profiles through your server. Must match client-metadata.json. */
+const SCOPE = 'atproto repo:app.bsky.graph.follow?action=create&action=delete rpc:app.bsky.actor.getProfiles?aud=*';
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+let cooldownUntil = 0;
+
+/* Run fn over items with n requests in flight at once. */
+async function pool(items, n, fn) {
+  let i = 0;
+  await Promise.all(Array.from({ length: Math.min(n, items.length) }, async () => { while (i < items.length) await fn(items[i++]); }));
+}
+
+/* DPoP: every signed-in request carries a fresh proof, signed with a key made for
+   this sign-in that can't be exported and disappears with the tab. */
+const te = new TextEncoder(), nonces = {};
+const b64u = b => btoa(String.fromCharCode(...new Uint8Array(b))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+const enc = o => b64u(te.encode(JSON.stringify(o)));
+const rand = () => b64u(crypto.getRandomValues(new Uint8Array(32)));
+const sha256 = async s => b64u(await crypto.subtle.digest('SHA-256', te.encode(s)));
+const keepNonce = (res, url) => { const n = res.headers.get('dpop-nonce'); if (n) nonces[url.origin] = n; };
+async function proof(htm, url, token) {
+  const jwt = enc({ typ: 'dpop+jwt', alg: 'ES256', jwk: S.jwk }) + '.' +
+    enc({ jti: rand(), htm, htu: url.origin + url.pathname, iat: Math.floor(Date.now() / 1000), nonce: nonces[url.origin], ath: token && await sha256(token) });
+  return jwt + '.' + b64u(await crypto.subtle.sign({ name: 'ECDSA', hash: 'SHA-256' }, S.key, te.encode(jwt)));
+}
+
+/* Requests to the sign-in server (pushed request, tokens, refresh, revoke). */
+async function authPost(endpoint, params) {
+  const url = new URL(endpoint);
+  for (let i = 0; i < 2; i++) {
+    const res = await fetch(url, { method: 'POST', body: new URLSearchParams(params),
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded', DPoP: await proof('POST', url) } });
+    keepNonce(res, url);
+    const data = await res.json().catch(() => ({}));
+    if (res.ok) return data;
+    if (data.error !== 'use_dpop_nonce' || i) throw new Error(data.error_description || 'Sign-in didn\'t work (' + res.status + ').');
+  }
+}
+
+let refreshing = null;          // a refresh token works once, so only one refresh at a time
+const refresh = () => refreshing ||= authPost(S.session.as.token_endpoint, { client_id: S.session.client, grant_type: 'refresh_token', refresh_token: S.session.refresh })
+  .then(t => { Object.assign(S.session, { access: t.access_token, refresh: t.refresh_token, exp: Date.now() + ((t.expires_in || 300) - 60) * 1000 }); },
+    () => { throw Object.assign(new Error('Your sign-in expired.'), { code: 'SessionExpired' }); })
+  .finally(() => { refreshing = null; });
+
+/* Every request goes through here: retries, rate limits, DPoP, token refresh.
+   Searches and activity checks use the public service; anything that needs
+   to know who you are goes through your own server. */
+async function xrpc(method, { params, body, authed = true } = {}) {
+  for (let attempt = 1; attempt <= 6; attempt++) {
+    if (authed && !S.session) throw Object.assign(new Error('Signed out'), { code: 'SignedOut' });
+    if (cooldownUntil > Date.now()) await sleep(cooldownUntil - Date.now());
+    const url = new URL((authed ? S.session.pds : PUBLIC_API) + '/xrpc/' + method);
+    for (const [k, v] of Object.entries(params || {})) [].concat(v).forEach(x => url.searchParams.append(k, x));
+    const headers = {};
+    if (authed) {
+      if (Date.now() > S.session.exp) await refresh();
+      headers.Authorization = 'DPoP ' + S.session.access;
+      headers.DPoP = await proof(body ? 'POST' : 'GET', url, S.session.access);
+    }
+    if (body) headers['Content-Type'] = 'application/json';
+    let res;
+    try { res = await fetch(url, { method: body ? 'POST' : 'GET', headers, body: body && JSON.stringify(body) }); }
+    catch { await sleep(1000 * attempt); continue; }
+    keepNonce(res, url);
+    const remaining = res.headers.get('ratelimit-remaining');               // slow down before Bluesky has to ask
+    if (remaining !== null && +remaining < 40) {
+      cooldownUntil = Math.max(cooldownUntil, +res.headers.get('ratelimit-reset') * 1000);
+      notice('Pausing briefly so we stay inside the server\'s limits. We\'ll carry on automatically.');
+    }
+    if (res.status === 429) {
+      const wait = (+res.headers.get('retry-after') || 10 * attempt) * 1000;
+      cooldownUntil = Math.max(cooldownUntil, Date.now() + wait);
+      notice('The server asked us to slow down for ' + Math.ceil(wait / 1000) + ' seconds. We\'ll carry on automatically.');
+      continue;
+    }
+    if (res.status >= 500) { await sleep(1000 * attempt); continue; }
+    const data = await res.json().catch(() => ({}));
+    if (res.ok) return data;
+    if (authed && data.error === 'use_dpop_nonce') continue;                // retry with the server's fresh nonce
+    if (authed && res.status === 401) throw Object.assign(new Error('Your sign-in stopped working.'), { code: 'SessionExpired' });
+    throw Object.assign(new Error(data.message || method + ' failed (' + res.status + ')'), { code: data.error });
+  }
+  throw new Error('The server isn\'t responding right now.');
+}
+
+const pdsFromDoc = doc => {
+  const svc = doc && Array.isArray(doc.service) && doc.service.find(s => String(s.id).endsWith('#atproto_pds'));
+  return svc && typeof svc.serviceEndpoint === 'string' ? svc.serviceEndpoint.replace(/\/+$/, '') : null;
+};
+
+/* Handle -> account ID -> its server -> the server that signs it in. Each link is
+   checked, as the protocol requires, so no other server can claim the account. */
+async function resolveAccount(handle) {
+  const get = async url => { const r = await fetch(url); if (!r.ok) throw new Error('We couldn\'t find the account @' + handle + '. Check the spelling.'); return r.json(); };
+  const { did } = await get(PUBLIC_API + '/xrpc/com.atproto.identity.resolveHandle?handle=' + encodeURIComponent(handle));
+  const doc = await get(did.startsWith('did:web:') ? 'https://' + did.slice(8) + '/.well-known/did.json' : 'https://plc.directory/' + did);
+  const pds = pdsFromDoc(doc);
+  if (!pds || !(doc.alsoKnownAs || []).includes('at://' + handle)) throw new Error('The account @' + handle + ' couldn\'t be verified.');
+  const issuer = (await get(pds + '/.well-known/oauth-protected-resource')).authorization_servers[0];
+  const as = await get(issuer + '/.well-known/oauth-authorization-server');
+  if (as.issuer !== issuer) throw new Error('Your account\'s sign-in server didn\'t identify itself correctly.');
+  return { did, pds, as };
+}
+
+function cleanHandle(h) {
+  h = String(h || '').trim().replace(/^@/, '').toLowerCase();
+  return h && !h.includes('.') && !h.includes('@') ? h + '.bsky.social' : h;
+}
+
+/* ===== 5. State ===== */
+
+let generation = 0;                         // bumps on sign-out or a new file, so old runs stop
+const S = {};
+function resetResults() {
+  Object.assign(S, { running: false, done: 0, groups: [], seen: new Set(), already: [], weak: 0, none: 0, errors: 0 });
+}
+function resetAll() {
+  Object.assign(S, { connections: [], session: null, selected: new Set(), followed: new Map(), following: false, key: null, jwk: null, openState: new Map(), here: '' });
+  resetResults();
+}
+resetAll();
+
+/* ===== 6. Search ===== */
+
+const SEARCHERS = 16;                        // searches in flight at once
+
+/* Inactive means never posted, replied or reposted anything. Posts and replies
+   are counted on the profile; reposts only show up in their feed, so we look
+   there only for people with zero posts. A profile with a photo, a bio and 100+
+   followers is someone who reads along, so it never counts as inactive. */
+async function activityOf(p) {
+  if (p.postsCount !== 0 || (p.followersCount >= 100 && p.avatar && p.description)) return { inactive: false };
+  try {
+    const f = await xrpc('app.bsky.feed.getAuthorFeed', { authed: false, params: { actor: p.did, limit: 1 } });
+    if ((f.feed || []).length) return { inactive: false };
+  } catch { return { inactive: false }; }    // unknown counts as active
+  return { inactive: true, note: 'Has never posted, replied or reposted' };
+}
+
+async function judge(conn, profiles, gen) {
+  // If you already follow one of them, that's your contact and the others aren't.
+  const mine = profiles.find(p => p.viewer && p.viewer.following);
+  if (mine) { if (!S.seen.has(mine.did)) { S.seen.add(mine.did); S.already.push(mine); } return; }
+  let cands = [];
+  for (const p of profiles) {
+    const v = p.viewer || {};
+    if (v.blockedBy || v.blocking || S.seen.has(p.did)) continue;
+    const a = assess(conn, p);
+    if (!a.excluded && a.score >= SHOW_AT) cands.push(Object.assign({ p }, a));
+  }
+  if (!cands.length) { S.weak++; return; }
+  cands.sort((a, b) => b.score - a.score);
+  if (cands.length > 1 && cands[0].score - cands[1].score >= 3) cands = [cands[0]];   // a clear winner: the rest are someone else
+  cands.forEach(c => S.seen.add(c.p.did));
+  const acts = await Promise.all(cands.map(c => activityOf(c.p)));
+  if (gen !== generation) return;
+  cands.forEach((c, i) => Object.assign(c, acts[i]));
+  S.groups.push({ conn, cands: cands.sort((a, b) => (a.inactive - b.inactive) || (b.score - a.score)), ambiguous: cands.length > 1 });
+}
+
+/* Profiles are looked up 25 at a time, which is the most Bluesky allows per request. */
+async function scoreBatch(items, gen) {
+  try {
+    const { profiles = [] } = await xrpc('app.bsky.actor.getProfiles', { params: { actors: items.flatMap(it => it.named.map(a => a.did)) } });
+    if (gen !== generation) return;
+    const byDid = new Map(profiles.map(p => [p.did, p]));
+    await Promise.all(items.map(it => judge(it.conn, it.named.map(a => byDid.get(a.did)).filter(Boolean), gen)));
+  } catch (e) {
+    if (e.code === 'SessionExpired') signedOutMidway(e.message);
+    else if (e.code !== 'SignedOut') S.errors += items.length;
+  }
+  requestRender();
+}
+
+async function runSearch() {
+  if (S.running || !S.session) return;
+  const gen = generation;
+  resetResults();
+  S.running = true; S.pinTop = true;
+  setStep(3, 'active'); setStep(4, 'active'); $('s4t').textContent = 'Optional: Tell your friends where to find you';
+  $('invite').value = inviteText();
+  progress(); render();
+
+  const queue = [], jobs = [];
+  let queued = 0;
+  const flush = all => {
+    while (queue.length && (all || queued >= 25)) {
+      const take = []; let n = 0;
+      while (queue.length && n + queue[0].named.length <= 25) { n += queue[0].named.length; take.push(queue.shift()); }
+      queued -= n;
+      jobs.push(scoreBatch(take, gen));
+    }
+  };
+  await pool(S.connections, SEARCHERS, async conn => {
+    if (gen !== generation) return;
+    if (!searchable(conn)) { S.none++; S.done++; return progress(); }   // no request for names that can't match
+    try {
+      const r = await xrpc('app.bsky.actor.searchActors', { authed: false, params: { q: conn.query, limit: 25 } });
+      const named = (r.actors || []).filter(a => a.did !== (S.session && S.session.did) && passesNameGate(conn, a.displayName));
+      if (named.length) { queue.push({ conn, named }); queued += named.length; flush(false); } else S.none++;
+    } catch { S.errors++; }
+    S.done++; progress();
+  });
+  flush(true);
+  await Promise.all(jobs);
+  if (gen !== generation) return;
+  S.running = false;
+  render();
+}
+
+function progress() {
+  const total = S.connections.length, found = S.groups.length, al = S.already.length;
+  $('prog').style.width = (total ? S.done / total * 100 : 0) + '%';
+  $('progBar').hidden = !S.running;
+  $('progText').textContent = S.running
+    ? (S.done < total ? 'Checked ' + S.done + ' of ' + total + ' contacts' : 'Checking the last few') + (found ? ', found ' + found : '') + '…'
+    : 'Checked all ' + total + ' contacts and found ' + plural(found, 'new match', 'new matches') + (al ? ', plus ' + al + ' you already follow.' : '.');
+}
+
+/* ===== 7. Following ===== */
+
+async function followSelected() {
+  if (S.following || !S.selected.size) return;
+  const order = displayOrder().filter(d => S.selected.has(d)), out = $('followOut');
+  let ok = 0, failed = 0;
+  S.following = true; renderBar();
+  for (const did of order) {          // one at a time with a pause, so bulk follows don't look like spam
+    if (!S.session) break;
+    try {
+      const r = await xrpc('com.atproto.repo.createRecord', { body: { repo: S.session.did, collection: 'app.bsky.graph.follow',
+        record: { $type: 'app.bsky.graph.follow', subject: did, createdAt: new Date().toISOString() } } });
+      S.followed.set(did, r.uri); S.selected.delete(did); ok++;
+    } catch (e) { failed++; if (e.code === 'SessionExpired') signedOutMidway(e.message); }
+    out.textContent = 'Following ' + (ok + failed) + ' of ' + order.length + '…';
+    requestRender();
+    await sleep(300);
+  }
+  S.following = false;
+  out.innerHTML = (ok ? 'Followed ' + plural(ok, 'person', 'people') + '. You can undo any of them at the top of the <a href="#sec-already" data-jump="already">Following list</a>. ' : '') +
+    (failed ? failed + ' didn\'t work and are still selected. Try again.' : '');
+  render();
+}
+
+async function unfollow(did) {
+  await xrpc('com.atproto.repo.deleteRecord', { body: { repo: S.session.did, collection: 'app.bsky.graph.follow', rkey: S.followed.get(did).split('/').pop() } });
+  S.followed.delete(did);
+}
+
+/* ===== 8. Rendering ===== */
+
+const $ = id => document.getElementById(id);
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const TICK = '<svg width="18" height="18" viewBox="0 0 20 20" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" d="m4.5 10.5 3.5 3.5 7.5-8"/></svg>';
+const WARN = '<svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" d="M8 2 1.8 13.2h12.4L8 2Z"/><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" d="M8 6.5v3.2M8 11.6v.1"/></svg>';
+const avatar = (url, cls) => /^https:\/\//.test(url || '') ? '<img class="' + cls + '" src="' + esc(url) + '" alt="" loading="lazy">' : '<span class="' + cls + '" aria-hidden="true"></span>';
+const EXT = '<svg class="ext" aria-hidden="true"><use href="#i-ext"/></svg>';
+const LI = '<svg class="li-ic" aria-hidden="true"><use href="#i-li"/></svg>';
+const profileLink = p => '<a class="who" href="' + APP_URL + '/profile/' + esc(p.handle) + '" target="_blank" rel="noopener noreferrer" title="Open on Sparkable">' +
+  '<b class="pname">' + esc(p.displayName || p.handle) + '</b><span class="handle">@' + esc(p.handle) + EXT + '</span></a>';
+const linkedinLine = c => c.position && c.company ? c.position + ' at ' + c.company : c.position || c.company;
+const liHTML = c => (c.li ? '<span class="li">' + (c.url
+  ? '<a class="src" href="' + esc(c.url) + '" target="_blank" rel="noopener noreferrer" title="Open on LinkedIn">' + LI + 'LinkedIn' + EXT + '</a>'
+  : '<span class="src">' + LI + 'LinkedIn</span>') + esc(linkedinLine(c) || '') + '</span>' : '') +
+  (c.fb ? '<span class="li"><span class="src">Facebook</span>' + (c.since ? 'Friends since ' + c.since : '') + '</span>' : '');
+
+function setStep(n, state, summary) {
+  const el = $('s' + n);
+  el.dataset.state = state;
+  el.querySelector('.n').innerHTML = state === 'done' ? TICK : n;
+  const sum = $('s' + n + 'sum');
+  if (summary !== undefined && sum) sum.textContent = summary;
+}
+
+const SECTIONS = [   // key, title, short label for the jump bar, explanation, open at first
+  ['strong', 'Strong matches', 'Strong', 'Same full name, plus several signs it\'s them, like people you both follow and a bio that fits their LinkedIn.', true],
+  ['likely', 'Likely matches', 'Likely', 'Same full name, plus one sign it\'s them. Worth a quick look before you follow.', true],
+  ['choose', 'Multiple matches', 'Multiple', 'Several people with this exact name fit. Pick the one you know, or skip them.', true],
+  ['inactive', 'Probably inactive', 'Inactive', 'Same full name and a sign it\'s them, but they\'ve never posted, replied or reposted anything.', false],
+  ['already', 'Following', 'Following', 'People you just followed are at the top, where you can still undo. Below them are contacts you already followed before.', false]
+];
+const sectionOf = g => g.cands.every(c => c.inactive) ? 'inactive' : g.ambiguous ? 'choose' : g.cands[0].strong ? 'strong' : 'likely';
+const byStrength = (a, b) => (b.cands[0].score - a.cands[0].score) || (b.cands[0].known - a.cands[0].known);
+const followedIn = g => g.cands.find(c => S.followed.has(c.p.did));
+const grouped = () => {
+  const by = { strong: [], likely: [], choose: [], inactive: [] }, fresh = [], order = [...S.followed.keys()];
+  S.groups.forEach(g => (followedIn(g) ? fresh : by[sectionOf(g)]).push(g));
+  ['strong', 'likely', 'choose', 'inactive'].forEach(k => by[k].sort(byStrength));
+  fresh.sort((a, b) => order.indexOf(followedIn(b).p.did) - order.indexOf(followedIn(a).p.did));   // newest first
+  by.already = [...fresh.map(g => ({ p: followedIn(g).p, fresh: true })), ...S.already.map(p => ({ p }))];
+  return by;
+};
+const displayOrder = () => { const by = grouped(); return ['strong', 'likely', 'choose', 'inactive'].flatMap(k => by[k].flatMap(g => g.cands.map(c => c.p.did))); };
+/* People a "Select all" button can pick: one clear candidate, not yet followed. */
+const picksFor = key => grouped()[key].filter(g => !g.ambiguous).map(g => g.cands[0].p.did).filter(d => !S.followed.has(d));
+
+/* Two faces from Bluesky's sample of people you follow who follow them,
+   preferring people who also follow you back: your closest shared links. */
+function socialHTML(kf) {
+  if (!kf || !kf.count) return '';
+  const top = [...(kf.followers || [])].sort((a, b) => !!(b.viewer && b.viewer.followedBy) - !!(a.viewer && a.viewer.followedBy)).slice(0, 2);
+  const names = top.map(f => esc(f.displayName || '@' + f.handle)), rest = kf.count - names.length;
+  const who = !names.length ? '<b>' + plural(kf.count, 'person', 'people') + '</b> you follow'
+    : rest > 0 ? names.join(', ') + ' and <b>' + plural(rest, 'other', 'others') + '</b> you follow' : names.join(' and ') + ', who you follow';
+  return '<span class="social"><span class="faces">' + top.map(f => avatar(f.avatar, 'face')).join('') + '</span><span>Followed by ' + who + '</span></span>';
+}
+
+function personHTML(c, conn, showLinkedIn) {
+  const p = c.p, did = esc(p.did), name = esc(p.displayName || p.handle), v = p.viewer || {}, picked = S.selected.has(p.did);
+  return '<label class="person' + (picked ? ' picked' : '') + '" data-k="' + did + '"><input type="checkbox" data-did="' + did + '"' + (picked ? ' checked' : '') + ' aria-label="Follow ' + name + '">' +
+    '<span class="tier ' + (c.strong ? 'strong">Strong' : 'likely">Likely') + '<span class="long"> match</span></span>' +
+    avatar(p.avatar, 'avatar') + '<span class="pbody">' +
+      '<span class="line1">' + profileLink(p) + (v.followedBy ? '<span class="badge">Follows you</span>' : '') + '</span>' +
+      (p.description ? '<span class="bio">' + esc(p.description) + '</span>' : '') +
+      (showLinkedIn ? liHTML(conn) : '') +
+      (c.why ? '<span class="why">' + TICK + '<span>' + esc(c.why) + '</span></span>' : '') +
+      (c.inactive ? '<span class="warn">' + WARN + '<span>' + esc(c.note) + '</span></span>' : '') +
+      socialHTML(v.knownFollowers) +
+    '</span></label>';
+}
+
+function groupHTML(g) {
+  if (!g.ambiguous) return personHTML(g.cands[0], g.conn, true);
+  return '<div class="choice"><p>' + g.cands.length + ' people named ' + esc(g.conn.query) + liHTML(g.conn) + '</p>' +
+    g.cands.map(c => personHTML(c, g.conn, false)).join('') + '</div>';
+}
+
+/* A row in "Following". Its key differs from the card's, so the page doesn't chase a card you just followed. */
+const followingHTML = ({ p, fresh }) => '<div class="person done' + (fresh ? ' new' : '') + '" data-k="f-' + esc(p.did) + '"><span class="tick">' + (fresh ? TICK : '') + '</span>' +
+  avatar(p.avatar, 'avatar') + '<span class="line1">' + profileLink(p) + (fresh ? '<span class="ok">Just followed</span><button type="button" class="link" data-undo="' + esc(p.did) + '">Undo</button>'
+  : '<span class="badge">Followed before</span>') + '</span></div>';
+
+/* The section you're looking at: the one right under the jump bar, or else the
+   next one coming up. The jump bar marks it and the bottom bar offers its "Select all". */
+let spyQueued = false;
+function spy(force) {
+  spyQueued = false;
+  const line = 90;
+  let here = '', next = '';
+  document.querySelectorAll('#results .sec').forEach(sec => {
+    const r = sec.getBoundingClientRect();
+    if (r.top <= line && r.bottom > line) here = sec.dataset.sec;
+    else if (!next && r.top > line && r.top < innerHeight) next = sec.dataset.sec;
+  });
+  here = here || next;
+  document.querySelectorAll('#jump [data-jump]').forEach(a => a.setAttribute('aria-current', a.dataset.jump === here));
+  if (force || here !== S.here) { S.here = here; renderBar(); } else placeFab();
+}
+function placeFab() {
+  const fab = $('toTop'), bar = $('bar').getBoundingClientRect(), stuck = !$('bar').classList.contains('off') && bar.bottom >= innerHeight - 1;
+  fab.hidden = scrollY < 600;
+  fab.style.transform = stuck ? 'translateY(' + (bar.top - innerHeight) + 'px)' : '';   // sit just above the follow bar
+}
+
+let renderQueued = false;
+function requestRender() { if (!renderQueued) { renderQueued = true; setTimeout(render, 250); } }
+
+/* Keeps whatever you're looking at in the same spot while matches are added
+   or cards change above it. */
+function keepPlace(update) {
+  const a = [...document.querySelectorAll('[data-k]')].find(e => { const t = e.getBoundingClientRect().top; return t >= 60 && t < innerHeight; });
+  const top = a && a.getBoundingClientRect().top;
+  update();
+  const b = a && document.querySelector('[data-k="' + a.dataset.k + '"]');
+  if (b) scrollBy(0, b.getBoundingClientRect().top - top);
+}
+
+/* While results first come in, "Choose who to follow" stays pinned to the top of
+   the screen. The moment you scroll, tap or type, we stop and just keep your place. */
+function render() {
+  renderQueued = false;
+  if (S.pinTop) { draw(); $('s3').scrollIntoView(); } else keepPlace(draw);
+  spy();
+}
+
+function draw() {
+  progress();
+  const by = grouped();
+  const shown = SECTIONS.filter(([key]) => by[key].length);
+  $('results').innerHTML = shown.map(([key, title, , note, openByDefault]) => {
+    const items = by[key], fresh = key === 'already' ? items.filter(i => i.fresh).length : 0;
+    const open = S.openState.has(key) ? S.openState.get(key) : openByDefault;
+    return '<details class="sec" id="sec-' + key + '" data-sec="' + key + '" data-k="sec-' + key + '"' + (open ? ' open' : '') + '><summary>' + title +
+      '<span class="count">' + items.length + '</span>' + (fresh ? '<span class="count new">' + fresh + ' just followed</span>' : '') + '</summary>' +
+      '<p class="sec-note">' + note + '</p>' +
+      '<div class="people">' + items.map(key === 'already' ? followingHTML : groupHTML).join('') + '</div></details>';
+  }).join('') || (S.running ? '' : '<p class="hint">No confident matches this time. See below for why.</p>');
+  $('jump').hidden = !shown.length;
+  $('jump').innerHTML = shown.map(([key, , short, , openByDefault]) => '<a href="#sec-' + key + '" data-jump="' + key + '"' + (openByDefault ? '' : ' class="minor"') + '>' + short + ' <b>' + by[key].length + '</b></a>').join('') +
+    '<a href="#top" data-jump="top" class="minor">↑ Back to top</a>';
+
+  $('whyNot').innerHTML =
+    (S.weak ? '<p>For ' + plural(S.weak, 'contact', 'contacts') + ', someone on Sparkable or Bluesky has the same name but nothing else matched, so we left them out.</p>' : '') +
+    (S.none ? '<p>For ' + plural(S.none, 'contact', 'contacts') + ', nobody on Sparkable or Bluesky uses their full name.</p>' : '') +
+    (S.errors ? '<p>' + plural(S.errors, 'search', 'searches') + ' failed. Run the tool again later to retry them.</p>' : '') +
+    '<p>People who use a nickname, initials or a different surname on Sparkable or Bluesky are never matched. That\'s deliberate: if someone keeps their work and personal accounts apart, this tool keeps it that way.</p>';
+  renderBar();
+}
+
+/* Bottom bar: "Select all" for the section you're in is the main button until you
+   pick someone; then "Follow" takes over and "Select all" steps back. */
+function renderBar() {
+  const n = S.selected.size, key = S.here, sel = $('selAll'), fol = $('followBtn');
+  const sec = (key === 'strong' || key === 'likely') && $('sec-' + key), open = sec && sec.open;   // no "Select all" for a folded section
+  const todo = open ? picksFor(key).filter(d => !S.selected.has(d)).length : 0;
+  document.querySelectorAll('#results input[data-did]').forEach(cb => {
+    cb.checked = S.selected.has(cb.dataset.did);
+    cb.closest('.person').classList.toggle('picked', cb.checked);
+  });
+  sel.hidden = !todo || S.following;            // everything picked: "Clear all" is the only undo needed
+  sel.innerHTML = '<svg class="ic" aria-hidden="true"><use href="#i-all"/></svg>' + (todo > 1 ? 'Select all ' : 'Select ') + plural(todo, key + ' match', key + ' matches');
+  sel.className = n ? 'link' : '';              // a button while it's the main action, a link once "Follow" takes over
+  fol.hidden = !n && !S.following;
+  fol.disabled = S.following;
+  fol.textContent = S.following ? 'Following…' : 'Follow ' + plural(n, 'person', 'people');
+  $('clearSel').hidden = !n || S.following;
+  $('bar').classList.toggle('off', sel.hidden && fol.hidden && !$('followOut').textContent);
+  placeFab();
+}
+
+/* ===== 9. Wiring ===== */
+
+function inviteText() {
+  const me = APP_URL + (S.session ? '/profile/' + S.session.handle : '');
+  return 'I\'m on Sparkable now! It\'s healthier social media designed to bridge divides, and it runs on the same open network as Bluesky, ' +
+    'so millions of people are already there. Also, it\'s way more fun than LinkedIn 👀🎉\n\nCome find me: ' + me +
+    (location.protocol === 'https:' ? '\n\nFind your own LinkedIn contacts there: ' + location.origin + location.pathname : '');
+}
+
+async function loadFiles(files) {
+  $('fileErr').textContent = '';
+  if (!files.length) return;
+  try {
+    const byName = new Map(S.connections.map(c => [norm(c.query), c]));      // someone in both files becomes one contact
+    for (const file of files) for (const c of await readContacts(file)) {
+      const m = byName.get(norm(c.query));
+      if (!m) byName.set(norm(c.query), c);
+      else for (const k of ['li', 'fb', 'company', 'position', 'slug', 'url', 'since']) m[k] = m[k] || c[k];
+    }
+    generation++; S.running = false;                     // stop any search on the old list
+    S.connections = [...byName.values()];
+    setStep(1, 'done', plural(S.connections.length, 'contact', 'contacts') + ' ready. Your files stay on this device.');
+    if (S.session) runSearch(); else { setStep(2, 'active'); $('handle').focus(); }
+  } catch (err) { $('fileErr').textContent = err.message; }
+}
+
+/* OAuth in a pop-up, so this page keeps your file and results in memory and
+   nothing has to be stored to survive a redirect. */
+async function signIn() {
+  const errEl = $('signinErr'), handle = cleanHandle($('handle').value);
+  errEl.textContent = '';
+  if (!handle) { errEl.textContent = 'Enter your handle, for example yourname.bsky.social.'; return $('handle').focus(); }
+  const popup = open('', 'signin', 'width=520,height=720');      // opened during the click, or browsers block it
+  if (!popup) { errEl.textContent = 'Please allow pop-ups for this page, then try again.'; return; }
+  $('handle').value = handle; $('signin').textContent = 'Waiting for your sign-in…';
+  try {
+    const { did, pds, as } = await resolveAccount(handle);
+    const redirect = location.origin + location.pathname, client = location.protocol === 'https:' ? location.origin + '/client-metadata.json'
+      : 'http://localhost?' + new URLSearchParams({ redirect_uri: redirect, scope: SCOPE });   // local development only
+    const pair = await crypto.subtle.generateKey({ name: 'ECDSA', namedCurve: 'P-256' }, false, ['sign']);
+    const { kty, crv, x, y } = await crypto.subtle.exportKey('jwk', pair.publicKey);
+    Object.assign(S, { key: pair.privateKey, jwk: { kty, crv, x, y } });
+    const state = rand(), verifier = rand();
+    const { request_uri } = await authPost(as.pushed_authorization_request_endpoint, { client_id: client, response_type: 'code', response_mode: 'fragment',
+      redirect_uri: redirect, scope: SCOPE, state, login_hint: handle, code_challenge: await sha256(verifier), code_challenge_method: 'S256' });
+    popup.location = as.authorization_endpoint + '?' + new URLSearchParams({ client_id: client, request_uri });
+    const r = await new Promise(done => { const ch = new BroadcastChannel('signin'); ch.onmessage = e => { if (e.data.state === state) { ch.close(); done(e.data); } }; });
+    if (r.error) throw new Error(r.error_description || 'Sign-in was cancelled.');
+    if (r.iss !== as.issuer) throw new Error('The sign-in came back from the wrong server.');
+    const t = await authPost(as.token_endpoint, { client_id: client, grant_type: 'authorization_code', code: r.code, redirect_uri: redirect, code_verifier: verifier });
+    if (t.sub !== did || !String(t.scope).split(' ').includes('atproto')) throw new Error('The sign-in returned a different account.');
+    S.session = { did, handle, pds, as, client, access: t.access_token, refresh: t.refresh_token, exp: Date.now() + ((t.expires_in || 300) - 60) * 1000 };
+    setStep(2, 'done', 'Signed in as @' + handle + '.');
+    runSearch();
+  } catch (err) {
+    popup.close();
+    errEl.textContent = err instanceof TypeError ? 'We couldn\'t reach the sign-in server. Check your connection and try again.' : err.message;
+  } finally { $('signin').textContent = 'Sign in and find my contacts'; }
+}
+
+function signedOutMidway(msg) {
+  if (!S.session) return;
+  S.session = null; generation++; S.running = false;
+  setStep(2, 'active');
+  $('signinErr').textContent = msg + ' Please sign in again. Your follows so far are kept.';
+}
+
+async function finish() {
+  const sess = S.session;
+  if (sess) authPost(sess.as.revocation_endpoint, { client_id: sess.client, token: sess.refresh }).catch(() => {});   // ends the tool's access
+  generation++; resetAll();
+  ['file', 'handle', 'invite'].forEach(id => { $(id).value = ''; });
+  $('results').innerHTML = ''; $('followOut').textContent = ''; $('progText').textContent = '';
+  setStep(1, 'active'); setStep(2, 'todo'); setStep(3, 'todo');
+  $('s4t').textContent = 'Done';
+  setStep(4, 'done', 'Signed out. Your contact list and results are cleared, and we asked your server to end the tool\'s access.');
+}
+
+function notice(text) { $(S.following ? 'followOut' : 'progText').textContent = text; }
+
+function init() {
+  const drop = $('drop');
+  $('file').addEventListener('change', e => loadFiles(e.target.files));
+  ['dragenter', 'dragover'].forEach(t => drop.addEventListener(t, e => { e.preventDefault(); drop.classList.add('over'); }));
+  ['dragleave', 'drop'].forEach(t => drop.addEventListener(t, () => drop.classList.remove('over')));
+  drop.addEventListener('drop', e => { e.preventDefault(); loadFiles(e.dataTransfer.files); });
+  $('changeFile').addEventListener('click', () => { setStep(1, 'active'); $('file').value = ''; $('file').click(); });
+
+  $('signin').addEventListener('click', signIn);
+  $('handle').addEventListener('keydown', e => { if (e.key === 'Enter') signIn(); });
+
+  const results = $('results');
+  results.addEventListener('toggle', e => { if (e.target.dataset.sec) { S.openState.set(e.target.dataset.sec, e.target.open); spy(true); } }, true);
+  results.addEventListener('change', e => {
+    const cb = e.target.closest('input[data-did]');
+    if (cb) { S.selected[cb.checked ? 'add' : 'delete'](cb.dataset.did); renderBar(); }
+  });
+  document.addEventListener('click', e => {      // jump bar, "Following list" link and the round button
+    const a = e.target.closest('[data-jump]');
+    if (!a) return;
+    e.preventDefault();
+    const sec = document.querySelector('[data-sec="' + a.dataset.jump + '"]');
+    if (sec) { sec.open = true; S.openState.set(a.dataset.jump, true); }
+    S.pinTop = false;
+    (sec || $('top')).scrollIntoView();
+  });
+  $('selAll').addEventListener('click', () => {
+    const picks = picksFor(S.here), all = picks.every(d => S.selected.has(d));
+    picks.forEach(d => S.selected[all ? 'delete' : 'add'](d));
+    renderBar();
+  });
+  results.addEventListener('click', async e => {
+    const b = e.target.closest('[data-undo]');
+    if (!b) return;
+    b.disabled = true;
+    try { await unfollow(b.dataset.undo); $('followOut').textContent = 'Unfollowed.'; }
+    catch { $('followOut').textContent = 'That undo didn\'t work. Try again.'; }
+    render();
+  });
+  $('clearSel').addEventListener('click', () => { S.selected.clear(); render(); });
+  $('followBtn').addEventListener('click', followSelected);
+  $('copyInvite').addEventListener('click', async () => {
+    const t = $('invite'), b = $('copyInvite');
+    try { await navigator.clipboard.writeText(t.value); b.innerHTML = TICK + 'Copied'; b.classList.add('copied'); }
+    catch { t.select(); b.textContent = 'Press Ctrl+C or ⌘C to copy'; }
+    setTimeout(() => { b.textContent = 'Copy text'; b.classList.remove('copied'); }, 3000);
+  });
+  ['wheel', 'touchstart', 'keydown', 'pointerdown'].forEach(t => addEventListener(t, () => { S.pinTop = false; }, { passive: true }));
+  $('verifyBtn').addEventListener('click', e => {
+    const v = $('verify'); v.hidden = !v.hidden;
+    e.target.textContent = v.hidden ? 'How can I check?' : 'Hide'; e.target.setAttribute('aria-expanded', !v.hidden);
+  });
+  addEventListener('scroll', () => { if (!spyQueued) { spyQueued = true; requestAnimationFrame(() => spy()); } }, { passive: true });
+  $('finishBtn').addEventListener('click', finish);
+}
+
+if (typeof document !== 'undefined') {
+  const back = new URLSearchParams(location.hash.slice(1) || location.search);   // the sign-in pop-up returning here
+  if (back.has('state')) { new BroadcastChannel('signin').postMessage(Object.fromEntries(back)); close(); document.body.replaceChildren('Signed in. You can close this window.'); }
+  else if (self === top) init();
+  else document.body.replaceChildren('For your safety, this page only works when opened directly, not inside another website.');
+}
+</script>
+</body>
+</html>
