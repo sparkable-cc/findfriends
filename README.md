@@ -50,6 +50,10 @@ Live on Cloudflare Workers, which builds from `main` using `wrangler.jsonc`. Onl
 
 Any static host that serves these files at the root of an HTTPS address works. Don't publish the `.git` folder. On Netlify: import this repository, leave the build command empty and set the publish directory to the repository root.
 
+## Publishing
+
+Every merge into `main` starts a Cloudflare build that publishes the site. Other branches get preview builds only. In the Cloudflare dashboard (Worker `findfriends` → Settings → Build → Branch control), the production branch must be `main`; if the live site doesn't change after a merge, check that setting and the build history first.
+
 ## Local development
 
 Serve the folder at `127.0.0.1` (not `localhost`), for example:
