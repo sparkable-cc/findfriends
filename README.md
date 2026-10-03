@@ -20,10 +20,10 @@ Live at **https://findfriends.sparkable.cc**. Source code: https://github.com/sp
 
 ## Check that the live page matches this code
 
-Each release publishes the SHA-256 checksums of the two files the page loads. Current version 1.0.17:
+Each release publishes the SHA-256 checksums of the two files the page loads. Current version 1.0.18:
 
 ```
-0e7de31545da39a5b1fd3fe356568ba9c8800877ab1cd4ba363b60799a6f8841  index.html
+6e66201f8861093bafe164d02cbf1a9853a7d56e1745ce04c249c3e5ca7e4491  index.html
 fc7b8c858bf1106a57a9c5c66d457e9dc4bb047cc93105ce61cc3ccb714d2564  inter.woff2
 ```
 
@@ -54,10 +54,6 @@ Live on Cloudflare Workers, which builds from `main` using `wrangler.jsonc`. The
 
 Any static host that serves these files at the root of an HTTPS address works. Don't publish the `.git` folder. On Netlify: import this repository, leave the build command empty and set the publish directory to the repository root.
 
-## Publishing
-
-Every merge into `main` starts a Cloudflare build that publishes the site. Other branches get preview builds only. In the Cloudflare dashboard (Worker `findfriends` → Settings → Build → Branch control), the production branch must be `main`; if the live site doesn't change after a merge, check that setting and the build history first.
-
 ## Local development
 
 Serve the folder at `127.0.0.1` (not `localhost`), for example:
@@ -72,27 +68,8 @@ Then open http://127.0.0.1:8000/. Sign-in automatically uses atproto's developme
 
 1. Edit `index.html`.
 2. The browser console will report a Content-Security-Policy error with the new script fingerprint (`sha256-...`). Paste it into the Content-Security-Policy line at the top of the file.
-3. Raise the version number at the top of the file and in the footer, and add a line to the version history below.
+3. Raise the version number at the top of the file and in the footer.
 4. Publish the new checksums in this README.
-
-## Version history
-
-- 1.0.1 first prototype. 1.0.2 strict matching, evidence rule, trust copy.
-- 1.0.3 fast search, sections, works with every AT Protocol server.
-- 1.0.4 Sparkable wording, match badges, jump bar, bulk select per section.
-- 1.0.5 "how it finds people" up top, icons, blog styling, round buttons, "Multiple matches".
-- 1.0.6 profile links, translated job words, "you are here" jump bar, inactive = 2 years.
-- 1.0.7 question-style intro, page stays put while results load, inactive = never active.
-- 1.0.8 twice the searches at once, Spanish and Portuguese job words, lighter intro.
-- 1.0.9 compact intro, network footnote, LinkedIn line on top of each card.
-- 1.0.10 followed people move to "Following" with undo, back-to-top button, footnote numbers.
-- 1.0.11 LinkedIn line back under the bio, friendlier wording, phone rail fix.
-- 1.0.12 the bottom bar follows the section you're in: "Select all", then "Follow".
-- 1.0.13 no more bouncing at the page bottom, icons in the bottom bar, smarter "inactive".
-- 1.0.14 security: only this script may run, app passwords only, confirm unknown servers, paced follows.
-- 1.0.15 OAuth sign-in with the narrowest permissions: no passwords at all.
-- 1.0.16 Facebook friends lists too; both files can be combined.
-- 1.0.17 Sparkable look (blue header, logo, colors), Inter font, link previews with image, GitHub and legal links, "How can I check?" removed.
 
 ## License
 
