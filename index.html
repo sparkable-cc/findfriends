@@ -21,7 +21,7 @@
 <link rel="preload" href="inter-bold.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath fill='%234153f5' d='M63 1C44 24 44 40 63 63C40 44 24 44 1 63C20 40 20 24 1 1C24 20 40 20 63 1Z'/%3E%3C/svg%3E">
 <!--
-  Version 1.0.33, October 4, 2026
+  Version 1.0.34, October 4, 2026
 
   RULES (do not break these)
   1. No backend, no outside code or fonts, no analytics. This file is the app;
@@ -145,7 +145,7 @@
   .op { align-self: center; font-size: var(--h2); font-weight: 700; line-height: 1; color: var(--accent); }
   .card { flex: 1; grid-template-columns: 1fr; justify-items: center; align-content: start; padding: var(--pad); border-radius: var(--r); background: var(--accent-soft); text-align: center; }
   .card .ic { grid-row: auto; margin-bottom: var(--s2); background: var(--bg); }
-  .flow + .hint { margin-top: var(--s3); }
+  .flow + p { margin-top: var(--s3); }
   .checks { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--s4); }
 
   /* Steps */
@@ -309,9 +309,9 @@
       <span class="op" aria-hidden="true">→</span>
       <div class="row card"><svg class="ic" aria-hidden="true"><use href="#i-add"/></svg><b>Follow with a click</b><span>Only the people you choose</span></div>
     </div>
-    <p class="hint"><a href="https://github.com/sparkable-cc/findfriends#how-it-works" target="_blank" rel="noopener noreferrer">Learn more<svg class="ext" role="img" aria-label="(new tab)"><use href="#i-ext"/></svg></a></p>
+    <p><a href="https://github.com/sparkable-cc/findfriends#how-it-works" target="_blank" rel="noopener noreferrer">Learn more<svg class="ext" role="img" aria-label="(new tab)"><use href="#i-ext"/></svg></a></p>
 
-    <h2>Safe and private</h2>
+    <h2>Private and secure</h2>
     <ul class="checks">
       <li class="row"><svg class="ic" aria-hidden="true"><use href="#i-lock"/></svg><b>Your file stays on your device</b><span>Only names are looked up, on Bluesky.</span></li>
       <li class="row"><svg class="ic" aria-hidden="true"><use href="#i-gone"/></svg><b>Nothing is saved</b><span>Close the page and it's gone.</span></li>
@@ -395,7 +395,7 @@
 </ol>
 </main>
 <button type="button" class="fab" id="toTop" data-jump="top" aria-label="Back to top" hidden><svg class="ic" aria-hidden="true"><use href="#i-up"/></svg></button>
-<footer><a href="https://sparkable.cc" target="_blank" rel="noopener noreferrer"><svg aria-hidden="true"><use href="#i-spark"/></svg>Made by Sparkable</a> · <a href="https://github.com/sparkable-cc/findfriends" target="_blank" rel="noopener noreferrer"><svg aria-hidden="true"><use href="#i-gh"/></svg>Source code on GitHub</a> · <a href="https://blog.sparkable.cc/legal/" target="_blank" rel="noopener noreferrer">Terms &amp; privacy</a> · <span>Version 1.0.33</span> · <span>Free and open source (AGPL-3.0)</span></footer>
+<footer><a href="https://sparkable.cc" target="_blank" rel="noopener noreferrer"><svg aria-hidden="true"><use href="#i-spark"/></svg>Made by Sparkable</a> · <a href="https://github.com/sparkable-cc/findfriends" target="_blank" rel="noopener noreferrer"><svg aria-hidden="true"><use href="#i-gh"/></svg>Source code on GitHub</a> · <a href="https://blog.sparkable.cc/legal/" target="_blank" rel="noopener noreferrer">Terms &amp; privacy</a> · <span>Version 1.0.34</span> · <span>Free and open source (AGPL-3.0)</span></footer>
 
 <script>
 'use strict';

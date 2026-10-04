@@ -45,7 +45,7 @@ A bio that links to a *different* LinkedIn profile rules the account out. Facebo
 
 </details>
 
-## Why it's safe and private
+## Why it's private and secure
 
 - **Your file stays on your device.** The page reads it inside your browser and never uploads it.
 - **Only names go out.** To search, the page sends each contact's name to Bluesky's public search. The accounts it finds are then looked up through your own account server, to see who you have in common.
@@ -65,10 +65,10 @@ A bio that links to a *different* LinkedIn profile rules the account out. Facebo
 
 ## Check that the live page matches this code
 
-Each release publishes the SHA-256 checksums of the files the page loads. Current version 1.0.33:
+Each release publishes the SHA-256 checksums of the files the page loads. Current version 1.0.34:
 
 ```
-ef21422105947425f15d136dbe2b3692d54e5f872de5b4a3bf9ea101ee0fa89f  index.html
+0137d964ba21e11d48084ab57d274663cebc6878816a7e9aff8a5c05e5a5beea  index.html
 23d9a7372e637c1e534a28a3f0cfc5201499525bda7d3d858aec47f22e84bfe6  inter.woff2
 79b5e33258fc2fc2017df94055a97b7729c132c229ffe4d3ba3da961f9ec7c94  inter-bold.woff2
 a95d2e22d10445edc11987b9ca33d2adc4814b63123aeaa9ca805026a847da9a  inter-ext.woff2
