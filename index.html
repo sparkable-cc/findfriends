@@ -7,7 +7,7 @@
 <!-- Lock: only this script may run, identified by its fingerprint. After editing it,
      paste the new fingerprint from the browser console here. Any https server may be
      contacted, so every AT Protocol server works. -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-dwXNY8ogTgJjdMcj9nPCh088xvX0iaQMpvMYy4kA6U0='; style-src 'unsafe-inline'; img-src https: data:; font-src 'self'; connect-src https:; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-3Yz6nlrkty0v9D65LS7ksO7D0x0kZliHRALfG/c1wes='; style-src 'unsafe-inline'; img-src https: data:; font-src 'self'; connect-src https:; base-uri 'none'; form-action 'none'">
 <title>Find your friends on Sparkable</title>
 <meta name="description" content="Find your LinkedIn and Facebook friends on Sparkable and Bluesky. Free, private and open source.">
 <meta property="og:title" content="Find your friends on Sparkable">
@@ -21,7 +21,7 @@
 <link rel="preload" href="inter-bold.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath fill='%234153f5' d='M63 1C44 24 44 40 63 63C40 44 24 44 1 63C20 40 20 24 1 1C24 20 40 20 63 1Z'/%3E%3C/svg%3E">
 <!--
-  Version 1.0.26, October 4, 2026
+  Version 1.0.27, October 4, 2026
 
   RULES (do not break these)
   1. No backend, no outside code or fonts, no analytics. This file is the app;
@@ -43,6 +43,7 @@
     -webkit-text-size-adjust: 100%; text-size-adjust: 100%;   /* no automatic text enlarging in landscape */
     --bg: #fff; --panel: #f5f5f6; --line: #e6e6e8; --ink: #15171a; --muted: #5f646c;
     --accent: #4153f5; --accent-soft: #eceefe; --on-accent: #fff; --link: #4153f5;
+    --h1: 38px; --h2: 24px; --h3: 18px; --body: 16px; --small: 14px;   /* the only text sizes */
     --ok: #4a6b00; --lime: #cdf971; --pink: #fa7ac4; --caution: #855700; --danger: #b3261e;
     box-sizing: border-box;
     padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px);
@@ -59,17 +60,17 @@
   @font-face { font-family: Inter; font-display: swap; src: url(inter-ext.woff2) format('woff2'); unicode-range: U+100-17F, U+218-21B; }
   @font-face { font-family: Inter; font-display: swap; font-weight: 700; src: url(inter-bold-ext.woff2) format('woff2'); unicode-range: U+100-17F, U+218-21B; }
   *, *::before, *::after { box-sizing: border-box; }   /* explicit: <details> breaks inheritance */
-  body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.55 Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: var(--body)/1.55 Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; }
   main { max-width: 700px; margin: 0 auto; padding: 48px 20px 40px; }
   a { color: var(--link); }
   p { margin: 0 0 10px; }
-  .hint { font-size: 14px; color: var(--muted); }
-  .err { color: var(--danger); font-size: 14px; margin-top: 10px; }
+  .hint { font-size: var(--small); color: var(--muted); }
+  .err { color: var(--danger); font-size: var(--small); margin-top: 10px; }
   .err:empty, [hidden] { display: none !important; }
   :focus-visible { outline: 3px solid color-mix(in srgb, var(--accent) 60%, transparent); outline-offset: 2px; }
 
   /* Header: what this is, then what it promises */
-  .brand { display: inline-flex; align-items: center; gap: 7px; margin-bottom: 22px; font-size: 18px; font-weight: 800; letter-spacing: -0.02em; color: var(--ink); text-decoration: none; }
+  .brand { display: inline-flex; align-items: center; gap: 7px; margin-bottom: 22px; font-size: var(--h3); font-weight: 700; letter-spacing: -0.02em; color: var(--ink); text-decoration: none; }
   .brand svg { width: 22px; height: 22px; color: var(--accent); }
   .hero { position: relative; overflow: hidden; margin: -8px 0 6px; padding: 28px 126px 30px 32px; border-radius: 24px; background: var(--accent); color: #fff; }
   .hero-spark { position: absolute; right: -110px; top: 50%; width: 220px; height: 220px; margin-top: -110px; color: var(--pink); }
@@ -77,28 +78,28 @@
   .lede span { white-space: nowrap; }
   .lede svg { width: 18px; height: 18px; margin-right: 6px; vertical-align: -3px; fill: currentColor; }
   .hero > :not(svg) { position: relative; }   /* text above the spark */
-  .from { display: flex; gap: 10px; align-items: center; margin: 14px 0 0; padding: 12px 16px; border: 2px dashed color-mix(in srgb, var(--accent) 45%, transparent); border-radius: 14px; background: var(--panel); font-size: 14px; }
+  .from { display: flex; gap: 10px; align-items: center; margin: 14px 0 0; padding: 12px 16px; border: 2px dashed color-mix(in srgb, var(--accent) 45%, transparent); border-radius: 14px; background: var(--panel); font-size: var(--small); }
   .from .ic { flex: none; width: 20px; height: 20px; color: var(--accent); }
-  .from a { display: block; width: fit-content; margin: 2px 0; font-size: 16px; color: inherit; font-weight: 700; text-decoration: none; }   /* the handle gets its own line */
+  .from a { display: block; width: fit-content; margin: 2px 0; font-size: var(--body); color: inherit; font-weight: 700; text-decoration: none; }   /* the handle gets its own line */
   .from a:hover { text-decoration: underline; }
   .start { display: inline-block; margin-top: 24px; padding: 11px 22px; border-radius: 999px; background: var(--lime); color: var(--accent); font-weight: 700; text-decoration: none; }
   #s1 { scroll-margin-top: 16px; }
-  h1 { font-size: 38px; font-weight: 800; line-height: 1.1; letter-spacing: -0.03em; margin: 0 0 8px; max-width: 14em; }
-  .lede { font-size: 18px; color: var(--muted); margin: 0; }
+  h1 { font-size: var(--h1); font-weight: 700; line-height: 1.1; letter-spacing: -0.03em; margin: 0 0 8px; max-width: 14em; }
+  .lede { font-size: var(--h3); color: var(--muted); margin: 0; }
   html { overflow-anchor: none; }   /* we keep your place ourselves, see keepPlace() */
   .ic { width: 20px; height: 20px; flex: none; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
   /* Intro diagrams: soft cards, deliberately not shaped like buttons */
-  h2 { font-size: 20px; font-weight: 700; }   /* every heading bold, also on phones */
+  h2 { font-size: var(--h2); font-weight: 700; }   /* every heading bold, also on phones */
   header h2 { margin: 24px 0 10px; }
   .flow { display: flex; gap: 12px; }
   .card { flex: 1; background: var(--accent-soft); border-radius: 16px;
-          padding: 10px 8px; text-align: center; font-size: 14px; line-height: 1.4; color: var(--muted); }
-  .card b { display: block; font-size: 16px; color: var(--ink); }
-  .op { align-self: center; font-size: 22px; font-weight: 700; line-height: 1; color: var(--accent); }
+          padding: 10px 8px; text-align: center; font-size: var(--small); line-height: 1.4; color: var(--muted); }
+  .card b { display: block; font-size: var(--body); color: var(--ink); }
+  .op { align-self: center; font-size: var(--h2); font-weight: 700; line-height: 1; color: var(--accent); }
   .dot { display: grid; place-items: center; width: 36px; height: 36px; margin: 0 auto 6px; border-radius: 50%; background: var(--bg); color: var(--accent); }
   .checks { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
-  .checks li { display: flex; gap: 12px; font-size: 14px; line-height: 1.45; color: var(--muted); }
-  .checks li b { color: var(--ink); font-weight: 600; }
+  .checks li { display: flex; gap: 12px; font-size: var(--small); line-height: 1.45; color: var(--muted); }
+  .checks li b { color: var(--ink); font-weight: 700; }
   .checks li { align-items: center; }
   .checks .ic { flex: none; width: 34px; height: 34px; padding: 8px; border-radius: 50%; background: var(--accent-soft); color: var(--accent); }
   header { padding-bottom: 28px; margin-bottom: 32px; border-bottom: 1px solid var(--line); }
@@ -110,35 +111,35 @@
   .step::before { content: ""; position: absolute; left: 14px; top: 34px; bottom: 4px; width: 2px; background: var(--line); }
   .step:last-child::before { display: none; }
   .n { position: absolute; left: 0; top: 0; width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center;
-       font-size: 14px; font-weight: 700; background: var(--bg); color: var(--muted); border: 2px solid var(--line); }
+       font-size: var(--small); font-weight: 700; background: var(--bg); color: var(--muted); border: 2px solid var(--line); }
   .step h2 { line-height: 1.3; margin: 3px 0 10px; letter-spacing: -0.01em; }
   .step[data-state="todo"] h2 { color: var(--muted); }
   .step[data-state="active"] .n { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
   .step[data-state="done"] .n { background: var(--lime); border-color: var(--lime); color: #15171a; }
   .step[data-state="todo"] .body, .step[data-state="done"] .body, .summary { display: none; }
-  .step[data-state="done"] .summary { display: block; font-size: 14px; color: var(--muted); }
+  .step[data-state="done"] .summary { display: block; font-size: var(--small); color: var(--muted); }
   .howto { margin: 0 0 14px; padding-left: 20px; }
   .howto li { margin: 4px 0; }
   .tabs { display: flex; gap: 6px; margin: 0 0 12px; }
   .tabs input { position: absolute; opacity: 0; }
-  .tabs label { padding: 5px 14px; border: 1px solid var(--line); border-radius: 999px; font-size: 14px; font-weight: 600; cursor: pointer; }
+  .tabs label { padding: 5px 14px; border: 1px solid var(--line); border-radius: 999px; font-size: var(--small); font-weight: 700; cursor: pointer; }
   .tabs input:checked + label { background: var(--ink); border-color: var(--ink); color: var(--bg); }
   .tabs input:focus-visible + label { outline: 3px solid color-mix(in srgb, var(--accent) 60%, transparent); outline-offset: 2px; }
   #s1:has(#srcFb:checked) .li-how, #s1:has(#srcLi:checked) .fb-how { display: none; }
 
-  label.field { display: block; font-size: 14px; font-weight: 600; margin: 14px 0 5px; }
+  label.field { display: block; font-size: var(--small); font-weight: 700; margin: 14px 0 5px; }
   input[type=text], textarea {
-    width: 100%; font: inherit; font-size: 16px; padding: 11px 12px; border: 1px solid var(--line);
+    width: 100%; font: inherit; padding: 11px 12px; border: 1px solid var(--line);
     border-radius: 10px; background: var(--bg); color: var(--ink);
   }
   input::placeholder { color: var(--muted); opacity: .7; }
   textarea { resize: vertical; min-height: 150px; }
   details summary { cursor: pointer; }
 
-  button { font: inherit; font-weight: 600; border-radius: 999px; padding: 11px 20px; border: 0;
+  button { font: inherit; font-weight: 700; border-radius: 999px; padding: 11px 20px; border: 0;
            background: var(--accent); color: var(--on-accent); cursor: pointer; }
   button.secondary { background: transparent; color: var(--ink); border: 1px solid var(--line); }
-  button.link { background: none; border: 0; padding: 0; color: var(--link); font-weight: 500; font-size: inherit;
+  button.link { background: none; border: 0; padding: 0; color: var(--link); font-weight: 400; font-size: inherit;
                 text-decoration: underline; text-underline-offset: 2px; }
   button:disabled { opacity: .45; cursor: default; }
   .actions { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-top: 16px; }
@@ -148,7 +149,7 @@
   .drop:focus-within { outline: 3px solid color-mix(in srgb, var(--accent) 60%, transparent); outline-offset: 2px; }
   .drop.over { border-color: var(--accent); background: var(--accent-soft); }
   .drop input { position: absolute; width: 1px; height: 1px; opacity: 0; }
-  .drop span { display: block; font-size: 14px; color: var(--muted); margin-top: 3px; }
+  .drop span { display: block; font-size: var(--small); color: var(--muted); margin-top: 3px; }
 
   .bar { height: 6px; background: var(--line); border-radius: 3px; overflow: hidden; margin-bottom: 8px; }
   .bar > i { display: block; height: 100%; width: 0; background: var(--accent); transition: width .2s; }
@@ -156,7 +157,7 @@
   /* Jump bar: always shows where you are and gets you anywhere in one tap */
   .jump { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 3; display: flex; gap: 6px; overflow-x: auto;
           padding: 10px 0; margin-top: 6px; background: var(--bg); border-bottom: 1px solid var(--line); }
-  .jump a { flex: none; font-size: 14px; color: var(--ink); text-decoration: none; border: 1px solid var(--line); border-radius: 999px; padding: 4px 12px; }
+  .jump a { flex: none; font-size: var(--small); color: var(--ink); text-decoration: none; border: 1px solid var(--line); border-radius: 999px; padding: 4px 12px; }
   .jump a:hover { background: var(--panel); }
   .jump a.minor { color: var(--muted); border-color: transparent; }
   .jump a[aria-current="true"] { background: var(--ink); border-color: var(--ink); color: var(--bg); }   /* fill means "you are here", nothing else */
@@ -164,13 +165,13 @@
 
   /* Result sections */
   .sec { margin-top: 18px; scroll-margin-top: 64px; }
-  .sec > summary { font-size: 18px; font-weight: 700; padding: 4px 0; }
-  .sec[data-sec="inactive"] > summary, .sec[data-sec="already"] > summary { font-size: 16px; font-weight: 600; color: var(--muted); }
-  .count { font-size: 12px; font-weight: 600; color: var(--muted); background: var(--panel); border-radius: 999px; padding: 1px 8px; margin-left: 8px; vertical-align: 2px; }
-  .sec-note { font-size: 14px; color: var(--muted); margin: 2px 0 10px; }
+  .sec > summary { font-size: var(--h3); font-weight: 700; padding: 4px 0; }
+  .sec[data-sec="inactive"] > summary, .sec[data-sec="already"] > summary { font-weight: 700; color: var(--muted); }
+  .count { font-size: var(--small); font-weight: 700; color: var(--muted); background: var(--panel); border-radius: 999px; padding: 1px 8px; margin-left: 8px; vertical-align: 2px; }
+  .sec-note { font-size: var(--small); color: var(--muted); margin: 2px 0 10px; }
   .people { border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
   .person { position: relative; display: grid; grid-template-columns: 22px 44px 1fr; gap: 12px; align-items: start; padding: 14px 16px; border-top: 1px solid var(--line); cursor: pointer; }
-  .tier { position: absolute; top: 15px; right: 14px; font-size: 12px; font-weight: 600; padding: 0 8px; border-radius: 999px; color: var(--muted); border: 1px solid var(--line); }
+  .tier { position: absolute; top: 15px; right: 14px; font-size: var(--small); font-weight: 700; padding: 0 8px; border-radius: 999px; color: var(--muted); border: 1px solid var(--line); }
   .tier.strong { color: var(--link); background: var(--accent-soft); border-color: color-mix(in srgb, var(--accent) 35%, transparent); }
   label.person .line1 { padding-right: 122px; }   /* room for the badge */
   .people > :first-child, .choice > p + .person { border-top: 0; }
@@ -187,21 +188,21 @@
   .done .avatar { width: 28px; height: 28px; }
   .pbody { display: block; min-width: 0; }
   .line1 { display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap; }
-  .pname { font-weight: 650; min-width: 0; }   /* lets long names wrap instead of sliding under the badge */
+  .pname { font-weight: 700; min-width: 0; }   /* lets long names wrap instead of sliding under the badge */
   .who { display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap; min-width: 0; color: inherit; text-decoration: none; }
   .who:hover .pname, .who:hover .handle { text-decoration: underline; }
-  .handle { font-size: 14px; color: var(--muted); overflow-wrap: anywhere; }
+  .handle { font-size: var(--small); color: var(--muted); overflow-wrap: anywhere; }
   .li-ic { width: 12px; height: 12px; margin-right: 4px; vertical-align: -2px; fill: #0a66c2; }
-  .badge { font-size: 12px; font-weight: 600; color: var(--muted); background: var(--panel); border-radius: 6px; padding: 1px 6px; }
-  .ok { color: var(--ok); font-weight: 600; font-size: 14px; }
-  .bio { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; font-size: 14px; margin-top: 3px; overflow-wrap: anywhere; }
-  .li { display: block; font-size: 14px; color: var(--muted); margin-top: 6px; }
-  .src { font-size: 12px; font-weight: 700; letter-spacing: .02em; border: 1px solid var(--line); border-radius: 4px; padding: 0 5px; margin-right: 6px; vertical-align: 1px; color: var(--muted); text-decoration: none; }
+  .badge { font-size: var(--small); font-weight: 700; color: var(--muted); background: var(--panel); border-radius: 6px; padding: 1px 6px; }
+  .ok { color: var(--ok); font-weight: 700; font-size: var(--small); }
+  .bio { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; font-size: var(--small); margin-top: 3px; overflow-wrap: anywhere; }
+  .li { display: block; font-size: var(--small); color: var(--muted); margin-top: 6px; }
+  .src { font-size: var(--small); font-weight: 700; letter-spacing: .02em; border: 1px solid var(--line); border-radius: 4px; padding: 0 5px; margin-right: 6px; vertical-align: 1px; color: var(--muted); text-decoration: none; }
   a.src:hover { border-color: var(--muted); }
   .ext { width: 8px; height: 8px; margin-left: 4px; vertical-align: 1px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
   button.copied { color: var(--ok); border-color: var(--ok); }
   button.copied svg { vertical-align: -4px; margin-right: 4px; }
-  .why, .social, .warn { display: flex; gap: 6px; align-items: center; font-size: 14px; margin-top: 5px; }
+  .why, .social, .warn { display: flex; gap: 6px; align-items: center; font-size: var(--small); margin-top: 5px; }
   .why { color: var(--ok); }
   .social { color: var(--muted); }
   .faces { display: inline-flex; flex: none; }
@@ -211,29 +212,29 @@
   .why svg, .warn svg { flex: none; }
   .choice { border-top: 1px solid var(--line); }
   .people > .choice:first-child { border-top: 0; }
-  .choice > p { padding: 12px 16px 0; margin: 0; font-size: 16px; font-weight: 600; }
+  .choice > p { padding: 12px 16px 0; margin: 0; font-weight: 700; }
   .choice > p .li { font-weight: 400; margin-top: 2px; }
   .choice .person { padding-left: 28px; }
-  .more { margin-top: 18px; font-size: 14px; color: var(--muted); }
+  .more { margin-top: 18px; font-size: var(--small); color: var(--muted); }
 
   .actionbar { position: sticky; bottom: 0; z-index: 2; margin-top: 6px; padding: 12px 0 calc(12px + env(safe-area-inset-bottom, 0px));
                min-height: calc(70px + env(safe-area-inset-bottom, 0px));
                background: var(--bg); border-top: 1px solid var(--line); display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
   .actionbar.off { visibility: hidden; }   /* hidden but still taking its space: no jumps */
   .actionbar .ic { width: 16px; height: 16px; margin-right: 5px; vertical-align: -3px; }
-  #followOut { flex: 1 1 100%; font-size: 14px; color: var(--muted); }
+  #followOut { flex: 1 1 100%; font-size: var(--small); color: var(--muted); }
   #followOut:empty { display: none; }
   #followBtn, #selAll:not(.link) { margin-left: auto; }
   .signout { margin: 28px 0 0; padding-top: 22px; border-top: 1px solid var(--line); }
-  footer { max-width: 700px; margin: 0 auto; padding: 0 20px 40px 66px; font-size: 14px; color: var(--muted); }
+  footer { max-width: 700px; margin: 0 auto; padding: 0 20px 40px 66px; font-size: var(--small); color: var(--muted); }
   footer a, footer span { white-space: nowrap; }   /* lines break between items, not inside them */
   footer a { color: inherit; text-underline-offset: 2px; }
   footer svg { width: 14px; height: 14px; margin-right: 5px; vertical-align: -2px; }
 
   @media (prefers-reduced-motion: reduce) { .bar > i { transition: none; } }
   @media (max-width: 560px) {
+    :root { --h1: 30px; --h2: 21px; }
     main { padding: 30px 16px 32px; }
-    h1 { font-size: 30px; }
     .hero { padding: 22px 58px 24px 20px; margin-inline: -4px; }
     .hero-spark { right: -60px; width: 120px; height: 120px; margin-top: -60px; }
     header h2 { margin: 18px 0 8px; }
@@ -381,7 +382,7 @@
 </ol>
 </main>
 <button type="button" class="fab" id="toTop" data-jump="top" aria-label="Back to top" hidden><svg class="ic"><use href="#i-up"/></svg></button>
-<footer><a href="https://sparkable.cc" target="_blank" rel="noopener noreferrer"><svg aria-hidden="true"><use href="#i-spark"/></svg>Made by Sparkable</a> · <a href="https://github.com/sparkable-cc/findfriends" target="_blank" rel="noopener noreferrer"><svg aria-hidden="true"><use href="#i-gh"/></svg>Source code on GitHub</a> · <a href="https://blog.sparkable.cc/legal/" target="_blank" rel="noopener noreferrer">Terms &amp; privacy</a> · <span>Version 1.0.26</span> · <span>Free and open source (AGPL-3.0)</span></footer>
+<footer><a href="https://sparkable.cc" target="_blank" rel="noopener noreferrer"><svg aria-hidden="true"><use href="#i-spark"/></svg>Made by Sparkable</a> · <a href="https://github.com/sparkable-cc/findfriends" target="_blank" rel="noopener noreferrer"><svg aria-hidden="true"><use href="#i-gh"/></svg>Source code on GitHub</a> · <a href="https://blog.sparkable.cc/legal/" target="_blank" rel="noopener noreferrer">Terms &amp; privacy</a> · <span>Version 1.0.27</span> · <span>Free and open source (AGPL-3.0)</span></footer>
 
 <script>
 'use strict';
@@ -1023,7 +1024,7 @@ function inviteText() {
   const hits = S.connections.filter(c => c.hit), li = hits.some(c => c.li), fb = hits.some(c => c.fb), me = S.session ? S.session.handle : '';
   return (hits.length >= 10 && !S.running ? 'I found ' + hits.length + ' of my ' + (li && fb ? 'LinkedIn and Facebook friends' : li ? 'LinkedIn connections' : 'Facebook friends') + ' on Sparkable already!'
     : 'I\'m on Sparkable now!') + ' It\'s healthier social media designed to bridge divides, and it runs on the same open network as Bluesky, ' +
-    'so millions of people are already there. Also, it\'s way more fun than LinkedIn 👀🎉\n\nCome find me: ' + APP_URL + (me ? '/profile/' + me : '') +
+    'so millions of people are already there. Also, it\'s way more fun than LinkedIn or Facebook 👀🎉\n\nCome find me: ' + APP_URL + (me ? '/profile/' + me : '') +
     (location.protocol === 'https:' ? '\n\nAlready on Sparkable or Bluesky? Find your friends there in a few clicks: ' + location.origin + location.pathname + (me ? '?from=' + me : '') : '');
 }
 
