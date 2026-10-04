@@ -18,13 +18,14 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#4153f5">
 <link rel="preload" href="inter.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="inter-bold.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath fill='%234153f5' d='M63 1C44 24 44 40 63 63C40 44 24 44 1 63C20 40 20 24 1 1C24 20 40 20 63 1Z'/%3E%3C/svg%3E">
 <!--
-  Version 1.0.24, October 4, 2026
+  Version 1.0.25, October 4, 2026
 
   RULES (do not break these)
   1. No backend, no outside code or fonts, no analytics. This file is the app;
-     its only companion is the Inter font (inter.woff2) from the same site.
+     its only companions are the Inter font files (inter*.woff2) from the same site.
   2. Contact files are read in memory only. Emails are never read. Employers
      and job titles never leave the tab. Bluesky only receives names, as searches.
   3. Name gate: an account is only considered if its display name contains the
@@ -50,8 +51,12 @@
     --accent: #4153f5; --accent-soft: #181b34; --on-accent: #fff; --link: #8d98f9;
     --ok: #cdf971; --caution: #f0c25a; --danger: #ff8a80;
   } }
-  /* Inter, the Sparkable app's font, served from this site: Latin letters incl. accents, weights 400-800 */
-  @font-face { font-family: Inter; font-weight: 400 800; font-display: swap; src: url(inter.woff2) format('woff2'); }
+  /* Inter from this site, as fixed regular and bold fonts: Safari's Lockdown Mode shows
+     variable fonts in regular only. Letters like ł or č load only when a name needs them. */
+  @font-face { font-family: Inter; font-display: swap; src: url(inter.woff2) format('woff2'); unicode-range: U+0-FF, U+2013-2193; }
+  @font-face { font-family: Inter; font-display: swap; font-weight: 700; src: url(inter-bold.woff2) format('woff2'); unicode-range: U+0-FF, U+2013-2193; }
+  @font-face { font-family: Inter; font-display: swap; src: url(inter-ext.woff2) format('woff2'); unicode-range: U+100-17F, U+218-21B; }
+  @font-face { font-family: Inter; font-display: swap; font-weight: 700; src: url(inter-bold-ext.woff2) format('woff2'); unicode-range: U+100-17F, U+218-21B; }
   *, *::before, *::after { box-sizing: border-box; }   /* explicit: <details> breaks inheritance */
   body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.55 Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; }
   main { max-width: 700px; margin: 0 auto; padding: 48px 20px 40px; }
@@ -68,6 +73,7 @@
   .hero { position: relative; overflow: hidden; margin: -8px 0 6px; padding: 28px 126px 30px 32px; border-radius: 24px; background: var(--accent); color: #fff; }
   .hero-spark { position: absolute; right: -110px; top: 50%; width: 220px; height: 220px; margin-top: -110px; color: var(--pink); }
   .hero .brand, .hero .lede, .hero .brand svg { color: #fff; }
+  .lede span { white-space: nowrap; }
   .lede svg { width: 18px; height: 18px; margin-right: 6px; vertical-align: -3px; fill: currentColor; }
   .hero > :not(svg) { position: relative; }   /* text above the spark */
   .start { display: inline-block; margin-top: 24px; padding: 11px 22px; border-radius: 999px; background: var(--lime); color: var(--accent); font-weight: 700; text-decoration: none; }
@@ -223,8 +229,8 @@
   @media (max-width: 560px) {
     main { padding: 30px 16px 32px; }
     h1 { font-size: 30px; }
-    .hero { padding: 22px 71px 24px 20px; margin-inline: -4px; }
-    .hero-spark { right: -55px; width: 110px; height: 110px; margin-top: -55px; }
+    .hero { padding: 22px 58px 24px 20px; margin-inline: -4px; }
+    .hero-spark { right: -60px; width: 120px; height: 120px; margin-top: -60px; }
     header h2 { margin: 18px 0 8px; }
     .flow { flex-direction: column; gap: 4px; }
     .card { display: grid; grid-template-columns: 34px 1fr; column-gap: 12px; align-items: center; text-align: left; padding: 8px 12px; }
@@ -273,7 +279,7 @@
   <div class="hero"><svg class="hero-spark" aria-hidden="true"><use href="#i-spark"/></svg>
   <a class="brand" href="https://sparkable.cc" target="_blank" rel="noopener noreferrer"><svg aria-hidden="true"><use href="#i-spark"/></svg>Sparkable</a>
   <h1>Find your friends on Sparkable</h1>
-  <p class="lede">Bring your <svg><use href="#i-li"/></svg>LinkedIn and <svg><use href="#i-fb"/></svg>Facebook friends with you.</p>
+  <p class="lede">Bring your <span><svg><use href="#i-li"/></svg>LinkedIn</span> and <span><svg><use href="#i-fb"/></svg>Facebook</span> friends with you.</p>
   <a class="start" href="#s1">Get started ↓</a></div>
   <h2>How it works</h2>
     <div class="flow">
@@ -367,7 +373,7 @@
 </ol>
 </main>
 <button type="button" class="fab" id="toTop" data-jump="top" aria-label="Back to top" hidden><svg class="ic"><use href="#i-up"/></svg></button>
-<footer><a href="https://sparkable.cc" target="_blank" rel="noopener noreferrer"><svg aria-hidden="true"><use href="#i-spark"/></svg>Made by Sparkable</a> · <a href="https://github.com/sparkable-cc/findfriends" target="_blank" rel="noopener noreferrer"><svg aria-hidden="true"><use href="#i-gh"/></svg>Source code on GitHub</a> · <a href="https://blog.sparkable.cc/legal/" target="_blank" rel="noopener noreferrer">Terms &amp; privacy</a> · <span>Version 1.0.24</span> · <span>Free and open source (AGPL-3.0)</span></footer>
+<footer><a href="https://sparkable.cc" target="_blank" rel="noopener noreferrer"><svg aria-hidden="true"><use href="#i-spark"/></svg>Made by Sparkable</a> · <a href="https://github.com/sparkable-cc/findfriends" target="_blank" rel="noopener noreferrer"><svg aria-hidden="true"><use href="#i-gh"/></svg>Source code on GitHub</a> · <a href="https://blog.sparkable.cc/legal/" target="_blank" rel="noopener noreferrer">Terms &amp; privacy</a> · <span>Version 1.0.25</span> · <span>Free and open source (AGPL-3.0)</span></footer>
 
 <script>
 'use strict';
