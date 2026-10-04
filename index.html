@@ -21,7 +21,7 @@
 <link rel="preload" href="inter-bold.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath fill='%234153f5' d='M63 1C44 24 44 40 63 63C40 44 24 44 1 63C20 40 20 24 1 1C24 20 40 20 63 1Z'/%3E%3C/svg%3E">
 <!--
-  Version 1.0.28, October 4, 2026
+  Version 1.0.29, October 4, 2026
 
   RULES (do not break these)
   1. No backend, no outside code or fonts, no analytics. This file is the app;
@@ -67,38 +67,37 @@
   .hint { font-size: var(--small); color: var(--muted); }
   .err { color: var(--danger); font-size: var(--small); margin-top: 10px; }
   .err:empty, [hidden] { display: none !important; }
-  :focus-visible { outline: 3px solid color-mix(in srgb, var(--accent) 60%, transparent); outline-offset: 2px; }
+  :focus-visible, .tabs input:focus-visible + label, .drop:focus-within { outline: 3px solid color-mix(in srgb, var(--accent) 60%, transparent); outline-offset: 2px; }
 
   /* Header: what this is, then what it promises */
-  .brand { display: inline-flex; align-items: center; gap: 7px; margin-bottom: 22px; font-size: var(--h3); font-weight: 700; letter-spacing: -0.02em; color: var(--ink); text-decoration: none; }
-  .brand svg { width: 22px; height: 22px; color: var(--accent); }
-  .hero { position: relative; overflow: hidden; margin: -8px 0 6px; padding: 28px 126px 30px 32px; border-radius: 24px; background: var(--accent); color: #fff; }
+  .brand { display: inline-flex; align-items: center; gap: 7px; margin-bottom: 22px; font-size: var(--h3); font-weight: 700; letter-spacing: -0.02em; color: inherit; text-decoration: none; }
+  .brand svg { width: 22px; height: 22px; }
+  .hero { position: relative; overflow: hidden; margin: -8px 0 6px; padding: 28px 126px 30px 32px; border-radius: 24px; background: var(--accent); color: var(--on-accent); }
   .hero-spark { position: absolute; right: -110px; top: 50%; width: 220px; height: 220px; margin-top: -110px; color: var(--pink); }
-  .hero .brand, .hero .lede, .hero .brand svg { color: #fff; }
   .lede span { white-space: nowrap; }
   .lede svg { width: 18px; height: 18px; margin-right: 6px; vertical-align: -3px; fill: currentColor; }
   .hero > :not(svg) { position: relative; }   /* text above the spark */
-  .from { display: flex; gap: 10px; align-items: center; margin: 14px 0 0; padding: 12px 16px; border: 2px dashed color-mix(in srgb, var(--accent) 45%, transparent); border-radius: 14px; background: var(--panel); font-size: var(--small); }
-  .from .ic { flex: none; width: 20px; height: 20px; color: var(--accent); }
-  .from a { display: block; width: fit-content; margin: 2px 0; color: inherit; font-weight: 700; text-decoration: none; }   /* the handle gets its own line */
+  .from { margin: 14px 0 0; padding: 12px 16px; }
+  .from a { display: block; width: fit-content; margin: 2px 0; color: var(--ink); font-weight: 700; text-decoration: none; }   /* the handle gets its own line */
   .from a:hover { text-decoration: underline; }
   .start { display: inline-block; margin-top: 24px; padding: 11px 22px; border-radius: 999px; background: var(--lime); color: var(--accent); font-weight: 700; text-decoration: none; }
   #s1 { scroll-margin-top: 16px; }
   h1 { font-size: var(--h1); font-weight: 700; line-height: 1.1; letter-spacing: -0.03em; margin: 0 0 8px; max-width: 14em; }
-  .lede { font-size: var(--h3); color: var(--muted); margin: 0; }
+  .lede { font-size: var(--h3); margin: 0; }
   html { overflow-anchor: none; }   /* we keep your place ourselves, see keepPlace() */
   .ic { width: 20px; height: 20px; flex: none; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
   /* Intro diagrams: soft cards, deliberately not shaped like buttons */
   h2 { font-size: var(--h2); font-weight: 700; }   /* every heading bold, also on phones */
   header h2 { margin: 24px 0 10px; }
-  .flow { display: flex; flex-direction: column; gap: 4px; }
+  .flow { display: flex; gap: 12px; }
   .op { align-self: center; font-size: var(--h2); font-weight: 700; line-height: 1; color: var(--accent); }
   /* "How it works" and "Safe and private" share one row: icon, bold title, description */
   .row { display: grid; grid-template-columns: 36px 1fr; column-gap: 14px; align-items: center; color: var(--muted); }
   .row b { color: var(--ink); }
   .row .ic { grid-row: span 2; width: 36px; height: 36px; padding: 8px; border-radius: 50%; background: var(--accent-soft); color: var(--accent); }
-  .card { padding: 10px 14px; border-radius: 16px; background: var(--accent-soft); }
-  .card .ic { background: var(--bg); }
+  .card { flex: 1; grid-template-columns: 1fr; justify-items: center; align-content: start; padding: 14px 12px; border-radius: 16px; background: var(--accent-soft); text-align: center; }
+  .card .ic { grid-row: auto; margin-bottom: 6px; background: var(--bg); }   /* desktop: icon above the text */
+  .flow + .hint { margin-top: 14px; }
   .checks { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; }
   header { padding-bottom: 28px; margin-bottom: 32px; border-bottom: 1px solid var(--line); }
 
@@ -122,7 +121,6 @@
   .tabs input { position: absolute; opacity: 0; }
   .tabs label { padding: 5px 14px; border: 1px solid var(--line); border-radius: 999px; font-size: var(--small); font-weight: 700; cursor: pointer; }
   .tabs input:checked + label { background: var(--ink); border-color: var(--ink); color: var(--bg); }
-  .tabs input:focus-visible + label { outline: 3px solid color-mix(in srgb, var(--accent) 60%, transparent); outline-offset: 2px; }
   #s1:has(#srcFb:checked) .li-how, #s1:has(#srcLi:checked) .fb-how { display: none; }
 
   label.field { display: block; font-size: var(--small); font-weight: 700; margin: 14px 0 5px; }
@@ -142,9 +140,8 @@
   button:disabled { opacity: .45; cursor: default; }
   .actions { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-top: 16px; }
 
-  .drop { position: relative; display: block; border: 2px dashed color-mix(in srgb, var(--accent) 45%, transparent); border-radius: 14px; padding: 24px 18px;
-          text-align: center; cursor: pointer; background: var(--panel); }
-  .drop:focus-within { outline: 3px solid color-mix(in srgb, var(--accent) 60%, transparent); outline-offset: 2px; }
+  .drop, .from { border: 2px dashed color-mix(in srgb, var(--accent) 45%, transparent); border-radius: 14px; background: var(--panel); }
+  .drop { position: relative; display: block; padding: 24px 18px; text-align: center; cursor: pointer; }
   .drop.over { border-color: var(--accent); background: var(--accent-soft); }
   .drop input { position: absolute; width: 1px; height: 1px; opacity: 0; }
   .drop span { display: block; font-size: var(--small); color: var(--muted); margin-top: 3px; }
@@ -164,7 +161,7 @@
   /* Result sections */
   .sec { margin-top: 18px; scroll-margin-top: 64px; }
   .sec > summary { font-size: var(--h3); font-weight: 700; padding: 4px 0; }
-  .sec[data-sec="inactive"] > summary, .sec[data-sec="already"] > summary { font-weight: 700; color: var(--muted); }
+  .sec[data-sec="inactive"] > summary, .sec[data-sec="already"] > summary { color: var(--muted); }
   .count { font-size: var(--small); font-weight: 700; color: var(--muted); background: var(--panel); border-radius: 999px; padding: 1px 8px; margin-left: 8px; vertical-align: 2px; }
   .sec-note { font-size: var(--small); color: var(--muted); margin: 2px 0 10px; }
   .people { border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
@@ -209,7 +206,6 @@
   .warn { color: var(--caution); }
   .why svg, .warn svg { flex: none; }
   .choice { border-top: 1px solid var(--line); }
-  .people > .choice:first-child { border-top: 0; }
   .choice > p { padding: 12px 16px 0; margin: 0; font-weight: 700; }
   .choice > p .li { font-weight: 400; margin-top: 2px; }
   .choice .person { padding-left: 28px; }
@@ -223,6 +219,9 @@
   #followOut { flex: 1 1 100%; font-size: var(--small); color: var(--muted); }
   #followOut:empty { display: none; }
   #followBtn, #selAll:not(.link) { margin-left: auto; }
+  #handle + .hint { margin-top: 8px; }
+  .later { margin-top: 24px; }
+  .sprite { position: absolute; }
   .signout { margin: 28px 0 0; padding-top: 22px; border-top: 1px solid var(--line); }
   footer { max-width: 700px; margin: 0 auto; padding: 0 20px 40px 66px; font-size: var(--small); color: var(--muted); }
   footer a, footer span { white-space: nowrap; }   /* lines break between items, not inside them */
@@ -232,6 +231,10 @@
   @media (prefers-reduced-motion: reduce) { .bar > i { transition: none; } }
   @media (max-width: 560px) {
     :root { --h1: 30px; --h2: 21px; }
+    .flow { flex-direction: column; gap: 4px; }
+    .card { grid-template-columns: 36px 1fr; justify-items: start; padding: 10px 14px; text-align: left; }
+    .card .ic { grid-row: span 2; margin: 0; }
+    .op { transform: rotate(90deg); }
     main { padding: 30px 16px 32px; }
     .hero { padding: 22px 58px 24px 20px; margin-inline: -4px; }
     .hero-spark { right: -60px; width: 120px; height: 120px; margin-top: -60px; }
@@ -259,7 +262,7 @@
 <body>
 <main>
 
-<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+<svg class="sprite" width="0" height="0" aria-hidden="true">
   <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></symbol>
   <symbol id="i-gone" viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></symbol>
   <symbol id="i-file" viewBox="0 0 24 24"><path d="M14 3H6v18h12V7l-4-4Zm0 0v4h4M9 12h6M9 16h6"/></symbol>
@@ -281,16 +284,16 @@
   <h1>Find your friends on Sparkable</h1>
   <p class="lede">Bring your <span><svg><use href="#i-li"/></svg>LinkedIn</span> and <span><svg><use href="#i-fb"/></svg>Facebook</span> friends with you.</p>
   <a class="start" href="#s1">Get started ↓</a></div>
-  <p class="from" id="from" hidden><svg class="ic" aria-hidden="true"><use href="#i-add"/></svg><span>This link suggests following<a id="fromH" target="_blank" rel="noopener noreferrer"></a>They'll be the first in your results below.</span></p>
+  <p class="from row" id="from" hidden><svg class="ic" aria-hidden="true"><use href="#i-add"/></svg><span>This link suggests following<a id="fromH" target="_blank" rel="noopener noreferrer"></a>They'll be the first in your results below.</span></p>
   <h2>How it works</h2>
     <div class="flow">
       <div class="row card"><svg class="ic"><use href="#i-file"/></svg><b>Get your friend list</b><span>From LinkedIn or Facebook</span></div>
-      <span class="op" aria-hidden="true">↓</span>
+      <span class="op" aria-hidden="true">→</span>
       <div class="row card"><svg class="ic"><use href="#i-search"/></svg><b>See who's here</b><span>On Sparkable and Bluesky, which are connected</span></div>
-      <span class="op" aria-hidden="true">↓</span>
+      <span class="op" aria-hidden="true">→</span>
       <div class="row card"><svg class="ic"><use href="#i-add"/></svg><b>Follow with a click</b><span>Only the people you choose</span></div>
     </div>
-    <p class="hint" style="margin-top:14px"><a href="https://github.com/sparkable-cc/findfriends#how-it-works" target="_blank" rel="noopener noreferrer">Learn more<svg class="ext" aria-hidden="true"><use href="#i-ext"/></svg></a></p>
+    <p class="hint"><a href="https://github.com/sparkable-cc/findfriends#how-it-works" target="_blank" rel="noopener noreferrer">Learn more<svg class="ext" aria-hidden="true"><use href="#i-ext"/></svg></a></p>
 
     <h2>Safe and private</h2>
     <ul class="checks">
@@ -319,7 +322,7 @@
       </ol>
       <label class="drop" id="drop">
         <input type="file" id="file" accept=".zip,.csv,.json" multiple>
-        <strong>Drop the ZIP file here, or click to choose it</strong>
+        <strong>Drop ZIP files here or click to select</strong>
         <span>Add both files to find more people</span>
       </label>
       <p id="fileErr" class="err" role="alert"></p>
@@ -334,7 +337,7 @@
       <p>Use your Sparkable or Bluesky account; it's the same one. Eurosky, Blacksky and others work too.</p>
       <label class="field" for="handle">Your handle</label>
       <input type="text" id="handle" placeholder="yourname.bsky.social" autocomplete="username" autocapitalize="none" spellcheck="false">
-      <p class="hint" style="margin-top:8px">You approve in a window from your account's server. This tool can only follow, unfollow and see profiles. It never sees your password.</p>
+      <p class="hint">You approve in a window from your account's server. This tool can only follow, unfollow and see profiles. It never sees your password.</p>
       <div class="actions"><button type="button" id="signin">Sign in and find my contacts</button></div>
       <p id="signinErr" class="err" role="alert"></p>
     </div>
@@ -367,7 +370,7 @@
       <p><strong>Tell your friends where to find you.</strong> Edit it and post it on LinkedIn or Facebook.</p>
       <textarea id="invite" aria-label="Post for LinkedIn"></textarea>
       <div class="actions"><button type="button" class="secondary" id="copyInvite">Copy text</button></div>
-      <p style="margin-top:24px"><strong>Come back in a month.</strong> New people join every week. Keep your file: next time, people you already follow are set aside, so it's quick.</p>
+      <p class="later"><strong>Come back in a month.</strong> New people join every week. Keep your file: next time, people you already follow are set aside, so it's quick.</p>
       <div class="actions"><button type="button" class="secondary" id="remind">📅 Remind me in a month</button></div>
       <p class="signout"><strong>Sign out.</strong> Clears your contacts and results here and ends the tool's access to your account.</p>
       <div class="actions"><button type="button" class="secondary" id="finishBtn">👋 Sign out and clear everything</button></div>
@@ -376,7 +379,7 @@
 </ol>
 </main>
 <button type="button" class="fab" id="toTop" data-jump="top" aria-label="Back to top" hidden><svg class="ic"><use href="#i-up"/></svg></button>
-<footer><a href="https://sparkable.cc" target="_blank" rel="noopener noreferrer"><svg aria-hidden="true"><use href="#i-spark"/></svg>Made by Sparkable</a> · <a href="https://github.com/sparkable-cc/findfriends" target="_blank" rel="noopener noreferrer"><svg aria-hidden="true"><use href="#i-gh"/></svg>Source code on GitHub</a> · <a href="https://blog.sparkable.cc/legal/" target="_blank" rel="noopener noreferrer">Terms &amp; privacy</a> · <span>Version 1.0.28</span> · <span>Free and open source (AGPL-3.0)</span></footer>
+<footer><a href="https://sparkable.cc" target="_blank" rel="noopener noreferrer"><svg aria-hidden="true"><use href="#i-spark"/></svg>Made by Sparkable</a> · <a href="https://github.com/sparkable-cc/findfriends" target="_blank" rel="noopener noreferrer"><svg aria-hidden="true"><use href="#i-gh"/></svg>Source code on GitHub</a> · <a href="https://blog.sparkable.cc/legal/" target="_blank" rel="noopener noreferrer">Terms &amp; privacy</a> · <span>Version 1.0.29</span> · <span>Free and open source (AGPL-3.0)</span></footer>
 
 <script>
 'use strict';
