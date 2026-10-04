@@ -12,6 +12,7 @@ Everything happens in your browser. There's no Sparkable server behind this page
 2. **Sign in** with your Sparkable or Bluesky account (Eurosky, Blacksky and others work too), on your own account's sign-in page.
 3. **See who's here.** The page searches for each contact by name, across the open network that Sparkable and Bluesky share.
 4. **Choose who to follow.** Nothing is selected for you, and you can undo every follow.
+5. **Tell your friends, if you like.** The page writes a post for LinkedIn or Facebook. Its link puts you first in the results of anyone who opens it. A reminder button adds a calendar entry to search again in a month, made on your device.
 
 ### Who gets suggested, and who never does
 
@@ -49,6 +50,7 @@ A bio that links to a *different* LinkedIn profile rules the account out. Facebo
 - **Your file stays on your device.** The page reads it inside your browser and never uploads it.
 - **Only names go out.** To search, the page sends each contact's name to Bluesky's public search. The accounts it finds are then looked up through your own account server, to see who you have in common.
 - **Nothing is saved.** No database, no cookies, nothing kept in your browser. Close the tab and it's gone.
+- **Invite links send nothing.** A link like `findfriends.sparkable.cc/?from=name` only shows that handle. It's looked up after you sign in, never before.
 - **It can do very little with your account.** Sign-in uses atproto OAuth and only allows following, unfollowing and reading profiles. The page can't post, send messages, delete posts or change your account, and it never sees your password.
 - **No tracking.** No analytics and no code from other companies. The only other file the page loads is its font, from the same site.
 
@@ -62,10 +64,10 @@ A bio that links to a *different* LinkedIn profile rules the account out. Facebo
 
 ## Check that the live page matches this code
 
-Each release publishes the SHA-256 checksums of the files the page loads. Current version 1.0.25:
+Each release publishes the SHA-256 checksums of the files the page loads. Current version 1.0.26:
 
 ```
-66fba0a42b671e872b9abf86821261f263c589a216799c3ea568d5ca4537d777  index.html
+07f8b2c6cafc8875a428aa46c451ff5cc9e486618dc32ce125271f25a703db07  index.html
 23d9a7372e637c1e534a28a3f0cfc5201499525bda7d3d858aec47f22e84bfe6  inter.woff2
 79b5e33258fc2fc2017df94055a97b7729c132c229ffe4d3ba3da961f9ec7c94  inter-bold.woff2
 a95d2e22d10445edc11987b9ca33d2adc4814b63123aeaa9ca805026a847da9a  inter-ext.woff2
