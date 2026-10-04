@@ -7,7 +7,7 @@
 <!-- Lock: only this script may run, identified by its fingerprint. After editing it,
      paste the new fingerprint from the browser console here. Any https server may be
      contacted, so every AT Protocol server works. -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-3Yz6nlrkty0v9D65LS7ksO7D0x0kZliHRALfG/c1wes='; style-src 'unsafe-inline'; img-src https: data:; font-src 'self'; connect-src https:; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-SccO4LlODgyXtadgauzX9QTpO394fEKn2+TQ1TAd1Qo='; style-src 'unsafe-inline'; img-src https: data:; font-src 'self'; connect-src https:; base-uri 'none'; form-action 'none'">
 <title>Find your friends on Sparkable</title>
 <meta name="description" content="Find your LinkedIn and Facebook friends on Sparkable and Bluesky. Free, private and open source.">
 <meta property="og:title" content="Find your friends on Sparkable">
@@ -21,7 +21,7 @@
 <link rel="preload" href="inter-bold.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath fill='%234153f5' d='M63 1C44 24 44 40 63 63C40 44 24 44 1 63C20 40 20 24 1 1C24 20 40 20 63 1Z'/%3E%3C/svg%3E">
 <!--
-  Version 1.0.31, October 4, 2026
+  Version 1.0.32, October 4, 2026
 
   RULES (do not break these)
   1. No backend, no outside code or fonts, no analytics. This file is the app;
@@ -51,14 +51,14 @@
     --s1: 4px; --s2: 8px; --s3: 12px; --s4: 16px; --s5: 24px; --s6: 32px; --s7: 48px;
     --r: 14px; --r-lg: 24px; --pill: 999px;
     --gutter: 24px; --pad: 16px;
-    --dot: 30px; --indent: 46px;   /* step number, step indent */
+    --dot: 30px; --indent: 46px;
     box-sizing: border-box;
     padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px);
   }
   @media (prefers-color-scheme: dark) { :root {
     --bg: #111214; --panel: #1b1c1f; --line: #2c2d31; --ink: #f2f2f3; --muted: #a2a6ad;
     --accent-soft: #181b34; --link: #8d98f9;
-    --ok: #cdf971; --caution: #f0c25a; --danger: #ff8a80;
+    --ok: #cdf971; --caution: #f0c25a; --danger: #ff8a80; --lime-soft: color-mix(in srgb, var(--lime) 14%, var(--bg));
   } }
   @media (max-width: 560px) { :root { --h1: 30px; --h2: 21px; --gutter: 16px; --pad: 12px; --dot: 26px; --indent: 38px; } }
 
@@ -70,7 +70,7 @@
 
   /* Base */
   *, *::before, *::after { box-sizing: border-box; }   /* explicit: <details> breaks inheritance */
-  html { overflow-anchor: none; }   /* we keep your place ourselves, see keepPlace() */
+  html { overflow-anchor: none; scroll-padding-bottom: 96px; }   /* focus stays clear of the bottom bar */   /* we keep your place ourselves, see keepPlace() */
   body { margin: 0; background: var(--bg); color: var(--ink); font: var(--body)/1.55 Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; }
   main { max-width: 700px; margin: 0 auto; padding: var(--s6) var(--gutter); }
   a { color: var(--link); }
@@ -248,7 +248,7 @@
   footer a, footer span { white-space: nowrap; }   /* lines break between items, not inside them */
   footer a { color: inherit; text-underline-offset: 2px; }
 
-  @media (prefers-reduced-motion: reduce) { .bar > i { transition: none; } }
+  @media (prefers-reduced-motion: reduce) { .bar > i, .fab { transition: none; } }
   @media (max-width: 560px) {
     main { padding-top: var(--s5); }
     .hero { padding: var(--s5) 58px var(--s5) var(--s4); }
@@ -298,24 +298,24 @@
   <div class="hero"><svg class="hero-spark" aria-hidden="true"><use href="#i-spark"/></svg>
   <a class="brand" href="https://sparkable.cc" target="_blank" rel="noopener noreferrer"><svg aria-hidden="true"><use href="#i-spark"/></svg>Sparkable</a>
   <h1>Find your friends on Sparkable</h1>
-  <p class="lede">Bring your <span><svg><use href="#i-li"/></svg>LinkedIn</span> and <span><svg><use href="#i-fb"/></svg>Facebook</span> friends with you.</p>
+  <p class="lede">Bring your <span><svg aria-hidden="true"><use href="#i-li"/></svg>LinkedIn</span> and <span><svg aria-hidden="true"><use href="#i-fb"/></svg>Facebook</span> friends with you.</p>
   <a class="btn start" href="#s1">Get started ↓</a></div>
   <p class="from row" id="from" hidden><svg class="ic" aria-hidden="true"><use href="#i-add"/></svg><span>This link suggests following<a id="fromH" target="_blank" rel="noopener noreferrer"></a>They'll be the first in your results below.</span></p>
   <h2>How it works</h2>
     <div class="flow">
-      <div class="row card"><svg class="ic"><use href="#i-file"/></svg><b>Get your friend list</b><span>From LinkedIn or Facebook</span></div>
+      <div class="row card"><svg class="ic" aria-hidden="true"><use href="#i-file"/></svg><b>Get your friend list</b><span>From LinkedIn or Facebook</span></div>
       <span class="op" aria-hidden="true">→</span>
-      <div class="row card"><svg class="ic"><use href="#i-search"/></svg><b>See who's here</b><span>On Sparkable, Bluesky and other apps on the <a href="https://en.wikipedia.org/wiki/AT_Protocol" target="_blank" rel="noopener noreferrer">AT Protocol<svg class="ext" aria-hidden="true"><use href="#i-ext"/></svg></a></span></div>
+      <div class="row card"><svg class="ic" aria-hidden="true"><use href="#i-search"/></svg><b>See who's here</b><span>On Sparkable, Bluesky and other apps on the <a href="https://en.wikipedia.org/wiki/AT_Protocol" target="_blank" rel="noopener noreferrer">AT Protocol<svg class="ext" role="img" aria-label="(new tab)"><use href="#i-ext"/></svg></a></span></div>
       <span class="op" aria-hidden="true">→</span>
-      <div class="row card"><svg class="ic"><use href="#i-add"/></svg><b>Follow with a click</b><span>Only the people you choose</span></div>
+      <div class="row card"><svg class="ic" aria-hidden="true"><use href="#i-add"/></svg><b>Follow with a click</b><span>Only the people you choose</span></div>
     </div>
-    <p class="hint"><a href="https://github.com/sparkable-cc/findfriends#how-it-works" target="_blank" rel="noopener noreferrer">Learn more<svg class="ext" aria-hidden="true"><use href="#i-ext"/></svg></a></p>
+    <p class="hint"><a href="https://github.com/sparkable-cc/findfriends#how-it-works" target="_blank" rel="noopener noreferrer">Learn more<svg class="ext" role="img" aria-label="(new tab)"><use href="#i-ext"/></svg></a></p>
 
     <h2>Safe and private</h2>
     <ul class="checks">
-      <li class="row"><svg class="ic"><use href="#i-lock"/></svg><b>Your file stays on your device</b><span>Only names are looked up, on Bluesky.</span></li>
-      <li class="row"><svg class="ic"><use href="#i-gone"/></svg><b>Nothing is saved</b><span>Close the page and it's gone.</span></li>
-      <li class="row"><svg class="ic"><use href="#i-gh"/></svg><b>Open source</b><span>Anyone can <a href="https://github.com/sparkable-cc/findfriends" target="_blank" rel="noopener noreferrer">check the code<svg class="ext" aria-hidden="true"><use href="#i-ext"/></svg></a>.</span></li>
+      <li class="row"><svg class="ic" aria-hidden="true"><use href="#i-lock"/></svg><b>Your file stays on your device</b><span>Only names are looked up, on Bluesky.</span></li>
+      <li class="row"><svg class="ic" aria-hidden="true"><use href="#i-gone"/></svg><b>Nothing is saved</b><span>Close the page and it's gone.</span></li>
+      <li class="row"><svg class="ic" aria-hidden="true"><use href="#i-gh"/></svg><b>Open source</b><span>Anyone can <a href="https://github.com/sparkable-cc/findfriends" target="_blank" rel="noopener noreferrer">check the code<svg class="ext" role="img" aria-label="(new tab)"><use href="#i-ext"/></svg></a>.</span></li>
     </ul>
 </header>
 
@@ -327,12 +327,12 @@
     <div class="body">
       <p class="tabs"><input type="radio" name="src" id="srcLi" checked><label for="srcLi">LinkedIn</label><input type="radio" name="src" id="srcFb"><label for="srcFb">Facebook</label></p>
       <ol class="howto li-how">
-        <li>On LinkedIn, go to Settings → Data privacy → Get a copy of your data (<a href="https://www.linkedin.com/help/linkedin/answer/50191" target="_blank" rel="noopener noreferrer">help page<svg class="ext" aria-hidden="true"><use href="#i-ext"/></svg></a>).</li>
+        <li>On LinkedIn, go to Settings → Data privacy → Get a copy of your data (<a href="https://www.linkedin.com/help/linkedin/answer/50191" target="_blank" rel="noopener noreferrer">help page<svg class="ext" role="img" aria-label="(new tab)"><use href="#i-ext"/></svg></a>).</li>
         <li>Pick only <strong>Connections</strong> and request it. LinkedIn emails you a link, usually within minutes.</li>
         <li>Drop the ZIP file here. No need to unzip it.</li>
       </ol>
       <ol class="howto fb-how">
-        <li>On Facebook, go to Settings → Meta Account → Your information and permissions → Export your information (<a href="https://www.facebook.com/help/212802592074644" target="_blank" rel="noopener noreferrer">help page<svg class="ext" aria-hidden="true"><use href="#i-ext"/></svg></a>).</li>
+        <li>On Facebook, go to Settings → Meta Account → Your information and permissions → Export your information (<a href="https://www.facebook.com/help/212802592074644" target="_blank" rel="noopener noreferrer">help page<svg class="ext" role="img" aria-label="(new tab)"><use href="#i-ext"/></svg></a>).</li>
         <li>Choose <strong>Export to device</strong>, pick only your <strong>friends</strong> list, set the format to <strong>JSON</strong> and start the export.</li>
         <li>Drop the ZIP file here. No need to unzip it.</li>
       </ol>
@@ -388,14 +388,14 @@
       <div class="actions"><button type="button" class="secondary" id="copyInvite">Copy text</button></div>
       <p class="later"><strong>Come back in a month.</strong> New people join every week. Keep your file: next time, people you already follow are set aside, so it's quick.</p>
       <div class="actions"><button type="button" class="secondary" id="remind">📅 Remind me in a month</button></div>
-      <p class="signout"><strong>All done?</strong> The people you followed are waiting on Sparkable. Signing out clears your contacts and results here and ends the tool's access to your account.</p>
-      <div class="actions"><a class="btn" href="https://sparkable.cc" target="_blank" rel="noopener noreferrer">Go to Sparkable<svg class="ext" aria-hidden="true"><use href="#i-ext"/></svg></a><button type="button" class="secondary" id="finishBtn">👋 Sign out and clear everything</button></div>
+      <p class="signout"><strong>All done?</strong> Copy your post first if you want it. This button signs you out of the tool, clears your contacts and results here and takes you to Sparkable, where the people you followed are waiting.</p>
+      <div class="actions"><button type="button" id="finishBtn">Sign out and go to Sparkable</button></div>
     </div>
   </li>
 </ol>
 </main>
-<button type="button" class="fab" id="toTop" data-jump="top" aria-label="Back to top" hidden><svg class="ic"><use href="#i-up"/></svg></button>
-<footer><a href="https://sparkable.cc" target="_blank" rel="noopener noreferrer"><svg aria-hidden="true"><use href="#i-spark"/></svg>Made by Sparkable</a> · <a href="https://github.com/sparkable-cc/findfriends" target="_blank" rel="noopener noreferrer"><svg aria-hidden="true"><use href="#i-gh"/></svg>Source code on GitHub</a> · <a href="https://blog.sparkable.cc/legal/" target="_blank" rel="noopener noreferrer">Terms &amp; privacy</a> · <span>Version 1.0.31</span> · <span>Free and open source (AGPL-3.0)</span></footer>
+<button type="button" class="fab" id="toTop" data-jump="top" aria-label="Back to top" hidden><svg class="ic" aria-hidden="true"><use href="#i-up"/></svg></button>
+<footer><a href="https://sparkable.cc" target="_blank" rel="noopener noreferrer"><svg aria-hidden="true"><use href="#i-spark"/></svg>Made by Sparkable</a> · <a href="https://github.com/sparkable-cc/findfriends" target="_blank" rel="noopener noreferrer"><svg aria-hidden="true"><use href="#i-gh"/></svg>Source code on GitHub</a> · <a href="https://blog.sparkable.cc/legal/" target="_blank" rel="noopener noreferrer">Terms &amp; privacy</a> · <span>Version 1.0.32</span> · <span>Free and open source (AGPL-3.0)</span></footer>
 
 <script>
 'use strict';
@@ -865,7 +865,7 @@ const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&a
 const TICK = '<svg width="18" height="18" viewBox="0 0 20 20" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" d="m4.5 10.5 3.5 3.5 7.5-8"/></svg>';
 const WARN = '<svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" d="M8 2 1.8 13.2h12.4L8 2Z"/><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" d="M8 6.5v3.2M8 11.6v.1"/></svg>';
 const avatar = (url, cls) => /^https:\/\//.test(url || '') ? '<img class="' + cls + '" src="' + esc(url) + '" alt="" loading="lazy">' : '<span class="' + cls + '" aria-hidden="true"></span>';
-const EXT = '<svg class="ext" aria-hidden="true"><use href="#i-ext"/></svg>';
+const EXT = '<svg class="ext" role="img" aria-label="(new tab)"><use href="#i-ext"/></svg>';
 const LI = '<svg class="li-ic" aria-hidden="true"><use href="#i-li"/></svg>';
 const profileLink = p => '<a class="who" href="' + APP_URL + '/profile/' + esc(p.handle) + '" target="_blank" rel="noopener noreferrer" title="Open on Sparkable">' +
   '<b class="pname">' + esc(p.displayName || p.handle) + '</b><span class="handle">@' + esc(p.handle) + EXT + '</span></a>';
@@ -1101,13 +1101,14 @@ function signedOutMidway(msg) {
 
 async function finish() {
   const sess = S.session;
-  if (sess) authPost(sess.as.revocation_endpoint, { client_id: sess.client, token: sess.refresh }).catch(() => {});   // ends the tool's access
+  const revoked = sess && authPost(sess.as.revocation_endpoint, { client_id: sess.client, token: sess.refresh }).catch(() => {});   // ends the tool's access
   generation++; resetAll();
   ['file', 'handle', 'invite'].forEach(id => { $(id).value = ''; });
   $('results').innerHTML = ''; $('followOut').textContent = ''; $('progText').textContent = '';
   setStep(1, 'active'); setStep(2, 'todo'); setStep(3, 'todo');
   $('s4t').textContent = 'Done';
   setStep(4, 'done', 'Signed out. Your contact list and results are cleared, and we asked your server to end the tool\'s access.');
+  return revoked;
 }
 
 function notice(text) { $(S.following ? 'followOut' : 'progText').textContent = text; }
@@ -1168,7 +1169,7 @@ function init() {
   });
   ['wheel', 'touchstart', 'keydown', 'pointerdown'].forEach(t => addEventListener(t, () => { S.pinTop = false; }, { passive: true }));
   addEventListener('scroll', () => { if (!spyQueued) { spyQueued = true; requestAnimationFrame(() => spy()); } }, { passive: true });
-  $('finishBtn').addEventListener('click', finish);
+  $('finishBtn').addEventListener('click', () => Promise.race([finish().catch(() => {}), sleep(2000)]).then(() => location.assign(APP_URL)));   // wait for the sign-out, at most 2s
 }
 
 if (typeof document !== 'undefined') {

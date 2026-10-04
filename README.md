@@ -61,13 +61,14 @@ A bio that links to a *different* LinkedIn profile rules the account out. Facebo
 - **You can check it.** The code is public, and the checksums below let anyone confirm that the live page is exactly this code.
 - **One search covers the open network.** Sparkable, Bluesky and other apps share the same open network (the [AT Protocol](https://en.wikipedia.org/wiki/AT_Protocol)), so one search finds people on all of them, and an account from any of them can sign in.
 - **Small and quick.** Under 100 KB, fonts included.
+- **Accessible.** Checked with the axe accessibility tester against WCAG 2.2 AA, in light and dark mode, with no issues found. Works with a keyboard alone, and links that open a new tab say so to screen readers.
 
 ## Check that the live page matches this code
 
-Each release publishes the SHA-256 checksums of the files the page loads. Current version 1.0.31:
+Each release publishes the SHA-256 checksums of the files the page loads. Current version 1.0.32:
 
 ```
-7afdd1d6049422beacef40e25925e6d8e67a108da95f7f907e598399b981b8f1  index.html
+80e7cb073e0aa8a05cabcc4ce754aaf6acd2cd0e1ebe3d8fe51b8e60b909f201  index.html
 23d9a7372e637c1e534a28a3f0cfc5201499525bda7d3d858aec47f22e84bfe6  inter.woff2
 79b5e33258fc2fc2017df94055a97b7729c132c229ffe4d3ba3da961f9ec7c94  inter-bold.woff2
 a95d2e22d10445edc11987b9ca33d2adc4814b63123aeaa9ca805026a847da9a  inter-ext.woff2
