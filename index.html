@@ -7,7 +7,7 @@
 <!-- Lock: only this script may run, identified by its fingerprint. After editing it,
      paste the new fingerprint from the browser console here. Any https server may be
      contacted, so every AT Protocol server works. -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-dQXRZ57wcxxLKQKZn6ooIwOqBDvyIqJBBSNc8YguYhM='; style-src 'unsafe-inline'; img-src https: data:; font-src 'self'; connect-src https:; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-dwXNY8ogTgJjdMcj9nPCh088xvX0iaQMpvMYy4kA6U0='; style-src 'unsafe-inline'; img-src https: data:; font-src 'self'; connect-src https:; base-uri 'none'; form-action 'none'">
 <title>Find your friends on Sparkable</title>
 <meta name="description" content="Find your LinkedIn and Facebook friends on Sparkable and Bluesky. Free, private and open source.">
 <meta property="og:title" content="Find your friends on Sparkable">
@@ -21,7 +21,7 @@
 <link rel="preload" href="inter-bold.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath fill='%234153f5' d='M63 1C44 24 44 40 63 63C40 44 24 44 1 63C20 40 20 24 1 1C24 20 40 20 63 1Z'/%3E%3C/svg%3E">
 <!--
-  Version 1.0.25, October 4, 2026
+  Version 1.0.26, October 4, 2026
 
   RULES (do not break these)
   1. No backend, no outside code or fonts, no analytics. This file is the app;
@@ -40,6 +40,7 @@
 <style>
   :root {
     color-scheme: light dark;
+    -webkit-text-size-adjust: 100%; text-size-adjust: 100%;   /* no automatic text enlarging in landscape */
     --bg: #fff; --panel: #f5f5f6; --line: #e6e6e8; --ink: #15171a; --muted: #5f646c;
     --accent: #4153f5; --accent-soft: #eceefe; --on-accent: #fff; --link: #4153f5;
     --ok: #4a6b00; --lime: #cdf971; --pink: #fa7ac4; --caution: #855700; --danger: #b3261e;
@@ -76,6 +77,10 @@
   .lede span { white-space: nowrap; }
   .lede svg { width: 18px; height: 18px; margin-right: 6px; vertical-align: -3px; fill: currentColor; }
   .hero > :not(svg) { position: relative; }   /* text above the spark */
+  .from { display: flex; gap: 10px; align-items: center; margin: 14px 0 0; padding: 12px 16px; border: 2px dashed color-mix(in srgb, var(--accent) 45%, transparent); border-radius: 14px; background: var(--panel); font-size: 14px; }
+  .from .ic { flex: none; width: 20px; height: 20px; color: var(--accent); }
+  .from a { display: block; width: fit-content; margin: 2px 0; font-size: 16px; color: inherit; font-weight: 700; text-decoration: none; }   /* the handle gets its own line */
+  .from a:hover { text-decoration: underline; }
   .start { display: inline-block; margin-top: 24px; padding: 11px 22px; border-radius: 999px; background: var(--lime); color: var(--accent); font-weight: 700; text-decoration: none; }
   #s1 { scroll-margin-top: 16px; }
   h1 { font-size: 38px; font-weight: 800; line-height: 1.1; letter-spacing: -0.03em; margin: 0 0 8px; max-width: 14em; }
@@ -281,6 +286,7 @@
   <h1>Find your friends on Sparkable</h1>
   <p class="lede">Bring your <span><svg><use href="#i-li"/></svg>LinkedIn</span> and <span><svg><use href="#i-fb"/></svg>Facebook</span> friends with you.</p>
   <a class="start" href="#s1">Get started ↓</a></div>
+  <p class="from" id="from" hidden><svg class="ic" aria-hidden="true"><use href="#i-add"/></svg><span>This link suggests following<a id="fromH" target="_blank" rel="noopener noreferrer"></a>They'll be the first in your results below.</span></p>
   <h2>How it works</h2>
     <div class="flow">
       <div class="card"><span class="dot"><svg class="ic"><use href="#i-file"/></svg></span><b>Get your friend list</b>From LinkedIn or Facebook</div>
@@ -366,6 +372,8 @@
       <p><strong>Tell your friends where to find you.</strong> Edit it and post it on LinkedIn or Facebook.</p>
       <textarea id="invite" aria-label="Post for LinkedIn"></textarea>
       <div class="actions"><button type="button" class="secondary" id="copyInvite">Copy text</button></div>
+      <p style="margin-top:24px"><strong>Come back in a month.</strong> New people join every week. Keep your file: next time, people you already follow are set aside, so it's quick.</p>
+      <div class="actions"><button type="button" class="secondary" id="remind">📅 Remind me in a month</button></div>
       <p class="signout"><strong>Sign out.</strong> Clears your contacts and results here and ends the tool's access to your account.</p>
       <div class="actions"><button type="button" class="secondary" id="finishBtn">👋 Sign out and clear everything</button></div>
     </div>
@@ -373,7 +381,7 @@
 </ol>
 </main>
 <button type="button" class="fab" id="toTop" data-jump="top" aria-label="Back to top" hidden><svg class="ic"><use href="#i-up"/></svg></button>
-<footer><a href="https://sparkable.cc" target="_blank" rel="noopener noreferrer"><svg aria-hidden="true"><use href="#i-spark"/></svg>Made by Sparkable</a> · <a href="https://github.com/sparkable-cc/findfriends" target="_blank" rel="noopener noreferrer"><svg aria-hidden="true"><use href="#i-gh"/></svg>Source code on GitHub</a> · <a href="https://blog.sparkable.cc/legal/" target="_blank" rel="noopener noreferrer">Terms &amp; privacy</a> · <span>Version 1.0.25</span> · <span>Free and open source (AGPL-3.0)</span></footer>
+<footer><a href="https://sparkable.cc" target="_blank" rel="noopener noreferrer"><svg aria-hidden="true"><use href="#i-spark"/></svg>Made by Sparkable</a> · <a href="https://github.com/sparkable-cc/findfriends" target="_blank" rel="noopener noreferrer"><svg aria-hidden="true"><use href="#i-gh"/></svg>Source code on GitHub</a> · <a href="https://blog.sparkable.cc/legal/" target="_blank" rel="noopener noreferrer">Terms &amp; privacy</a> · <span>Version 1.0.26</span> · <span>Free and open source (AGPL-3.0)</span></footer>
 
 <script>
 'use strict';
@@ -571,6 +579,9 @@ function assess(conn, p) {
 
 /* ===== 4. Network: public reads, and OAuth for everything signed in ===== */
 
+/* A shared link can suggest one person: ?from=their.handle. Shown as the bare handle and only looked
+   up after you sign in, so opening the link sends nothing anywhere. */
+const FROM = ((/^[a-z0-9-]+(\.[a-z0-9-]+)+$/i.exec(new URLSearchParams(location.search).get('from') || '') || [''])[0]).toLowerCase();
 const APP_URL = 'https://sparkable.cc';   // where profile links and the post point
 const PUBLIC_API = 'https://public.api.bsky.app';   // the network's public, cached search service
 /* Everything this tool may do with your account: create and delete follows, and
@@ -690,6 +701,7 @@ let generation = 0;   // bumps on sign-out or a new file, so old runs stop
 const S = {};
 function resetResults() {
   Object.assign(S, { running: false, done: 0, groups: [], seen: new Set(), already: [], weak: 0, none: 0, errors: 0 });
+  S.connections.forEach(c => c.hit = 0);
 }
 function resetAll() {
   Object.assign(S, { connections: [], session: null, selected: new Set(), followed: new Map(), following: false, key: null, jwk: null, openState: new Map(), here: '' });
@@ -716,7 +728,7 @@ async function activityOf(p) {
 async function judge(conn, profiles, gen) {
   // If you already follow one of them, that's your contact and the others aren't.
   const mine = profiles.find(p => p.viewer && p.viewer.following);
-  if (mine) { if (!S.seen.has(mine.did)) { S.seen.add(mine.did); S.already.push(mine); } return; }
+  if (mine) { if (!S.seen.has(mine.did)) { S.seen.add(mine.did); S.already.push(mine); conn.hit = 1; } return; }
   let cands = [];
   for (const p of profiles) {
     const v = p.viewer || {};
@@ -731,6 +743,7 @@ async function judge(conn, profiles, gen) {
   const acts = await Promise.all(cands.map(c => activityOf(c.p)));
   if (gen !== generation) return;
   cands.forEach((c, i) => Object.assign(c, acts[i]));
+  conn.hit = cands.length < 2;   // counted in the post only when it's clearly them
   S.groups.push({ conn, cands: cands.sort((a, b) => (a.inactive - b.inactive) || (b.score - a.score)), ambiguous: cands.length > 1 });
 }
 
@@ -754,8 +767,16 @@ async function runSearch() {
   resetResults();
   S.running = true; S.pinTop = true;
   setStep(3, 'active'); setStep(4, 'active'); $('s4t').textContent = 'Optional: tell your friends';
-  $('invite').value = inviteText();
+  $('invite').value = S.post = inviteText();
   progress(); render();
+  if (FROM) try {   // the person from the link goes first, unless that's you
+    const { profiles: [p] = [] } = await xrpc('app.bsky.actor.getProfiles', { params: { actors: [FROM] } });
+    if (p && p.did !== S.session.did && !S.seen.has(p.did)) {
+      S.seen.add(p.did);
+      if (p.viewer && p.viewer.following) S.already.push(p);
+      else S.groups.push({ link: true, conn: contact('', '', { query: p.displayName || p.handle }), cands: [{ p, link: true, why: 'Suggested in the link you opened' }] });
+    }
+  } catch {}
 
   const queue = [], jobs = [];
   let queued = 0;
@@ -781,6 +802,7 @@ async function runSearch() {
   await Promise.all(jobs);
   if (gen !== generation) return;
   S.running = false;
+  if ($('invite').value === S.post) $('invite').value = S.post = inviteText();   // add the count, unless you've edited the post
   render();
 }
 
@@ -848,24 +870,25 @@ function setStep(n, state, summary) {
 }
 
 const SECTIONS = [   // key, title, short label for the jump bar, explanation, open at first
+  ['link', 'From your link', 'Link', 'Suggested in the link you opened. Follow them if you like.', true],
   ['strong', 'Strong matches', 'Strong', 'Same full name, plus clear signs like people in common, a bio that fits or they follow you.', true],
   ['likely', 'Likely matches', 'Likely', 'Same full name, but fewer signs it\'s them. Take a quick look before following.', true],
   ['choose', 'Multiple matches', 'Multiple', 'Several people with this exact name fit. Choose the one you know, or skip.', true],
   ['inactive', 'Probably inactive', 'Inactive', 'Same full name and a sign it\'s them, but they\'ve never posted anything.', false],
   ['already', 'Following', 'Following', 'Just followed at the top, where you can undo. Then people you already followed.', false]
 ];
-const sectionOf = g => g.cands.every(c => c.inactive) ? 'inactive' : g.ambiguous ? 'choose' : g.cands[0].strong ? 'strong' : 'likely';
+const sectionOf = g => g.link ? 'link' : g.cands.every(c => c.inactive) ? 'inactive' : g.ambiguous ? 'choose' : g.cands[0].strong ? 'strong' : 'likely';
 const byStrength = (a, b) => (b.cands[0].score - a.cands[0].score) || (b.cands[0].known - a.cands[0].known);
 const followedIn = g => g.cands.find(c => S.followed.has(c.p.did));
 const grouped = () => {
-  const by = { strong: [], likely: [], choose: [], inactive: [] }, fresh = [], order = [...S.followed.keys()];
+  const by = { link: [], strong: [], likely: [], choose: [], inactive: [] }, fresh = [], order = [...S.followed.keys()];
   S.groups.forEach(g => (followedIn(g) ? fresh : by[sectionOf(g)]).push(g));
   Object.values(by).forEach(list => list.sort(byStrength));
   fresh.sort((a, b) => order.indexOf(followedIn(b).p.did) - order.indexOf(followedIn(a).p.did));   // newest first
   by.already = [...fresh.map(g => ({ p: followedIn(g).p, fresh: true })), ...S.already.map(p => ({ p }))];
   return by;
 };
-const displayOrder = () => { const by = grouped(); return ['strong', 'likely', 'choose', 'inactive'].flatMap(k => by[k].flatMap(g => g.cands.map(c => c.p.did))); };
+const displayOrder = () => { const by = grouped(); return ['link', 'strong', 'likely', 'choose', 'inactive'].flatMap(k => by[k].flatMap(g => g.cands.map(c => c.p.did))); };
 /* People a "Select all" button can pick: one clear candidate, not yet followed. */
 const picksFor = key => grouped()[key].filter(g => !g.ambiguous).map(g => g.cands[0].p.did).filter(d => !S.followed.has(d));
 
@@ -883,7 +906,7 @@ function socialHTML(kf) {
 function personHTML(c, conn, showLinkedIn) {
   const p = c.p, did = esc(p.did), name = esc(p.displayName || p.handle), v = p.viewer || {}, picked = S.selected.has(p.did);
   return '<label class="person' + (picked ? ' picked' : '') + '" data-k="' + did + '"><input type="checkbox" data-did="' + did + '"' + (picked ? ' checked' : '') + ' aria-label="Follow ' + name + '">' +
-    '<span class="tier ' + (c.strong ? 'strong">Strong' : 'likely">Likely') + '<span class="long"> match</span></span>' +
+    (c.link ? '' : '<span class="tier ' + (c.strong ? 'strong">Strong' : 'likely">Likely') + '<span class="long"> match</span></span>') +
     avatar(p.avatar, 'avatar') + '<span class="pbody">' +
       '<span class="line1">' + profileLink(p) + (v.followedBy ? '<span class="badge">Follows you</span>' : '') + '</span>' +
       (p.description ? '<span class="bio">' + esc(p.description) + '</span>' : '') +
@@ -997,10 +1020,11 @@ function renderBar() {
 /* ===== 9. Wiring ===== */
 
 function inviteText() {
-  const me = APP_URL + (S.session ? '/profile/' + S.session.handle : '');
-  return 'I\'m on Sparkable now! It\'s healthier social media designed to bridge divides, and it runs on the same open network as Bluesky, ' +
-    'so millions of people are already there. Also, it\'s way more fun than LinkedIn 👀🎉\n\nCome find me: ' + me +
-    (location.protocol === 'https:' ? '\n\nFind your own LinkedIn contacts there: ' + location.origin + location.pathname : '');
+  const hits = S.connections.filter(c => c.hit), li = hits.some(c => c.li), fb = hits.some(c => c.fb), me = S.session ? S.session.handle : '';
+  return (hits.length >= 10 && !S.running ? 'I found ' + hits.length + ' of my ' + (li && fb ? 'LinkedIn and Facebook friends' : li ? 'LinkedIn connections' : 'Facebook friends') + ' on Sparkable already!'
+    : 'I\'m on Sparkable now!') + ' It\'s healthier social media designed to bridge divides, and it runs on the same open network as Bluesky, ' +
+    'so millions of people are already there. Also, it\'s way more fun than LinkedIn 👀🎉\n\nCome find me: ' + APP_URL + (me ? '/profile/' + me : '') +
+    (location.protocol === 'https:' ? '\n\nAlready on Sparkable or Bluesky? Find your friends there in a few clicks: ' + location.origin + location.pathname + (me ? '?from=' + me : '') : '');
 }
 
 async function loadFiles(files) {
@@ -1115,6 +1139,13 @@ function init() {
   });
   $('clearSel').addEventListener('click', () => { S.selected.clear(); render(); });
   $('followBtn').addEventListener('click', followSelected);
+  $('remind').addEventListener('click', () => {   // a calendar entry, made on this device
+    const d = new Date(Date.now() + 30 * 864e5).toISOString().slice(0, 10).replace(/-/g, ''), a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob(['BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//Sparkable//Find friends//EN\r\nBEGIN:VEVENT\r\nUID:' + Date.now() + '@findfriends.sparkable.cc\r\nDTSTAMP:' +
+      new Date().toISOString().replace(/[-:]|\.\d+/g, '') + '\r\nDTSTART;VALUE=DATE:' + d + '\r\nSUMMARY:Find more friends on Sparkable\r\nURL:' + location.origin + location.pathname + '\r\nEND:VEVENT\r\nEND:VCALENDAR\r\n'], { type: 'text/calendar' }));
+    a.download = 'sparkable-reminder.ics'; a.click();
+  });
+  if (FROM) { const a = $('fromH'); a.href = APP_URL + '/profile/' + FROM; a.innerHTML = '@' + FROM + EXT; $('from').hidden = false; }   // FROM is letters, digits, dots and dashes only
   $('copyInvite').addEventListener('click', async () => {
     const t = $('invite'), b = $('copyInvite');
     try { await navigator.clipboard.writeText(t.value); b.innerHTML = TICK + 'Copied'; b.classList.add('copied'); }
