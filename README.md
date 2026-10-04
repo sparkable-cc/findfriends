@@ -62,11 +62,11 @@ A bio that links to a *different* LinkedIn profile rules the account out. Facebo
 
 ## Check that the live page matches this code
 
-Each release publishes the SHA-256 checksums of the two files the page loads. Current version 1.0.23:
+Each release publishes the SHA-256 checksums of the two files the page loads. Current version 1.0.24:
 
 ```
-6373b6a0b6c3a4441f6a238f95323d7f0ed1b99d8dba7b255c8d47004161288e  index.html
-fc7b8c858bf1106a57a9c5c66d457e9dc4bb047cc93105ce61cc3ccb714d2564  inter.woff2
+7f683e4c0058796bdcbfc9243e13787b6d02b9c053614eb4fd4ddaef2c6b2d9f  index.html
+08e7ffd12b83199f1c5412ee656fb9383cd1a8e4ecdb410350bd7797670c7421  inter.woff2
 ```
 
 To check it yourself:
@@ -86,7 +86,7 @@ curl -s https://findfriends.sparkable.cc/inter.woff2 | shasum -a 256
 | `wrangler.jsonc` | Cloudflare settings |
 | `.assetsignore` | Files that stay off the website (README, LICENSE, the `.git` folder) |
 | `og.png` | The picture shown when someone shares the link |
-| `inter.woff2` | The Inter font, cut down to Latin letters with accents and weights 400-800 |
+| `inter.woff2` | The Inter font, cut down to Latin letters with accents and weights 400-800. When rebuilding it, keep the STAT, HVAR and MVAR tables and the standard names (IDs 0-6, 13, 14): a build without them showed no bold text on an iPhone. |
 | `OFL.txt` | Inter's license (SIL Open Font License 1.1) |
 | `LICENSE` | GNU AGPL-3.0 |
 

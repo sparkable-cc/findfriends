@@ -20,7 +20,7 @@
 <link rel="preload" href="inter.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath fill='%234153f5' d='M63 1C44 24 44 40 63 63C40 44 24 44 1 63C20 40 20 24 1 1C24 20 40 20 63 1Z'/%3E%3C/svg%3E">
 <!--
-  Version 1.0.23, October 4, 2026
+  Version 1.0.24, October 4, 2026
 
   RULES (do not break these)
   1. No backend, no outside code or fonts, no analytics. This file is the app;
@@ -65,7 +65,7 @@
   /* Header: what this is, then what it promises */
   .brand { display: inline-flex; align-items: center; gap: 7px; margin-bottom: 22px; font-size: 18px; font-weight: 800; letter-spacing: -0.02em; color: var(--ink); text-decoration: none; }
   .brand svg { width: 22px; height: 22px; color: var(--accent); }
-  .hero { position: relative; overflow: hidden; margin: -8px 0 6px; padding: 28px 110px 30px 32px; border-radius: 24px; background: var(--accent); color: #fff; }
+  .hero { position: relative; overflow: hidden; margin: -8px 0 6px; padding: 28px 126px 30px 32px; border-radius: 24px; background: var(--accent); color: #fff; }
   .hero-spark { position: absolute; right: -110px; top: 50%; width: 220px; height: 220px; margin-top: -110px; color: var(--pink); }
   .hero .brand, .hero .lede, .hero .brand svg { color: #fff; }
   .lede svg { width: 18px; height: 18px; margin-right: 6px; vertical-align: -3px; fill: currentColor; }
@@ -223,8 +223,8 @@
   @media (max-width: 560px) {
     main { padding: 30px 16px 32px; }
     h1 { font-size: 30px; }
-    .hero { padding: 22px 56px 24px 20px; margin-inline: -4px; }
-    .hero-spark { right: -70px; top: auto; bottom: 16px; width: 140px; height: 140px; margin-top: 0; }   /* low, beside the button, clear of the headline */
+    .hero { padding: 22px 71px 24px 20px; margin-inline: -4px; }
+    .hero-spark { right: -55px; width: 110px; height: 110px; margin-top: -55px; }
     header h2 { margin: 18px 0 8px; }
     .flow { flex-direction: column; gap: 4px; }
     .card { display: grid; grid-template-columns: 34px 1fr; column-gap: 12px; align-items: center; text-align: left; padding: 8px 12px; }
@@ -367,7 +367,7 @@
 </ol>
 </main>
 <button type="button" class="fab" id="toTop" data-jump="top" aria-label="Back to top" hidden><svg class="ic"><use href="#i-up"/></svg></button>
-<footer><a href="https://sparkable.cc" target="_blank" rel="noopener noreferrer"><svg aria-hidden="true"><use href="#i-spark"/></svg>Made by Sparkable</a> · <a href="https://github.com/sparkable-cc/findfriends" target="_blank" rel="noopener noreferrer"><svg aria-hidden="true"><use href="#i-gh"/></svg>Source code on GitHub</a> · <a href="https://blog.sparkable.cc/legal/" target="_blank" rel="noopener noreferrer">Terms &amp; privacy</a> · <span>Version 1.0.23</span> · <span>Free and open source (AGPL-3.0)</span></footer>
+<footer><a href="https://sparkable.cc" target="_blank" rel="noopener noreferrer"><svg aria-hidden="true"><use href="#i-spark"/></svg>Made by Sparkable</a> · <a href="https://github.com/sparkable-cc/findfriends" target="_blank" rel="noopener noreferrer"><svg aria-hidden="true"><use href="#i-gh"/></svg>Source code on GitHub</a> · <a href="https://blog.sparkable.cc/legal/" target="_blank" rel="noopener noreferrer">Terms &amp; privacy</a> · <span>Version 1.0.24</span> · <span>Free and open source (AGPL-3.0)</span></footer>
 
 <script>
 'use strict';
