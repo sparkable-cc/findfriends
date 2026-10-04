@@ -21,7 +21,7 @@
 <link rel="preload" href="inter-bold.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath fill='%234153f5' d='M63 1C44 24 44 40 63 63C40 44 24 44 1 63C20 40 20 24 1 1C24 20 40 20 63 1Z'/%3E%3C/svg%3E">
 <!--
-  Version 1.0.30, October 4, 2026
+  Version 1.0.31, October 4, 2026
 
   RULES (do not break these)
   1. No backend, no outside code or fonts, no analytics. This file is the app;
@@ -94,7 +94,7 @@
   .ext { width: .5em; height: .5em; margin-left: .25em; vertical-align: .05em; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
 
     /* Buttons: one height everywhere */
-  button, .start { font: inherit; font-weight: 700; line-height: 24px; padding: var(--s3) var(--s5); border: 1px solid transparent; border-radius: var(--pill);
+  button, .btn { display: inline-block; font: inherit; font-weight: 700; line-height: 24px; padding: var(--s3) var(--s5); border: 1px solid transparent; border-radius: var(--pill);
                    background: var(--accent); color: var(--on-accent); cursor: pointer; text-decoration: none; }
   button.secondary { background: transparent; color: var(--ink); border-color: var(--line); }
   button.link { background: none; border: 0; padding: 0; line-height: inherit; color: var(--link); font-weight: 400; font-size: inherit;
@@ -137,7 +137,7 @@
   .brand svg { width: 1.2em; height: 1.2em; }
   .lede { font-size: var(--h3); margin: 0; }
   .lede span { white-space: nowrap; }
-  .start { display: inline-block; margin-top: var(--s5); background: var(--lime); color: var(--accent); }
+  .start { margin-top: var(--s5); background: var(--lime); color: var(--accent); }
   .from { margin: var(--s3) 0 0; padding: var(--pad); }
   .from a { display: block; width: fit-content; color: var(--ink); font-weight: 700; text-decoration: none; }   /* the handle gets its own line */
   .from a:hover { text-decoration: underline; }
@@ -299,13 +299,13 @@
   <a class="brand" href="https://sparkable.cc" target="_blank" rel="noopener noreferrer"><svg aria-hidden="true"><use href="#i-spark"/></svg>Sparkable</a>
   <h1>Find your friends on Sparkable</h1>
   <p class="lede">Bring your <span><svg><use href="#i-li"/></svg>LinkedIn</span> and <span><svg><use href="#i-fb"/></svg>Facebook</span> friends with you.</p>
-  <a class="start" href="#s1">Get started ↓</a></div>
+  <a class="btn start" href="#s1">Get started ↓</a></div>
   <p class="from row" id="from" hidden><svg class="ic" aria-hidden="true"><use href="#i-add"/></svg><span>This link suggests following<a id="fromH" target="_blank" rel="noopener noreferrer"></a>They'll be the first in your results below.</span></p>
   <h2>How it works</h2>
     <div class="flow">
       <div class="row card"><svg class="ic"><use href="#i-file"/></svg><b>Get your friend list</b><span>From LinkedIn or Facebook</span></div>
       <span class="op" aria-hidden="true">→</span>
-      <div class="row card"><svg class="ic"><use href="#i-search"/></svg><b>See who's here</b><span>On Sparkable and Bluesky, which are connected</span></div>
+      <div class="row card"><svg class="ic"><use href="#i-search"/></svg><b>See who's here</b><span>On Sparkable, Bluesky and other apps on the <a href="https://en.wikipedia.org/wiki/AT_Protocol" target="_blank" rel="noopener noreferrer">AT Protocol<svg class="ext" aria-hidden="true"><use href="#i-ext"/></svg></a></span></div>
       <span class="op" aria-hidden="true">→</span>
       <div class="row card"><svg class="ic"><use href="#i-add"/></svg><b>Follow with a click</b><span>Only the people you choose</span></div>
     </div>
@@ -388,14 +388,14 @@
       <div class="actions"><button type="button" class="secondary" id="copyInvite">Copy text</button></div>
       <p class="later"><strong>Come back in a month.</strong> New people join every week. Keep your file: next time, people you already follow are set aside, so it's quick.</p>
       <div class="actions"><button type="button" class="secondary" id="remind">📅 Remind me in a month</button></div>
-      <p class="signout"><strong>Sign out.</strong> Clears your contacts and results here and ends the tool's access to your account.</p>
-      <div class="actions"><button type="button" class="secondary" id="finishBtn">👋 Sign out and clear everything</button></div>
+      <p class="signout"><strong>All done?</strong> The people you followed are waiting on Sparkable. Signing out clears your contacts and results here and ends the tool's access to your account.</p>
+      <div class="actions"><a class="btn" href="https://sparkable.cc" target="_blank" rel="noopener noreferrer">Go to Sparkable<svg class="ext" aria-hidden="true"><use href="#i-ext"/></svg></a><button type="button" class="secondary" id="finishBtn">👋 Sign out and clear everything</button></div>
     </div>
   </li>
 </ol>
 </main>
 <button type="button" class="fab" id="toTop" data-jump="top" aria-label="Back to top" hidden><svg class="ic"><use href="#i-up"/></svg></button>
-<footer><a href="https://sparkable.cc" target="_blank" rel="noopener noreferrer"><svg aria-hidden="true"><use href="#i-spark"/></svg>Made by Sparkable</a> · <a href="https://github.com/sparkable-cc/findfriends" target="_blank" rel="noopener noreferrer"><svg aria-hidden="true"><use href="#i-gh"/></svg>Source code on GitHub</a> · <a href="https://blog.sparkable.cc/legal/" target="_blank" rel="noopener noreferrer">Terms &amp; privacy</a> · <span>Version 1.0.30</span> · <span>Free and open source (AGPL-3.0)</span></footer>
+<footer><a href="https://sparkable.cc" target="_blank" rel="noopener noreferrer"><svg aria-hidden="true"><use href="#i-spark"/></svg>Made by Sparkable</a> · <a href="https://github.com/sparkable-cc/findfriends" target="_blank" rel="noopener noreferrer"><svg aria-hidden="true"><use href="#i-gh"/></svg>Source code on GitHub</a> · <a href="https://blog.sparkable.cc/legal/" target="_blank" rel="noopener noreferrer">Terms &amp; privacy</a> · <span>Version 1.0.31</span> · <span>Free and open source (AGPL-3.0)</span></footer>
 
 <script>
 'use strict';
