@@ -64,10 +64,10 @@ A bio that links to a *different* LinkedIn profile rules the account out. Facebo
 
 ## Check that the live page matches this code
 
-Each release publishes the SHA-256 checksums of the files the page loads. Current version 1.0.29:
+Each release publishes the SHA-256 checksums of the files the page loads. Current version 1.0.30:
 
 ```
-425c2a064e832febc5f1281dc4249eab10c107b08f04f9c934cd6badff0c7c03  index.html
+26e499be8177275e37992daac0a5165b907608e7d6bb1d3d94e5f20030b52c0b  index.html
 23d9a7372e637c1e534a28a3f0cfc5201499525bda7d3d858aec47f22e84bfe6  inter.woff2
 79b5e33258fc2fc2017df94055a97b7729c132c229ffe4d3ba3da961f9ec7c94  inter-bold.woff2
 a95d2e22d10445edc11987b9ca33d2adc4814b63123aeaa9ca805026a847da9a  inter-ext.woff2
@@ -115,7 +115,7 @@ Then open http://127.0.0.1:8000/. Sign-in automatically uses atproto's developme
 
 ## Making a change
 
-1. Edit `index.html`.
+1. Edit `index.html`. For styling, use the named values at the top of the stylesheet (colors, the five text sizes, the spacing steps `--s1` to `--s7`, corners) instead of new numbers.
 2. The browser console will report a Content-Security-Policy error with the new script fingerprint (`sha256-...`). Paste it into the Content-Security-Policy line at the top of the file.
 3. Raise the version number at the top of the file and in the footer.
 4. Publish the new checksums in this README.
