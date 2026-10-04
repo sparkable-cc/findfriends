@@ -58,15 +58,18 @@ A bio that links to a *different* LinkedIn profile rules the account out. Facebo
 - **Locked to its own code.** The page tells your browser to run one exact script, identified by its fingerprint, and to refuse everything else. Even if someone slipped extra code into the page, your browser wouldn't run it. The page also refuses to load inside another website.
 - **You can check it.** The code is public, and the checksums below let anyone confirm that the live page is exactly this code.
 - **One search covers the open network.** Sparkable, Bluesky and other apps share the same open network (the [AT Protocol](https://en.wikipedia.org/wiki/AT_Protocol)), so one search finds people on all of them, and an account from any of them can sign in.
-- **Small and quick.** Under 100 KB in total, font included.
+- **Small and quick.** Under 100 KB, fonts included.
 
 ## Check that the live page matches this code
 
-Each release publishes the SHA-256 checksums of the two files the page loads. Current version 1.0.24:
+Each release publishes the SHA-256 checksums of the files the page loads. Current version 1.0.25:
 
 ```
-7f683e4c0058796bdcbfc9243e13787b6d02b9c053614eb4fd4ddaef2c6b2d9f  index.html
-08e7ffd12b83199f1c5412ee656fb9383cd1a8e4ecdb410350bd7797670c7421  inter.woff2
+66fba0a42b671e872b9abf86821261f263c589a216799c3ea568d5ca4537d777  index.html
+23d9a7372e637c1e534a28a3f0cfc5201499525bda7d3d858aec47f22e84bfe6  inter.woff2
+79b5e33258fc2fc2017df94055a97b7729c132c229ffe4d3ba3da961f9ec7c94  inter-bold.woff2
+a95d2e22d10445edc11987b9ca33d2adc4814b63123aeaa9ca805026a847da9a  inter-ext.woff2
+18fca7ec756dd5d737f6c4989779c35a33f79110e9c98e719561e069ee4a40ce  inter-bold-ext.woff2
 ```
 
 To check it yourself:
@@ -74,6 +77,7 @@ To check it yourself:
 ```
 curl -s https://findfriends.sparkable.cc/ | shasum -a 256
 curl -s https://findfriends.sparkable.cc/inter.woff2 | shasum -a 256
+curl -s https://findfriends.sparkable.cc/inter-bold.woff2 | shasum -a 256
 ```
 
 ## Files
@@ -86,13 +90,14 @@ curl -s https://findfriends.sparkable.cc/inter.woff2 | shasum -a 256
 | `wrangler.jsonc` | Cloudflare settings |
 | `.assetsignore` | Files that stay off the website (README, LICENSE, the `.git` folder) |
 | `og.png` | The picture shown when someone shares the link |
-| `inter.woff2` | The Inter font, cut down to Latin letters with accents and weights 400-800. When rebuilding it, keep the STAT, HVAR and MVAR tables and the standard names (IDs 0-6, 13, 14): a build without them showed no bold text on an iPhone. |
+| `inter.woff2`, `inter-bold.woff2` | The Inter font in regular and bold, cut down to Latin letters with accents. Two fixed weights on purpose: Safari's Lockdown Mode shows variable fonts in regular only. |
+| `inter-ext.woff2`, `inter-bold-ext.woff2` | Extra letters such as ł, č or ş. Browsers load them only when a name on the page needs them. |
 | `OFL.txt` | Inter's license (SIL Open Font License 1.1) |
 | `LICENSE` | GNU AGPL-3.0 |
 
 ## Hosting
 
-Live on Cloudflare Workers, which builds from `main` using `wrangler.jsonc`. The site is `index.html`, `inter.woff2`, `client-metadata.json` and `og.png`.
+Live on Cloudflare Workers, which builds from `main` using `wrangler.jsonc`. The site is `index.html`, the four `inter*.woff2` font files, `client-metadata.json` and `og.png`.
 
 Any static host that serves these files at the root of an HTTPS address works. Don't publish the `.git` folder. On Netlify: import this repository, leave the build command empty and set the publish directory to the repository root.
 
