@@ -7,7 +7,7 @@
 <!-- Lock: only this script may run, identified by its fingerprint. After editing it,
      paste the new fingerprint from the browser console here. Any https server may be
      contacted, so every AT Protocol server works. -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-SccO4LlODgyXtadgauzX9QTpO394fEKn2+TQ1TAd1Qo='; style-src 'unsafe-inline'; img-src https: data:; font-src 'self'; connect-src https:; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-XoalZ3QV1s0iHZk1hd0j70N2QiQ9VLac/k60oPbh4xg='; style-src 'unsafe-inline'; img-src https: data:; font-src 'self'; connect-src https:; base-uri 'none'; form-action 'none'">
 <title>Find your friends on Sparkable</title>
 <meta name="description" content="Find your LinkedIn and Facebook friends on Sparkable and Bluesky. Free, private and open source.">
 <meta property="og:title" content="Find your friends on Sparkable">
@@ -21,7 +21,7 @@
 <link rel="preload" href="inter-bold.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath fill='%234153f5' d='M63 1C44 24 44 40 63 63C40 44 24 44 1 63C20 40 20 24 1 1C24 20 40 20 63 1Z'/%3E%3C/svg%3E">
 <!--
-  Version 1.0.32, October 4, 2026
+  Version 1.0.33, October 4, 2026
 
   RULES (do not break these)
   1. No backend, no outside code or fonts, no analytics. This file is the app;
@@ -388,14 +388,14 @@
       <div class="actions"><button type="button" class="secondary" id="copyInvite">Copy text</button></div>
       <p class="later"><strong>Come back in a month.</strong> New people join every week. Keep your file: next time, people you already follow are set aside, so it's quick.</p>
       <div class="actions"><button type="button" class="secondary" id="remind">📅 Remind me in a month</button></div>
-      <p class="signout"><strong>All done?</strong> Copy your post first if you want it. This button signs you out of the tool, clears your contacts and results here and takes you to Sparkable, where the people you followed are waiting.</p>
-      <div class="actions"><button type="button" id="finishBtn">Sign out and go to Sparkable</button></div>
+      <p class="signout"><strong>All done?</strong> Copy your post first if you want it. Finishing clears your contacts and results here and ends this tool's access to your account. Your Sparkable login isn't affected.</p>
+      <div class="actions"><button type="button" id="finishBtn">Finish and go to Sparkable</button></div>
     </div>
   </li>
 </ol>
 </main>
 <button type="button" class="fab" id="toTop" data-jump="top" aria-label="Back to top" hidden><svg class="ic" aria-hidden="true"><use href="#i-up"/></svg></button>
-<footer><a href="https://sparkable.cc" target="_blank" rel="noopener noreferrer"><svg aria-hidden="true"><use href="#i-spark"/></svg>Made by Sparkable</a> · <a href="https://github.com/sparkable-cc/findfriends" target="_blank" rel="noopener noreferrer"><svg aria-hidden="true"><use href="#i-gh"/></svg>Source code on GitHub</a> · <a href="https://blog.sparkable.cc/legal/" target="_blank" rel="noopener noreferrer">Terms &amp; privacy</a> · <span>Version 1.0.32</span> · <span>Free and open source (AGPL-3.0)</span></footer>
+<footer><a href="https://sparkable.cc" target="_blank" rel="noopener noreferrer"><svg aria-hidden="true"><use href="#i-spark"/></svg>Made by Sparkable</a> · <a href="https://github.com/sparkable-cc/findfriends" target="_blank" rel="noopener noreferrer"><svg aria-hidden="true"><use href="#i-gh"/></svg>Source code on GitHub</a> · <a href="https://blog.sparkable.cc/legal/" target="_blank" rel="noopener noreferrer">Terms &amp; privacy</a> · <span>Version 1.0.33</span> · <span>Free and open source (AGPL-3.0)</span></footer>
 
 <script>
 'use strict';
@@ -1107,7 +1107,7 @@ async function finish() {
   $('results').innerHTML = ''; $('followOut').textContent = ''; $('progText').textContent = '';
   setStep(1, 'active'); setStep(2, 'todo'); setStep(3, 'todo');
   $('s4t').textContent = 'Done';
-  setStep(4, 'done', 'Signed out. Your contact list and results are cleared, and we asked your server to end the tool\'s access.');
+  setStep(4, 'done', 'Finished. Your contact list and results are cleared, and we asked your server to end the tool\'s access.');
   return revoked;
 }
 
