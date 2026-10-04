@@ -21,7 +21,7 @@
 <link rel="preload" href="inter-bold.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath fill='%234153f5' d='M63 1C44 24 44 40 63 63C40 44 24 44 1 63C20 40 20 24 1 1C24 20 40 20 63 1Z'/%3E%3C/svg%3E">
 <!--
-  Version 1.0.27, October 4, 2026
+  Version 1.0.28, October 4, 2026
 
   RULES (do not break these)
   1. No backend, no outside code or fonts, no analytics. This file is the app;
@@ -80,7 +80,7 @@
   .hero > :not(svg) { position: relative; }   /* text above the spark */
   .from { display: flex; gap: 10px; align-items: center; margin: 14px 0 0; padding: 12px 16px; border: 2px dashed color-mix(in srgb, var(--accent) 45%, transparent); border-radius: 14px; background: var(--panel); font-size: var(--small); }
   .from .ic { flex: none; width: 20px; height: 20px; color: var(--accent); }
-  .from a { display: block; width: fit-content; margin: 2px 0; font-size: var(--body); color: inherit; font-weight: 700; text-decoration: none; }   /* the handle gets its own line */
+  .from a { display: block; width: fit-content; margin: 2px 0; color: inherit; font-weight: 700; text-decoration: none; }   /* the handle gets its own line */
   .from a:hover { text-decoration: underline; }
   .start { display: inline-block; margin-top: 24px; padding: 11px 22px; border-radius: 999px; background: var(--lime); color: var(--accent); font-weight: 700; text-decoration: none; }
   #s1 { scroll-margin-top: 16px; }
@@ -91,17 +91,15 @@
   /* Intro diagrams: soft cards, deliberately not shaped like buttons */
   h2 { font-size: var(--h2); font-weight: 700; }   /* every heading bold, also on phones */
   header h2 { margin: 24px 0 10px; }
-  .flow { display: flex; gap: 12px; }
-  .card { flex: 1; background: var(--accent-soft); border-radius: 16px;
-          padding: 10px 8px; text-align: center; font-size: var(--small); line-height: 1.4; color: var(--muted); }
-  .card b { display: block; font-size: var(--body); color: var(--ink); }
+  .flow { display: flex; flex-direction: column; gap: 4px; }
   .op { align-self: center; font-size: var(--h2); font-weight: 700; line-height: 1; color: var(--accent); }
-  .dot { display: grid; place-items: center; width: 36px; height: 36px; margin: 0 auto 6px; border-radius: 50%; background: var(--bg); color: var(--accent); }
-  .checks { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
-  .checks li { display: flex; gap: 12px; font-size: var(--small); line-height: 1.45; color: var(--muted); }
-  .checks li b { color: var(--ink); font-weight: 700; }
-  .checks li { align-items: center; }
-  .checks .ic { flex: none; width: 34px; height: 34px; padding: 8px; border-radius: 50%; background: var(--accent-soft); color: var(--accent); }
+  /* "How it works" and "Safe and private" share one row: icon, bold title, description */
+  .row { display: grid; grid-template-columns: 36px 1fr; column-gap: 14px; align-items: center; color: var(--muted); }
+  .row b { color: var(--ink); }
+  .row .ic { grid-row: span 2; width: 36px; height: 36px; padding: 8px; border-radius: 50%; background: var(--accent-soft); color: var(--accent); }
+  .card { padding: 10px 14px; border-radius: 16px; background: var(--accent-soft); }
+  .card .ic { background: var(--bg); }
+  .checks { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; }
   header { padding-bottom: 28px; margin-bottom: 32px; border-bottom: 1px solid var(--line); }
 
   /* Steps: a real sequence, so they're numbered */
@@ -238,10 +236,6 @@
     .hero { padding: 22px 58px 24px 20px; margin-inline: -4px; }
     .hero-spark { right: -60px; width: 120px; height: 120px; margin-top: -60px; }
     header h2 { margin: 18px 0 8px; }
-    .flow { flex-direction: column; gap: 4px; }
-    .card { display: grid; grid-template-columns: 34px 1fr; column-gap: 12px; align-items: center; text-align: left; padding: 8px 12px; }
-    .card .dot { grid-row: span 2; width: 34px; height: 34px; margin: 0; }
-    .op { transform: rotate(90deg); }
     .jump [data-jump="top"] { display: none; }   /* the round button does this on phones */
     .step { padding-left: 38px; }
     .step::before { left: 12px; top: 30px; }
@@ -290,19 +284,19 @@
   <p class="from" id="from" hidden><svg class="ic" aria-hidden="true"><use href="#i-add"/></svg><span>This link suggests following<a id="fromH" target="_blank" rel="noopener noreferrer"></a>They'll be the first in your results below.</span></p>
   <h2>How it works</h2>
     <div class="flow">
-      <div class="card"><span class="dot"><svg class="ic"><use href="#i-file"/></svg></span><b>Get your friend list</b>From LinkedIn or Facebook</div>
-      <span class="op" aria-hidden="true">→</span>
-      <div class="card"><span class="dot"><svg class="ic"><use href="#i-search"/></svg></span><b>See who's here</b>On Sparkable and Bluesky, which are connected</div>
-      <span class="op" aria-hidden="true">→</span>
-      <div class="card"><span class="dot"><svg class="ic"><use href="#i-add"/></svg></span><b>Follow with a click</b>Only the people you choose</div>
+      <div class="row card"><svg class="ic"><use href="#i-file"/></svg><b>Get your friend list</b><span>From LinkedIn or Facebook</span></div>
+      <span class="op" aria-hidden="true">↓</span>
+      <div class="row card"><svg class="ic"><use href="#i-search"/></svg><b>See who's here</b><span>On Sparkable and Bluesky, which are connected</span></div>
+      <span class="op" aria-hidden="true">↓</span>
+      <div class="row card"><svg class="ic"><use href="#i-add"/></svg><b>Follow with a click</b><span>Only the people you choose</span></div>
     </div>
     <p class="hint" style="margin-top:14px"><a href="https://github.com/sparkable-cc/findfriends#how-it-works" target="_blank" rel="noopener noreferrer">Learn more<svg class="ext" aria-hidden="true"><use href="#i-ext"/></svg></a></p>
 
     <h2>Safe and private</h2>
     <ul class="checks">
-      <li><svg class="ic"><use href="#i-lock"/></svg><span><b>Your file stays on your device.</b> Only names are looked up, on Bluesky.</span></li>
-      <li><svg class="ic"><use href="#i-gone"/></svg><span><b>Nothing is saved.</b> Close the page and it's gone.</span></li>
-      <li><svg class="ic"><use href="#i-gh"/></svg><span><b>Open source.</b> Anyone can <a href="https://github.com/sparkable-cc/findfriends" target="_blank" rel="noopener noreferrer">check the code<svg class="ext" aria-hidden="true"><use href="#i-ext"/></svg></a>.</span></li>
+      <li class="row"><svg class="ic"><use href="#i-lock"/></svg><b>Your file stays on your device</b><span>Only names are looked up, on Bluesky.</span></li>
+      <li class="row"><svg class="ic"><use href="#i-gone"/></svg><b>Nothing is saved</b><span>Close the page and it's gone.</span></li>
+      <li class="row"><svg class="ic"><use href="#i-gh"/></svg><b>Open source</b><span>Anyone can <a href="https://github.com/sparkable-cc/findfriends" target="_blank" rel="noopener noreferrer">check the code<svg class="ext" aria-hidden="true"><use href="#i-ext"/></svg></a>.</span></li>
     </ul>
 </header>
 
@@ -382,7 +376,7 @@
 </ol>
 </main>
 <button type="button" class="fab" id="toTop" data-jump="top" aria-label="Back to top" hidden><svg class="ic"><use href="#i-up"/></svg></button>
-<footer><a href="https://sparkable.cc" target="_blank" rel="noopener noreferrer"><svg aria-hidden="true"><use href="#i-spark"/></svg>Made by Sparkable</a> · <a href="https://github.com/sparkable-cc/findfriends" target="_blank" rel="noopener noreferrer"><svg aria-hidden="true"><use href="#i-gh"/></svg>Source code on GitHub</a> · <a href="https://blog.sparkable.cc/legal/" target="_blank" rel="noopener noreferrer">Terms &amp; privacy</a> · <span>Version 1.0.27</span> · <span>Free and open source (AGPL-3.0)</span></footer>
+<footer><a href="https://sparkable.cc" target="_blank" rel="noopener noreferrer"><svg aria-hidden="true"><use href="#i-spark"/></svg>Made by Sparkable</a> · <a href="https://github.com/sparkable-cc/findfriends" target="_blank" rel="noopener noreferrer"><svg aria-hidden="true"><use href="#i-gh"/></svg>Source code on GitHub</a> · <a href="https://blog.sparkable.cc/legal/" target="_blank" rel="noopener noreferrer">Terms &amp; privacy</a> · <span>Version 1.0.28</span> · <span>Free and open source (AGPL-3.0)</span></footer>
 
 <script>
 'use strict';
