@@ -21,6 +21,7 @@ Finding people can go wrong. Someone may keep their work and private accounts ap
 - **Full real name only.** An account is considered only if its name contains your contact's complete first and last name. Nicknames, initials, usernames and other surnames never match. Someone who goes by a different name on Sparkable won't be found, and that's on purpose.
 - **A name is never enough.** There has to be a second sign that it's the same person, and every suggestion says what that sign is.
 - **Blocks are respected.** Nobody who blocked you, or whom you blocked, is ever suggested.
+- **Real friend lists only.** The tool takes up to 35,000 people per run, the most LinkedIn (30,000 connections) and Facebook (5,000 friends) allow. Bigger files are refused, so the tool can't be used to sweep the network.
 - **Nothing new is revealed.** The page only finds public accounts, and only uses what you could see yourself by searching each name by hand.
 - **Your contacts' details stay with you.** Their job, employer, LinkedIn link and email never leave your device. The tool never emails or invites anyone, and it keeps nothing about them.
 
@@ -60,15 +61,15 @@ A bio that links to a *different* LinkedIn profile rules the account out. Facebo
 - **Locked to its own code.** The page tells your browser to run one exact script, identified by its fingerprint, and to refuse everything else. Even if someone slipped extra code into the page, your browser wouldn't run it. The page also refuses to load inside another website.
 - **You can check it.** The code is public, and the checksums below let anyone confirm that the live page is exactly this code.
 - **One search covers the open network.** Sparkable, Bluesky and other apps share the same open network (the [AT Protocol](https://en.wikipedia.org/wiki/AT_Protocol)), so one search finds people on all of them, and an account from any of them can sign in.
-- **Small and quick.** Under 100 KB, fonts included.
+- **Small and quick.** About 100 KB, fonts included.
 - **Accessible.** Checked with the axe accessibility tester against WCAG 2.2 AA, in light and dark mode, with no issues found. Works with a keyboard alone, and links that open a new tab say so to screen readers.
 
 ## Check that the live page matches this code
 
-Each release publishes the SHA-256 checksums of the files the page loads. Current version 1.0.34:
+Each release publishes the SHA-256 checksums of the files the page loads. Current version 1.0.35:
 
 ```
-0137d964ba21e11d48084ab57d274663cebc6878816a7e9aff8a5c05e5a5beea  index.html
+94b22d5d73846e8367c5d39ddd9ccdb26e208a026e5b7d2fed3fbf04ede2ca40  index.html
 23d9a7372e637c1e534a28a3f0cfc5201499525bda7d3d858aec47f22e84bfe6  inter.woff2
 79b5e33258fc2fc2017df94055a97b7729c132c229ffe4d3ba3da961f9ec7c94  inter-bold.woff2
 a95d2e22d10445edc11987b9ca33d2adc4814b63123aeaa9ca805026a847da9a  inter-ext.woff2
