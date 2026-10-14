@@ -21,7 +21,7 @@
 <link rel="preload" href="inter-bold.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath fill='%234153f5' d='M63 1C44 24 44 40 63 63C40 44 24 44 1 63C20 40 20 24 1 1C24 20 40 20 63 1Z'/%3E%3C/svg%3E">
 <!--
-  Version 1.0.37, October 14, 2026
+  Version 1.0.38, October 14, 2026
 
   RULES (do not break these)
   1. No backend, no outside code or fonts, no analytics. This file is the app;
@@ -145,7 +145,7 @@
   .op { align-self: center; font-size: var(--h2); font-weight: 700; line-height: 1; color: var(--accent); }
   .card { flex: 1; grid-template-columns: 1fr; justify-items: center; align-content: start; padding: var(--pad); border-radius: var(--r); background: var(--accent-soft); text-align: center; }
   .card .ic { grid-row: auto; margin-bottom: var(--s2); background: var(--bg); }
-  .flow + p { margin-top: var(--s3); }
+  .flow + p { margin: var(--s3) 0 var(--s6); }   /* Learn more: extra room before the next heading */
   .checks { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--s4); }
 
   /* Steps */
@@ -255,6 +255,7 @@
     .hero-spark { right: -60px; width: 120px; height: 120px; margin-top: -60px; }
     header h2 { margin: var(--s4) 0 var(--s2); }
     .flow { flex-direction: column; gap: var(--s1); }
+    .flow + p { margin-bottom: var(--s5); }
     .card { grid-template-columns: 36px 1fr; justify-items: start; text-align: left; }
     .card .ic { grid-row: span 2; margin: 0; }
     .op { transform: rotate(90deg); }
@@ -395,7 +396,7 @@
 </ol>
 </main>
 <button type="button" class="fab" id="toTop" data-jump="top" aria-label="Back to top" hidden><svg class="ic" aria-hidden="true"><use href="#i-up"/></svg></button>
-<footer><a href="https://sparkable.cc" target="_blank" rel="noopener noreferrer"><svg aria-hidden="true"><use href="#i-spark"/></svg>Made by Sparkable</a>&nbsp;· <a href="https://github.com/sparkable-cc/findfriends" target="_blank" rel="noopener noreferrer"><svg aria-hidden="true"><use href="#i-gh"/></svg>Source code on GitHub</a>&nbsp;· <a href="https://blog.sparkable.cc/legal/" target="_blank" rel="noopener noreferrer">Terms &amp; privacy</a>&nbsp;· <span>Version 1.0.37</span>&nbsp;· <span>Free and open source (AGPL-3.0)</span>&nbsp;· <span>Not affiliated with LinkedIn or Meta</span></footer>
+<footer><a href="https://sparkable.cc" target="_blank" rel="noopener noreferrer"><svg aria-hidden="true"><use href="#i-spark"/></svg>Made by Sparkable</a>&nbsp;· <a href="https://github.com/sparkable-cc/findfriends" target="_blank" rel="noopener noreferrer"><svg aria-hidden="true"><use href="#i-gh"/></svg>Source code on GitHub</a>&nbsp;· <a href="https://blog.sparkable.cc/legal/" target="_blank" rel="noopener noreferrer">Terms &amp; privacy</a>&nbsp;· <span>Version 1.0.38</span>&nbsp;· <span>Free and open source (AGPL-3.0)</span>&nbsp;· <span>Not affiliated with LinkedIn or Meta</span></footer>
 
 <script>
 'use strict';
