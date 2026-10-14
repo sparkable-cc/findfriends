@@ -1,4 +1,4 @@
-# Find friends on Sparkable
+# Find your friends on Sparkable
 
 Find your LinkedIn and Facebook friends on Sparkable, and follow them in a few clicks. Sparkable shares its open network with Bluesky, so the tool finds people on either.
 
@@ -48,7 +48,7 @@ A bio that links to a *different* LinkedIn profile rules the account out. Facebo
 
 ## Why it's private and secure
 
-- **Your file stays on your device.** The page reads it inside your browser and never uploads it.
+- **Your file is never uploaded.** The page reads it inside your browser.
 - **Only names go out.** To search, the page sends each contact's name to Bluesky's public search. The accounts it finds are then looked up through your own account server, to see who you have in common.
 - **Nothing is saved.** No database, no cookies, nothing kept in your browser. Close the tab and it's gone.
 - **Invite links send nothing.** A link like `findfriends.sparkable.cc/?from=name` only shows that handle. It's looked up after you sign in, never before.
