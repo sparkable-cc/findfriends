@@ -66,10 +66,10 @@ A bio that links to a *different* LinkedIn profile rules the account out. Facebo
 
 ## Check that the live page matches this code
 
-Each release publishes the SHA-256 checksums of the files the page loads. Current version 1.0.37:
+Each release publishes the SHA-256 checksums of the files the page loads. Current version 1.0.38:
 
 ```
-350ec2a692a9a41d74e22c143db4f923ff90540142c2fda677e48f3ec09c8d86  index.html
+124a35bd6dfa6c3fd50fd8605239b761f9939048dedb5d4c532fe63f96958307  index.html
 23d9a7372e637c1e534a28a3f0cfc5201499525bda7d3d858aec47f22e84bfe6  inter.woff2
 79b5e33258fc2fc2017df94055a97b7729c132c229ffe4d3ba3da961f9ec7c94  inter-bold.woff2
 a95d2e22d10445edc11987b9ca33d2adc4814b63123aeaa9ca805026a847da9a  inter-ext.woff2
