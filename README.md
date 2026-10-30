@@ -11,7 +11,7 @@ Everything happens in your browser. There's no Sparkable server behind this page
 1. **Get your friend list** from LinkedIn or Facebook and drop the file on the page. It's read on your device and never uploaded.
 2. **Sign in** with your Sparkable or Bluesky account (Eurosky, Blacksky and others work too), on your own account's sign-in page.
 3. **See who's here.** The page searches for each contact by name, across the open network that Sparkable and Bluesky share.
-4. **Choose who to follow.** Nothing is selected for you, and you can undo every follow.
+4. **Choose who to follow.** Nothing is selected for you, and you can undo every follow. Bluesky treats many follows at once as spam, so the page follows up to 200 people a day. It counts the last 24 hours from the follows themselves, so nothing is stored. Come back the next day for the rest: people you already follow are set aside.
 5. **Tell your friends, if you like.** The page writes a post for LinkedIn or Facebook. Its link puts you first in the results of anyone who opens it. A reminder button adds a calendar entry to search again in a month, made on your device.
 
 ### Who gets suggested, and who never does
@@ -66,10 +66,10 @@ A bio that links to a *different* LinkedIn profile rules the account out. Facebo
 
 ## Check that the live page matches this code
 
-Each release publishes the SHA-256 checksums of the files the page loads. Current version 1.0.39:
+Each release publishes the SHA-256 checksums of the files the page loads. Current version 1.0.40:
 
 ```
-2135e67d018f46d33a690ca12a7c737cf2e4538e774e108be40b6253989d8109  index.html
+ac28537a5d640ece5441091a7d878bdff44b7ca35d2a4328edf541e3e3abd0ea  index.html
 23d9a7372e637c1e534a28a3f0cfc5201499525bda7d3d858aec47f22e84bfe6  inter.woff2
 79b5e33258fc2fc2017df94055a97b7729c132c229ffe4d3ba3da961f9ec7c94  inter-bold.woff2
 a95d2e22d10445edc11987b9ca33d2adc4814b63123aeaa9ca805026a847da9a  inter-ext.woff2

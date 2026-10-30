@@ -7,7 +7,7 @@
 <!-- Lock: only this script may run, identified by its fingerprint. After editing it,
      paste the new fingerprint from the browser console here. Any https server may be
      contacted, so every AT Protocol server works. -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-FJKOuA2lc00+JiYE9XEgb5+VCvVUL6q8xYXa2O/ofHY='; style-src 'unsafe-inline'; img-src https: data:; font-src 'self'; connect-src https:; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-dSetZWWQ3AIH3EHqDyNVh5lHgoENA6b30etDNRWuJvs='; style-src 'unsafe-inline'; img-src https: data:; font-src 'self'; connect-src https:; base-uri 'none'; form-action 'none'">
 <title>Find your friends on Sparkable</title>
 <meta name="description" content="Find your LinkedIn and Facebook friends on Sparkable and Bluesky. Free, private and open source.">
 <meta property="og:title" content="Find your friends on Sparkable">
@@ -21,7 +21,7 @@
 <link rel="preload" href="inter-bold.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath fill='%234153f5' d='M63 1C44 24 44 40 63 63C40 44 24 44 1 63C20 40 20 24 1 1C24 20 40 20 63 1Z'/%3E%3C/svg%3E">
 <!--
-  Version 1.0.39, October 30, 2026
+  Version 1.0.40, October 30, 2026
 
   RULES (do not break these)
   1. No backend, no outside code or fonts, no analytics. This file is the app;
@@ -367,7 +367,7 @@
     <div class="body">
       <div class="bar" id="progBar"><i id="prog"></i></div>
       <p id="progText" role="status"></p>
-      <p class="hint">Everyone you follow gets a notification: a nice way to say hello. Follows are public.</p>
+      <p class="hint">Everyone you follow gets a notification: a nice way to say hello. Follows are public. Bluesky treats many follows at once as spam, so the tool follows up to 200 people a day.</p>
       <nav class="jump" id="jump" aria-label="Jump to a section" hidden></nav>
       <div id="results"></div>
       <details class="more"><summary>Why isn't someone here?</summary><div id="whyNot"></div></details>
@@ -389,7 +389,7 @@
       <textarea id="invite" aria-label="Post for LinkedIn"></textarea>
       <div class="actions"><button type="button" class="secondary" id="copyInvite">Copy text</button></div>
       <p class="later"><strong>Come back in a month.</strong> New people join every week. Keep your file: next time, people you already follow are set aside, so it's quick.</p>
-      <div class="actions"><button type="button" class="secondary" id="remind">📅 Remind me in a month</button></div>
+      <div class="actions"><button type="button" class="secondary" data-remind="30">📅 Remind me in a month</button></div>
       <p class="signout"><strong>All done?</strong> Copy your post first if you want it. Finishing clears your contacts and results here and ends this tool's access to your account. Your Sparkable login isn't affected.</p>
       <div class="actions"><button type="button" id="finishBtn">Finish and go to Sparkable</button></div>
     </div>
@@ -397,7 +397,7 @@
 </ol>
 </main>
 <button type="button" class="fab" id="toTop" data-jump="top" aria-label="Back to top" hidden><svg class="ic" aria-hidden="true"><use href="#i-up"/></svg></button>
-<footer><a href="https://sparkable.cc" target="_blank" rel="noopener noreferrer"><svg aria-hidden="true"><use href="#i-spark"/></svg>Made by Sparkable</a>&nbsp;· <a href="https://github.com/sparkable-cc/findfriends" target="_blank" rel="noopener noreferrer"><svg aria-hidden="true"><use href="#i-gh"/></svg>Source code on GitHub</a>&nbsp;· <a href="https://blog.sparkable.cc/legal/" target="_blank" rel="noopener noreferrer">Terms &amp; privacy</a>&nbsp;· <span>Version 1.0.39</span>&nbsp;· <span>Free and open source (AGPL-3.0)</span>&nbsp;· <span>Not affiliated with LinkedIn or Meta</span></footer>
+<footer><a href="https://sparkable.cc" target="_blank" rel="noopener noreferrer"><svg aria-hidden="true"><use href="#i-spark"/></svg>Made by Sparkable</a>&nbsp;· <a href="https://github.com/sparkable-cc/findfriends" target="_blank" rel="noopener noreferrer"><svg aria-hidden="true"><use href="#i-gh"/></svg>Source code on GitHub</a>&nbsp;· <a href="https://blog.sparkable.cc/legal/" target="_blank" rel="noopener noreferrer">Terms &amp; privacy</a>&nbsp;· <span>Version 1.0.40</span>&nbsp;· <span>Free and open source (AGPL-3.0)</span>&nbsp;· <span>Not affiliated with LinkedIn or Meta</span></footer>
 
 <script>
 'use strict';
@@ -834,9 +834,19 @@ function progress() {
 
 /* ===== 7. Following ===== */
 
+const DAILY_FOLLOWS = 200;   // Bluesky treats bulk follows as spam (also in the hint above the results)
+const B32 = '234567abcdefghijklmnopqrstuvwxyz';
+/* Follows made in the last 24 hours. A follow's record key starts with the time it was made,
+   so this needs no storage: what you followed earlier today shows up as already followed. */
+const followedToday = () => [...new Set([...S.followed.values(), ...S.already.map(p => p.viewer.following)])].filter(uri => {
+  const k = uri.split('/').pop();
+  return /^[2-7a-z]{13}$/.test(k) && Date.now() - [...k.slice(0, 11)].reduce((t, c) => t * 32 + B32.indexOf(c), 0) / 1000 < 864e5;
+}).length;
+const followsLeft = () => Math.max(0, DAILY_FOLLOWS - followedToday());
+
 async function followSelected() {
   if (S.following || !S.selected.size) return;
-  const order = displayOrder().filter(d => S.selected.has(d)), out = $('followOut');
+  const order = displayOrder().filter(d => S.selected.has(d)).slice(0, followsLeft()), out = $('followOut');
   let ok = 0, failed = 0;
   S.following = true; renderBar();
   for (const did of order) {   // one at a time with a pause, so bulk follows don't look like spam
@@ -852,7 +862,9 @@ async function followSelected() {
   }
   S.following = false;
   out.innerHTML = (ok ? 'Followed ' + plural(ok, 'person', 'people') + '. You can undo any of them at the top of the <a href="#sec-already" data-jump="already">Following list</a>. ' : '') +
-    (failed ? failed + ' didn\'t work and are still selected. Try again.' : '');
+    (failed ? failed + ' didn\'t work and are still selected. Try again. ' : '') +
+    (S.selected.size && !followsLeft() ? 'That\'s ' + DAILY_FOLLOWS + ' for today. Bluesky treats many follows at once as spam, so come back tomorrow for the rest. ' +
+      '<button type="button" class="link" data-remind="1">📅 Remind me tomorrow</button>' : '');
   render();
 }
 
@@ -1027,8 +1039,9 @@ function renderBar() {
   sel.innerHTML = '<svg class="ic" aria-hidden="true"><use href="#i-all"/></svg>' + (todo > 1 ? 'Select all ' : 'Select ') + plural(todo, key + ' match', key + ' matches');
   sel.className = n ? 'link' : '';   // a button while it's the main action, a link once "Follow" takes over
   fol.hidden = !n && !S.following;
-  fol.disabled = S.following;
-  fol.textContent = S.following ? 'Following…' : 'Follow ' + plural(n, 'person', 'people');
+  const left = followsLeft();
+  fol.disabled = S.following || !left;
+  fol.textContent = S.following ? 'Following…' : !left ? 'Back tomorrow for more' : 'Follow ' + plural(Math.min(n, left), 'person', 'people') + (n > left ? ' today' : '');
   $('clearSel').hidden = !n || S.following;
   $('bar').classList.toggle('off', sel.hidden && fol.hidden && !$('followOut').textContent);
   placeFab();
@@ -1158,8 +1171,10 @@ function init() {
   });
   $('clearSel').addEventListener('click', () => { S.selected.clear(); render(); });
   $('followBtn').addEventListener('click', followSelected);
-  $('remind').addEventListener('click', () => {   // a calendar entry, made on this device
-    const d = new Date(Date.now() + 30 * 864e5).toISOString().slice(0, 10).replace(/-/g, ''), a = document.createElement('a');
+  document.addEventListener('click', e => {   // a calendar entry, made on this device
+    const b = e.target.closest('[data-remind]');
+    if (!b) return;
+    const d = new Date(Date.now() + b.dataset.remind * 864e5).toISOString().slice(0, 10).replace(/-/g, ''), a = document.createElement('a');
     a.href = URL.createObjectURL(new Blob(['BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//Sparkable//Find friends//EN\r\nBEGIN:VEVENT\r\nUID:' + Date.now() + '@findfriends.sparkable.cc\r\nDTSTAMP:' +
       new Date().toISOString().replace(/[-:]|\.\d+/g, '') + '\r\nDTSTART;VALUE=DATE:' + d + '\r\nSUMMARY:Find more friends on Sparkable\r\nURL:' + location.origin + location.pathname + '\r\nEND:VEVENT\r\nEND:VCALENDAR\r\n'], { type: 'text/calendar' }));
     a.download = 'sparkable-reminder.ics'; a.click();
